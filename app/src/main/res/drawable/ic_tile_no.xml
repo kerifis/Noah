@@ -1,0 +1,17 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="96dp"
+    android:height="96dp"
+    android:viewportWidth="96"
+    android:viewportHeight="96">
+    <!-- Big Prohibition / NO symbol -->
+    <path
+        android:strokeColor="#EF5350"
+        android:strokeWidth="10"
+        android:pathData="M48,16a32,32 0,1 1,-0.01 0z"/>
+    <!-- Diagonal cross slash -->
+    <path
+        android:strokeColor="#EF5350"
+        android:strokeWidth="10"
+        android:strokeLineCap="round"
+        android:pathData="M25,25l46,46"/>
+</vector>

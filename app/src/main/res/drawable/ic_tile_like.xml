@@ -1,0 +1,16 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="96dp"
+    android:height="96dp"
+    android:viewportWidth="96"
+    android:viewportHeight="96">
+    <!-- Heart + Thumbs Up (LIKE) -->
+    <path
+        android:fillColor="#E91E63"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="3.5"
+        android:pathData="M48,78l-23,-23c-8,-8 -8,-21 0,-29c8,-8 21,-8 29,0c8,-8 21,-8 29,0c8,8 8,21 0,29z"/>
+    <!-- Star shine in heart -->
+    <path
+        android:fillColor="#FFD600"
+        android:pathData="M48,36l3,6l6,3l-6,3l-3,6l-3,-6l-6,-3l6,-3z"/>
+</vector>

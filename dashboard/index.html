@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TalkTV Web Companion — Caregiver & SLP Clinical Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+  <!-- Chart.js from CDN for interactive clinical graphs -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+  <!-- APP HEADER -->
+  <header class="app-header">
+    <div class="brand-wrapper">
+      <div class="brand-logo">💬</div>
+      <div class="brand-text">
+        <h1>Talk<span>TV</span> Companion</h1>
+        <p>Caregiver &amp; SLP Therapy Dashboard</p>
+      </div>
+    </div>
+
+    <div class="header-status-group">
+      <div class="badge-connected">
+        <div class="pulse-dot"></div>
+        <span>Living Room TV Connected</span>
+      </div>
+      <div class="device-info">
+        <span>🔋 Remote: <strong>94%</strong></span>
+        <span>•</span>
+        <span>Stage <strong>2</strong></span>
+      </div>
+      <a href="../preview/talktv_simulator.html" target="_blank" class="btn-open-tv" title="Open TV Remote Simulator in new window">
+        <span>📺</span>
+        <span>Open TV Screen</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- MAIN APP CONTAINER -->
+  <div class="app-container">
+
+    <!-- NAVIGATION SIDEBAR -->
+    <nav class="app-nav">
+      <div class="nav-item active" data-tab="tab-monitor" onclick="switchTab('tab-monitor')">
+        <span class="nav-icon">📡</span>
+        <span>Live Monitor</span>
+      </div>
+      <div class="nav-item" data-tab="tab-analytics" onclick="switchTab('tab-analytics')">
+        <span class="nav-icon">📊</span>
+        <span>SLP Analytics</span>
+      </div>
+      <div class="nav-item" data-tab="tab-stages" onclick="switchTab('tab-stages')">
+        <span class="nav-icon">🗺️</span>
+        <span>Curriculum &amp; Stages</span>
+      </div>
+      <div class="nav-item" data-tab="tab-studio" onclick="switchTab('tab-studio')">
+        <span class="nav-icon">🎨</span>
+        <span>Tile Studio</span>
+      </div>
+      <div class="nav-item" data-tab="tab-ipp" onclick="switchTab('tab-ipp')">
+        <span class="nav-icon">📋</span>
+        <span>Alberta IPP Plan</span>
+        <span class="ipp-review-badge" style="font-size: 9px; padding: 2px 6px; margin-left: auto;">6-Mo Review</span>
+      </div>
+      <div class="nav-item" data-tab="tab-report" onclick="switchTab('tab-report')">
+        <span class="nav-icon">📄</span>
+        <span>Clinical IEP Report</span>
+      </div>
+
+      <div class="nav-footer">
+        <strong>Caregiver PIN Protected</strong>
+        <span>PIN: 1234 • AES Encrypted Local Storage</span>
+      </div>
+    </nav>
+
+    <!-- MAIN CONTENT AREA -->
+    <main class="content-area">
+
+      <!-- ========================================== -->
+      <!-- TAB 1: LIVE MONITOR & CAREGIVER MODELING -->
+      <!-- ========================================== -->
+      <section id="tab-monitor" class="tab-pane active">
+        <div class="pane-header">
+          <h2 class="pane-title">Live TV Monitor &amp; Aided Modeling</h2>
+          <p class="pane-subtitle">Real-time mirror of what is appearing on the child's TV screen and interactive caregiver prompts.</p>
+        </div>
+
+
+
+        <!-- Two Column Monitor Grid -->
+        <div class="monitor-grid">
+          <!-- Left: Live TV Screen Preview & Remote Status -->
+          <div class="glass-card">
+            <h3 style="font-size: 18px; font-weight: 800; color: var(--accent-cyan); margin-bottom: 6px;">Live TV Telemetry</h3>
+            <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 14px;">Screen activity and remote D-pad engagement stream.</p>
+            
+            <div class="tv-telemetry-box">
+              <span class="tv-screen-badge">Active Show: Bluey</span>
+              <video class="tv-telemetry-video" autoplay loop muted>
+                <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" type="video/mp4">
+              </video>
+            </div>
+
+            <div style="display: flex; justify-content: space-between; margin-top: 14px; font-size: 13px; color: var(--text-secondary);">
+              <span>Remote Focus: <strong>Tile "WANT" (Row 1)</strong></span>
+              <span>Idle Timer: <strong id="idle-timer-status">8s / 10s</strong></span>
+            </div>
+          </div>
+
+          <!-- Right: Aided Language Stimulation (Caregiver Modeling) -->
+          <div class="glass-card">
+            <h3 class="modeling-title">Aided Language Stimulation (Caregiver Modeling)</h3>
+            <p class="modeling-desc">
+              Tap a core word below from your phone/tablet to remotely highlight and speak it on the TV, modeling communication for your child.
+            </p>
+
+            <div class="core-model-grid">
+              <button class="model-btn" onclick="modelWordOnTv('MORE', 'verb')">
+                <span>➕</span>
+                <span>MORE</span>
+              </button>
+              <button class="model-btn" onclick="modelWordOnTv('HELP', 'category')">
+                <span>🛟</span>
+                <span>HELP</span>
+              </button>
+              <button class="model-btn" onclick="modelWordOnTv('AGAIN', 'verb')">
+                <span>🔄</span>
+                <span>AGAIN</span>
+              </button>
+              <button class="model-btn stop" onclick="modelWordOnTv('STOP', 'stop')">
+                <span>🛑</span>
+                <span>STOP</span>
+              </button>
+            </div>
+
+            <div style="margin-top: 20px;">
+              <label class="form-label">Model Custom Word or Phrase to TV</label>
+              <div style="display: flex; gap: 10px;">
+                <input type="text" id="custom-model-input" class="form-input" placeholder="Type a word (e.g. 'like', 'happy', 'outside')...">
+                <button class="btn-stage-action primary" style="white-space: nowrap; padding: 0 20px;" onclick="modelCustomWord()">
+                  Speak on TV
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================================== -->
+      <!-- TAB 2: CLINICAL SLP & BEHAVIORAL ANALYTICS -->
+      <!-- ========================================== -->
+      <section id="tab-analytics" class="tab-pane">
+        <div class="pane-header">
+          <h2 class="pane-title">Clinical SLP &amp; Behavioral Analytics</h2>
+          <p class="pane-subtitle">Quantifiable data measuring the extinction of aimless flipping and emergence of intentional communication.</p>
+        </div>
+
+        <!-- KPI Metrics -->
+        <div class="kpi-row">
+          <div class="kpi-card">
+            <div class="kpi-title">Intentional Requests</div>
+            <div class="kpi-value" id="kpi-intentional">142</div>
+            <div class="kpi-sub positive">↑ +28% vs previous week</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-title">Extinction Ratio</div>
+            <div class="kpi-value" style="color: var(--accent-green);" id="kpi-extinction">84%</div>
+            <div class="kpi-sub positive">Aimless flipping extinguished</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-title">Rewarded Show Launches</div>
+            <div class="kpi-value" style="color: var(--accent-cyan);" id="kpi-rewards">118</div>
+            <div class="kpi-sub gold">Immediate positive reinforcers</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-title">Current Daily Streak</div>
+            <div class="kpi-value" style="color: var(--accent-yellow);" id="kpi-streak">7 Days</div>
+            <div class="kpi-sub">Consistent communication habit</div>
+          </div>
+        </div>
+
+        <!-- Charts Grid -->
+        <div class="charts-grid">
+          <!-- Phrase Complexity Progression Chart -->
+          <div class="chart-box">
+            <div class="chart-header">
+              <span class="chart-title">Phrase Complexity Progression (Last 30 Days)</span>
+              <span style="font-size: 12px; color: var(--accent-cyan); font-weight: 700;">Transition: 1-Word ➔ 2-Word Phrases</span>
+            </div>
+            <canvas id="complexityChart" class="chart-canvas"></canvas>
+          </div>
+
+          <!-- Core vs Fringe Frequency Chart -->
+          <div class="chart-box">
+            <div class="chart-header">
+              <span class="chart-title">Core vs Fringe Word Frequency</span>
+              <span style="font-size: 12px; color: var(--accent-yellow); font-weight: 700;">Fitzgerald Key</span>
+            </div>
+            <canvas id="frequencyChart" class="chart-canvas"></canvas>
+          </div>
+        </div>
+
+        <!-- Recent Communication Event Log Table -->
+        <div class="table-card">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h3 style="font-size: 16px; font-weight: 800; color: #FFF;">Recent Communication Event Log</h3>
+            <button class="btn-stage-action secondary" style="font-size: 12px; padding: 6px 14px;" onclick="exportLogCsv()">Export CSV</button>
+          </div>
+          <table class="log-table">
+            <thead>
+              <tr>
+                <th>Timestamp</th>
+                <th>Selected Tile</th>
+                <th>Full Utterance / Phrase</th>
+                <th>Outcome / Reward</th>
+              </tr>
+            </thead>
+            <tbody id="event-log-tbody">
+              <!-- Rendered via JS -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ========================================== -->
+      <!-- TAB 3: STAGE CURRICULUM & MASTERY GATES -->
+      <!-- ========================================== -->
+      <section id="tab-stages" class="tab-pane">
+        <div class="pane-header" style="display: flex; justify-content: space-between; align-items: flex-end;">
+          <div>
+            <h2 class="pane-title">Vocabulary Progression &amp; Stage Roadmap</h2>
+            <p class="pane-subtitle">Clinical 4-stage vocabulary curriculum based on standard WordPower AAC principles.</p>
+          </div>
+          <div style="display: flex; align-items: center; gap: 14px;">
+            <label style="font-size: 14px; font-weight: 700; color: var(--text-secondary); display: flex; align-items: center; gap: 8px;">
+              <span>Auto-Unlock Next Stage:</span>
+              <input type="checkbox" id="chk-auto-unlock" checked onchange="toggleAutoUnlock(this.checked)" style="transform: scale(1.3);">
+            </label>
+          </div>
+        </div>
+
+        <div class="stages-grid" id="stages-cards-container">
+          <!-- Rendered via JS -->
+        </div>
+      </section>
+
+      <!-- ========================================== -->
+      <!-- TAB 4: TILE STUDIO & CUSTOM SHOW CURATOR -->
+      <!-- ========================================== -->
+      <section id="tab-studio" class="tab-pane">
+        <div class="pane-header">
+          <h2 class="pane-title">Tile Studio &amp; Custom Content Curator</h2>
+          <p class="pane-subtitle">Add custom show tiles, link specific YouTube Kids clips, and expand fringe vocabulary.</p>
+        </div>
+
+        <div class="studio-grid">
+          <!-- Form: Add / Edit Tile -->
+          <div class="glass-card">
+            <h3 style="font-size: 18px; font-weight: 800; color: var(--accent-cyan); margin-bottom: 16px;">Add New Content Tile</h3>
+            
+            <div class="form-group">
+              <label class="form-label">Tile Word / Show Label</label>
+              <input type="text" id="new-tile-word" class="form-input" placeholder="e.g. Bluey Cooking Special">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">AAC Category</label>
+              <div class="category-pills" id="category-pills-row">
+                <button type="button" class="cat-pill active" data-cat="CARTOON" onclick="selectTileCategory('CARTOON', this)">Cartoons</button>
+                <button type="button" class="cat-pill" data-cat="FOOD" onclick="selectTileCategory('FOOD', this)">Food Shows</button>
+                <button type="button" class="cat-pill" data-cat="MUSIC" onclick="selectTileCategory('MUSIC', this)">Music</button>
+                <button type="button" class="cat-pill" data-cat="FAVORITE" onclick="selectTileCategory('FAVORITE', this)">Favorites</button>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Content Deep Link / YouTube Kids URL</label>
+              <input type="text" id="new-tile-uri" class="form-input" placeholder="https://www.youtube.com/watch?v=..." oninput="updateVideoPreview(this.value)">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Choose ARASAAC Symbol Icon</label>
+              <div class="icon-selector-grid" id="icon-selector-grid">
+                <!-- Icon buttons rendered via JS -->
+              </div>
+            </div>
+
+            <div style="display: flex; gap: 12px; margin-top: 24px;">
+              <button class="btn-stage-action secondary" style="flex: 1;" onclick="testSpeechVoice()">
+                🔊 Test Voice
+              </button>
+              <button class="btn-stage-action primary" style="flex: 2;" onclick="saveNewTile()">
+                ✓ Save &amp; Push to TV
+              </button>
+            </div>
+          </div>
+
+          <!-- Active Vocabulary Library -->
+          <div class="glass-card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+              <h3 style="font-size: 18px; font-weight: 800; color: var(--accent-yellow);">Active Vocabulary Library</h3>
+              <span style="font-size: 12px; color: var(--text-muted); font-weight: 700;" id="tile-library-count">15 Tiles Active</span>
+            </div>
+            
+            <div class="tile-library-grid" id="tile-library-container">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================================== -->
+      <!-- TAB 5: ALBERTA IPP & BEHAVIOUR PLAN (TEMPLATE F) -->
+      <!-- ========================================== -->
+      <section id="tab-ipp" class="tab-pane">
+        <!-- Header Banner -->
+        <div class="ipp-header-card">
+          <div class="ipp-title-row">
+            <div>
+              <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+                <span class="ipp-official-badge">🏛️ Alberta Education • Template F</span>
+                <span class="ipp-review-badge">🔄 Profile Updated Every 6 Months</span>
+              </div>
+              <h2 style="font-family: var(--font-display); font-size: 26px; color: #FFF; font-weight: 900; margin-bottom: 4px;">
+                Individual Program Plan (IPP) &amp; Behaviour Support Plan (IBSP)
+              </h2>
+              <p style="color: var(--text-secondary); font-size: 14px;">
+                Edmonton Public School Board (EPSB) • <strong>Lymburn School (2025–2026)</strong> • Program: <strong>Interactions</strong>
+              </p>
+            </div>
+            <div style="display: flex; gap: 12px;">
+              <button class="btn-stage-action secondary" onclick="window.print()">
+                🖨️ Print IPP Record
+              </button>
+              <button class="btn-stage-action primary" onclick="openIppReviewModal()">
+                + Log 6-Month Review
+              </button>
+            </div>
+          </div>
+
+          <!-- Student Demographics Meta Grid -->
+          <div class="ipp-student-meta-grid">
+            <div class="ipp-meta-item">
+              <div class="label">Student Name</div>
+              <div class="val">Noah Tuyishime</div>
+            </div>
+            <div class="ipp-meta-item">
+              <div class="label">Grade / Program</div>
+              <div class="val">Grade 4 • Interactions</div>
+            </div>
+            <div class="ipp-meta-item">
+              <div class="label">Birthdate</div>
+              <div class="val">Feb 03, 2015</div>
+            </div>
+            <div class="ipp-meta-item">
+              <div class="label">EPSB Number</div>
+              <div class="val">16368473</div>
+            </div>
+            <div class="ipp-meta-item">
+              <div class="label">ASN (Alberta Student #)</div>
+              <div class="val">308366541</div>
+            </div>
+            <div class="ipp-meta-item">
+              <div class="label">Homeroom Teacher</div>
+              <div class="val">Zayd Rutkowski</div>
+            </div>
+          </div>
+
+          <div style="margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--border-card); display: flex; justify-content: space-between; flex-wrap: wrap; font-size: 13px; color: var(--text-secondary);">
+            <div>Special Ed / District Codes: <strong style="color: #FFF;">Severe Physical or Medical Disability, Autism Spectrum Disorder</strong></div>
+            <div>Medical Management Plan: <strong style="color: var(--accent-green);">Not Required (X)</strong></div>
+          </div>
+        </div>
+
+        <!-- Multi-Disciplinary Team & Diagnostics Row -->
+        <div class="ipp-layout-grid">
+          <!-- Learning Team -->
+          <div class="glass-card">
+            <h3 style="font-size: 17px; font-weight: 800; color: var(--accent-cyan); margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+              <span>👥</span> Learning Team Members &amp; Consultants
+            </h3>
+            <div style="display: flex; flex-direction: column; gap: 10px;">
+              <div style="background: rgba(255,255,255,0.03); padding: 10px 14px; border-radius: 8px; border: 1px solid var(--border-card); display: flex; justify-content: space-between;">
+                <strong>Rutkowski, Zayd</strong>
+                <span style="color: var(--text-muted); font-size: 12px;">Homeroom Teacher</span>
+              </div>
+              <div style="background: rgba(255,255,255,0.03); padding: 10px 14px; border-radius: 8px; border: 1px solid var(--border-card); display: flex; justify-content: space-between;">
+                <strong>Nosko, Joyce</strong>
+                <span style="color: var(--text-muted); font-size: 12px;">Classroom Team Member</span>
+              </div>
+              <div style="background: rgba(255,255,255,0.03); padding: 10px 14px; border-radius: 8px; border: 1px solid var(--border-card); display: flex; justify-content: space-between;">
+                <strong>Weisgerber, Sharon</strong>
+                <span style="color: var(--text-muted); font-size: 12px;">Educational Assistant / Team Member</span>
+              </div>
+              <div style="background: rgba(0, 229, 255, 0.05); padding: 10px 14px; border-radius: 8px; border: 1px solid rgba(0, 229, 255, 0.2); display: flex; justify-content: space-between;">
+                <strong style="color: var(--accent-cyan);">Rhiannon Roth</strong>
+                <span style="color: var(--accent-cyan); font-size: 12px;">Education and Behavior Consultant</span>
+              </div>
+            </div>
+
+            <h4 style="font-size: 14px; font-weight: 800; color: #FFF; margin-top: 20px; margin-bottom: 10px;">Core Objective</h4>
+            <p style="font-size: 13px; color: var(--text-secondary); line-height: 1.6; background: rgba(255,255,255,0.02); padding: 12px; border-radius: 8px;">
+              Staff working with <strong>Noah</strong> are aware of and committed to using positive behaviour strategies and supports. Proactive staff responses and safety procedures are implemented to maintain a safe, productive learning environment for Noah, other students, and staff.
+            </p>
+          </div>
+
+          <!-- Clinical Diagnoses History -->
+          <div class="glass-card">
+            <h3 style="font-size: 17px; font-weight: 800; color: var(--accent-yellow); margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+              <span>🩺</span> Diagnosis &amp; Evaluation Timeline
+            </h3>
+            <div style="display: flex; flex-direction: column; gap: 12px;">
+              <div style="border-left: 3px solid var(--accent-cyan); padding-left: 12px;">
+                <div style="font-size: 12px; color: var(--text-muted); font-weight: 700;">June 19, 2019 • Johanna LaVallee, B.Sc, O.T.</div>
+                <div style="font-size: 13px; color: #FFF; margin-top: 2px;">Sensory processing difficulties, Delayed self care abilities, Severe fine motor delay</div>
+              </div>
+              <div style="border-left: 3px solid var(--accent-yellow); padding-left: 12px;">
+                <div style="font-size: 12px; color: var(--text-muted); font-weight: 700;">June 2018 • Dr. Cara Dosman (Glenrose Pediatric Clinic)</div>
+                <div style="font-size: 13px; color: #FFF; margin-top: 2px;">Autism Spectrum Disorder; Impairments in social-emotional reciprocity, non-verbal communication, and behavioural flexibility noted</div>
+              </div>
+              <div style="border-left: 3px solid var(--accent-green); padding-left: 12px;">
+                <div style="font-size: 12px; color: var(--text-muted); font-weight: 700;">May 1, 2018 • Keri-Lynn Heise, R. SLP</div>
+                <div style="font-size: 13px; color: #FFF; margin-top: 2px;">Severe Expressive Language Delay, Severe Receptive Language Disorder, significant concerns related to play and social interaction skills</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Strengths, Interests, and Learning Needs Matrix -->
+        <div class="ipp-layout-grid">
+          <!-- Strengths & High-Interest Reinforcers -->
+          <div class="glass-card">
+            <h3 style="font-size: 17px; font-weight: 800; color: var(--accent-green); margin-bottom: 14px;">
+              🌟 Strengths &amp; High-Interest Reinforcers
+            </h3>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+              <div>
+                <div style="font-size: 12px; color: var(--accent-cyan); font-weight: 800; text-transform: uppercase; margin-bottom: 6px;">From Family</div>
+                <ul style="font-size: 13px; color: var(--text-secondary); padding-left: 16px; line-height: 1.6;">
+                  <li>Follows verbal directions</li>
+                  <li>Very affectionate when regulated</li>
+                  <li>Learns through repetition</li>
+                  <li><strong>Interests:</strong> Playing with water, <em>food videos (cooking shows / pancakes)</em>, heavy blankets</li>
+                </ul>
+              </div>
+              <div>
+                <div style="font-size: 12px; color: var(--accent-yellow); font-weight: 800; text-transform: uppercase; margin-bottom: 6px;">From School Staff</div>
+                <ul style="font-size: 13px; color: var(--text-secondary); padding-left: 16px; line-height: 1.6;">
+                  <li>Transitions very well between locations in school</li>
+                  <li>Independent in many classroom routines</li>
+                  <li>Communicates some needs non-verbally</li>
+                  <li><strong>Interests:</strong> Animal toys, playing chase with students/staff, being read books</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <!-- Classroom Accommodations & Learning Needs -->
+          <div class="glass-card">
+            <h3 style="font-size: 17px; font-weight: 800; color: var(--accent-cyan); margin-bottom: 14px;">
+              🛠️ Classroom Learning Needs &amp; Accommodations
+            </h3>
+            <div style="font-size: 13px; color: var(--text-secondary); line-height: 1.6;">
+              <p style="margin-bottom: 8px;"><strong>Learning Style:</strong> Visual and Kinesthetic</p>
+              <ul style="padding-left: 18px; margin-bottom: 12px;">
+                <li><strong>Communication Device (AAC):</strong> Must be accessible in classroom at all times (TalkTV &amp; WordPower 60).</li>
+                <li><strong>Environmental Supports:</strong> Alternative seating, open accessibility to fidgets and ear defenders, sensory break spaces.</li>
+                <li><strong>Staff Approach:</strong> Extra time for processing, clear/simple language, visual timers for transitions, First-Then language.</li>
+                <li><strong>Interoceptive Strategy:</strong> Support Noah in diagnosing interoceptive needs; maintain calm, unraised voice.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- INDIVIDUALIZED BEHAVIOUR SUPPORT PLAN (IBSP) -->
+        <div class="ibsp-container">
+          <div class="ibsp-header">
+            <div>
+              <h3 style="font-size: 20px; font-weight: 900; color: #FFF; display: flex; align-items: center; gap: 8px;">
+                <span>⚠️</span> Individualized Behaviour Support Plan (IBSP)
+              </h3>
+              <p style="font-size: 13px; color: #FFCDD2;">Proactive intervention protocol for interoception dysregulation</p>
+            </div>
+            <span class="review-tag" style="background: rgba(239, 83, 80, 0.2); color: var(--accent-red); border-color: var(--accent-red);">
+              EPSB Clinical Mandate
+            </span>
+          </div>
+
+          <!-- CRITICAL ROOT CAUSE ALERT -->
+          <div class="ibsp-key-understanding">
+            <strong>Key Clinical Understanding:</strong> When dysregulated, Noah will hit, scratch, bite, and headbutt anyone close to him. 
+            <strong style="color: #FFF; text-decoration: underline;">Noah does not do this from a place of anger towards any one person</strong>, 
+            but rather appears to be <strong>immensely frustrated that he is not able to communicate with others what he needs</strong>.
+          </div>
+
+          <div style="font-size: 13px; color: var(--text-secondary); margin-bottom: 16px;">
+            <strong>Primary Antecedents (Interoception Issues):</strong> Hunger, thirst, feeling sick, feeling tired, feeling pain, feeling hot/cold, needing bathroom, lights being too bright, loud classroom noises, or food running out.
+          </div>
+
+          <!-- Level 1 & Level 2 De-escalation Protocol -->
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px;">
+            <div class="ibsp-level-card level-1">
+              <div style="font-size: 14px; font-weight: 800; color: var(--accent-yellow); margin-bottom: 6px;">
+                Level 1: Low-Level Warning Signs
+              </div>
+              <div style="font-size: 13px; color: #FFF; margin-bottom: 8px;">
+                <strong>Signs:</strong> Furrowed brow and groaning or quietly wailing. (Transitions to Level 2 quickly).
+              </div>
+              <div style="font-size: 13px; color: var(--text-secondary); line-height: 1.5;">
+                <strong>Actions to Diffuse:</strong> Immediately try to figure out what Noah needs. 
+                <span style="color: var(--accent-green); font-weight: 700;">Offer bathroom, water, or food.</span> 
+                Minimize bright lights and loud noises in the classroom as quickly as possible.
+              </div>
+            </div>
+
+            <div class="ibsp-level-card level-2">
+              <div style="font-size: 14px; font-weight: 800; color: var(--accent-red); margin-bottom: 6px;">
+                Level 2: Behaviours Requiring More Support
+              </div>
+              <div style="font-size: 13px; color: #FFF; margin-bottom: 8px;">
+                <strong>Signs:</strong> Biting own hand, hitting self on head, jumping up and down, and screaming.
+              </div>
+              <div style="font-size: 13px; color: var(--text-secondary); line-height: 1.5;">
+                <strong>Actions to Diffuse:</strong> Redirect Noah to area by teacher desk. Encourage sensory space to release energy. Have staff bring over visual supports (diapers, water).
+              </div>
+            </div>
+          </div>
+
+          <!-- Crisis Management Plan -->
+          <div class="ibsp-level-card crisis">
+            <div style="font-size: 14px; font-weight: 800; color: #E1BEE7; margin-bottom: 6px;">
+              🚨 Crisis Management &amp; Safety Plan
+            </div>
+            <div style="font-size: 13px; color: var(--text-secondary); line-height: 1.6;">
+              When in the teacher desk area, staff should put on arm guards to keep themselves safe. Staff use calm verbal reassurance: <em>"Noah is safe and staff are here to help."</em> Continue offering primary triggers (food, water, bathroom). If dysregulation lasts longer than <strong>10 minutes</strong>, clear the room. If longer than <strong>30 minutes</strong>, call Noah's mom to come to school to help him regulate.
+            </div>
+          </div>
+        </div>
+
+        <!-- 6-MONTH REVIEW CYCLE TRACKER -->
+        <div class="review-cycle-container">
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+            <div>
+              <h3 style="font-size: 20px; font-weight: 900; color: var(--accent-cyan); display: flex; align-items: center; gap: 8px;">
+                <span>📅</span> Alberta IPP 6-Month Review Cycle Tracker
+              </h3>
+              <p style="font-size: 13px; color: var(--text-secondary);">
+                Alberta Education mandates comprehensive IPP / IBSP updates every 6 months to ensure curriculum goals and interoceptive supports match student growth.
+              </p>
+            </div>
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <span class="ipp-review-badge">Next Due: June 23, 2026</span>
+              <button class="btn-stage-action primary" onclick="openIppReviewModal()">
+                + Add 6-Month Review Entry
+              </button>
+            </div>
+          </div>
+
+          <!-- Timeline Container (Rendered dynamically from DataStore) -->
+          <div class="review-timeline" id="ipp-review-timeline-container">
+            <!-- Dynamically populated by JS -->
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================================== -->
+      <!-- TAB 6: CLINICAL IEP / SLP SUMMARY REPORT -->
+      <!-- ========================================== -->
+      <section id="tab-report" class="tab-pane">
+        <div class="pane-header" style="display: flex; justify-content: space-between; align-items: flex-end;">
+          <div>
+            <h2 class="pane-title">Clinical IEP / SLP Summary Report</h2>
+            <p class="pane-subtitle">Formal documentation of communication mastery and behavioral extinction for school therapists and pediatricians.</p>
+          </div>
+          <button class="btn-stage-action primary" onclick="window.print()">
+            🖨️ Print / Save as PDF
+          </button>
+        </div>
+
+        <div class="glass-card" style="line-height: 1.6; font-size: 15px;">
+          <div style="border-bottom: 2px solid var(--border-card); padding-bottom: 16px; margin-bottom: 20px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 14px;">
+            <div>
+              <h3 style="font-family: var(--font-display); font-size: 24px; color: #FFF;">Augmentative &amp; Alternative Communication (AAC) Progress Record</h3>
+              <p style="color: var(--text-secondary);">Student: <strong>Noah Tuyishime</strong> (Grade 4 • Lymburn School) • EPSB #16368473 • Teacher: Zayd Rutkowski</p>
+            </div>
+            <div style="text-align: right; color: var(--text-muted);">
+              <div>Official Plan: <strong>Alberta IPP Template F</strong></div>
+              <div>Review Cycle: <strong>Every 6 Months</strong></div>
+            </div>
+          </div>
+
+          <h4 style="color: var(--accent-cyan); font-size: 17px; margin-bottom: 8px;">1. Clinical Baseline &amp; Intervention Objective</h4>
+          <p style="color: var(--text-secondary); margin-bottom: 16px;">
+            The learner previously engaged in rapid, aimless D-pad channel surfing on the television remote control. TalkTV replaced the non-functional surfing motor pattern with direct-selection AAC grid navigation where <strong>intentional communication is the sole pathway to content gratification</strong>.
+          </p>
+
+          <h4 style="color: var(--accent-green); font-size: 17px; margin-bottom: 8px;">2. Quantitative Mastery Data (Last 30 Days)</h4>
+          <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 20px;">
+            <div style="background: rgba(255,255,255,0.04); padding: 14px; border-radius: 10px; border: 1px solid var(--border-card);">
+              <div style="font-size: 12px; color: var(--text-muted);">TOTAL COMMUNICATIVE ACTS</div>
+              <div style="font-size: 24px; font-weight: 900; color: #FFF;">142</div>
+            </div>
+            <div style="background: rgba(255,255,255,0.04); padding: 14px; border-radius: 10px; border: 1px solid var(--border-card);">
+              <div style="font-size: 12px; color: var(--text-muted);">PURPOSEFUL REWARD RATIO</div>
+              <div style="font-size: 24px; font-weight: 900; color: var(--accent-green);">84% Purposeful</div>
+            </div>
+            <div style="background: rgba(255,255,255,0.04); padding: 14px; border-radius: 10px; border: 1px solid var(--border-card);">
+              <div style="font-size: 12px; color: var(--text-muted);">CURRENT STAGE MASTERY</div>
+              <div style="font-size: 24px; font-weight: 900; color: var(--accent-yellow);">Stage 2 (72% to Stage 3)</div>
+            </div>
+          </div>
+
+          <h4 style="color: var(--accent-yellow); font-size: 17px; margin-bottom: 8px;">3. Communicative Function &amp; Mean Length of Utterance (MLU)</h4>
+          <p style="color: var(--text-secondary); margin-bottom: 16px;">
+            Over the intervention period, the learner transitioned from single-tile requests (MLU 1.0) to structured multi-tile requests combining Core pronouns/verbs with fringe content (e.g. <em>"I want Bluey"</em>, <em>"want more Trains"</em>), achieving a Mean Length of Utterance of <strong>2.1 words per rewarded transaction</strong>.
+          </p>
+
+          <h4 style="color: var(--accent-cyan); font-size: 17px; margin-bottom: 8px;">4. Recommended Next Steps for IEP Team</h4>
+          <ul style="color: var(--text-secondary); padding-left: 20px; margin-bottom: 24px;">
+            <li>Advance to Stage 3 upon reaching 25 rewarded presses to introduce affective self-advocacy (<em>feel, like, no</em>).</li>
+            <li>Maintain caregiver aided language stimulation (modeling <em>"MORE"</em> and <em>"STOP"</em> on the TV screen during high-interest shows).</li>
+            <li>Transfer core motor patterns to physical AAC tablet / GoTalk board in school classroom environments.</li>
+          </ul>
+
+          <div style="display: flex; justify-content: space-between; border-top: 1px solid var(--border-card); padding-top: 20px; font-size: 13px; color: var(--text-muted);">
+            <div>Prepared by: <strong>TalkTV Automated Clinical Analytics Engine</strong></div>
+            <div>Speech-Language Pathologist Signature: ___________________________</div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- MODAL: ADD 6-MONTH REVIEW ENTRY -->
+  <div class="modal-overlay" id="modal-ipp-review">
+    <div class="modal-box">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; border-bottom: 1px solid var(--border-card); padding-bottom: 12px;">
+        <h3 style="font-size: 20px; font-weight: 800; color: var(--accent-cyan);">Log Alberta IPP 6-Month Review</h3>
+        <button onclick="closeIppReviewModal()" style="background: none; border: none; color: #FFF; font-size: 20px; cursor: pointer;">✕</button>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Review Cycle / Milestone</label>
+        <select id="review-modal-type" class="form-input">
+          <option value="6-Month Mid-Year Review">6-Month Mid-Year Review</option>
+          <option value="Year-End Summary Review">Year-End Summary Review</option>
+          <option value="Annual IPP Update">Annual IPP Update</option>
+          <option value="Interim Progress Check">Interim Progress Check</option>
+        </select>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+        <div class="form-group">
+          <label class="form-label">Review Date</label>
+          <input type="date" id="review-modal-date" class="form-input">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Reviewer / Learning Team Member(s)</label>
+          <input type="text" id="review-modal-author" class="form-input" placeholder="e.g. Zayd Rutkowski (Homeroom Teacher)">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Clinical Observations &amp; Interoception Notes</label>
+        <textarea id="review-modal-notes" class="form-input" rows="4" placeholder="Detail progress with classroom routines, interoceptive needs (hunger, bathroom), dysregulation frequency, and TalkTV AAC usage..."></textarea>
+      </div>
+
+      <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 20px;">
+        <button class="btn-stage-action secondary" onclick="closeIppReviewModal()">Cancel</button>
+        <button class="btn-stage-action primary" onclick="submitIppReview()">Save to Alberta IPP Record</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION -->
+  <div id="toast-notification">
+    <span id="toast-icon">✓</span>
+    <span id="toast-text">Word modeled to TV screen</span>
+  </div>
+
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

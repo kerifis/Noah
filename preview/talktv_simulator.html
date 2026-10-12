@@ -1,0 +1,2394 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TalkTV — Android TV AAC Simulator (WordPower 80 3D Visual UI)</title>
+  <style>
+    :root {
+      --tv-bg: #070B13;
+      --tv-surface: #10192A;
+      --tv-surface-focus: #1A2844;
+      --focus-cyan: #00E5FF;
+      --focus-yellow: #FFD600;
+      --focus-green: #00E676;
+      --brand-amber: #FFC83B;
+
+      /* Fitzgerald Key 3D Tint Palette */
+      --color-pronoun: #E08738;
+      /* I, you, it, your, me, my, we, they */
+      --color-aux: #2E72B8;
+      /* is, are, will, can, do */
+      --color-verb: #159A65;
+      /* eat, drink, go, help, want, like, have, watch, play */
+      --color-feeling: #F59E0B;
+      /* feel, hurt, happy, sad, tired */
+      --color-stop: #E53935;
+      /* stop, no/don't, bad, clear */
+      --color-show: #3B82F6;
+      /* bluey, cocomelon, cooking, trains */
+      --color-prep: #2B6CB0;
+      /* in, out, on, off, up, down */
+      --color-category: #4A5D78;
+      /* people, actions, social, places, descrb */
+      --color-social: #8B5CF6;
+      /* please, thank you, hello, bye */
+      --color-question: #00B0FF;
+      /* what, where, who, why, how, when */
+
+      --font-stack: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: #04070F;
+      color: #FFFFFF;
+      font-family: var(--font-stack);
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+      -webkit-font-smoothing: antialiased;
+      user-select: none;
+    }
+
+    /* 16:9 TV Screen Stage Container */
+    #tv-stage {
+      flex: 1;
+      height: 100%;
+      background: radial-gradient(120% 120% at 50% 12%, #14223A 0%, #0C1424 50%, #050811 100%);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+      border-right: 1.5px solid rgba(255, 255, 255, 0.08);
+      padding: 12px 18px 10px 18px;
+      gap: 10px;
+    }
+
+    /* Top Brand & Phrase Chips Row (Matches Screenshot Header) */
+    #header-bar {
+      height: 58px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      z-index: 10;
+      flex-shrink: 0;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-shrink: 0;
+    }
+
+    .brand-icon {
+      width: 44px;
+      height: 44px;
+      background: linear-gradient(135deg, #00E5FF 0%, #0077FF 100%);
+      border-radius: 13px;
+      display: grid;
+      place-items: center;
+      font-size: 22px;
+      box-shadow: 0 0 16px rgba(0, 229, 255, 0.45), inset 0 1px 1px rgba(255, 255, 255, 0.5);
+    }
+
+    .brand-info {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.1;
+    }
+
+    .brand-title {
+      font-size: 22px;
+      font-weight: 900;
+      color: #FFFFFF;
+      letter-spacing: -0.5px;
+    }
+
+    .brand-sub {
+      font-size: 10px;
+      font-weight: 800;
+      color: var(--brand-amber);
+      letter-spacing: 1.3px;
+      text-transform: uppercase;
+      margin-top: 2px;
+    }
+
+    /* Glossy 3D Phrase Chips Row */
+    #phrase-container {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      padding: 2px 4px;
+    }
+
+    #phrase-container::-webkit-scrollbar {
+      display: none;
+    }
+
+    .phrase-chip {
+      background: linear-gradient(180deg, #1C3866 0%, #0F2344 100%);
+      border: 2px solid #2B68C5;
+      box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.4), 0 0 14px rgba(43, 104, 197, 0.55);
+      color: #FFFFFF;
+      padding: 7px 18px;
+      border-radius: 15px;
+      font-size: 15px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      animation: chipPop 0.18s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      white-space: nowrap;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+    }
+
+    .phrase-chip:hover {
+      transform: scale(1.05);
+      border-color: var(--focus-cyan);
+      box-shadow: 0 0 16px rgba(0, 229, 255, 0.7);
+    }
+
+    @keyframes chipPop {
+      0% {
+        transform: scale(0.8);
+        opacity: 0;
+      }
+
+      100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    .phrase-clear-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: rgba(239, 68, 68, 0.18);
+      border: 1px solid rgba(239, 68, 68, 0.5);
+      color: #EF4444;
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 900;
+      margin-left: 4px;
+      transition: all 0.15s ease;
+      flex-shrink: 0;
+    }
+
+    .phrase-clear-btn:hover {
+      background: #EF4444;
+      color: #FFF;
+      transform: scale(1.1);
+      box-shadow: 0 0 12px rgba(239, 68, 68, 0.6);
+    }
+
+    /* AI SUBTITLE PREDICTION BAR (Closed Captions Row in Screenshot) */
+    #ai-subtitle-bar {
+      background: linear-gradient(180deg, rgba(14, 22, 38, 0.95) 0%, rgba(8, 14, 25, 0.98) 100%);
+      border: 1.5px solid rgba(35, 54, 88, 0.7);
+      border-radius: 18px;
+      padding: 8px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      z-index: 9;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+      flex-shrink: 0;
+    }
+
+    .subtitle-content-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    .cc-badge {
+      background: rgba(0, 229, 255, 0.08);
+      border: 1.5px solid #00E5FF;
+      color: #00E5FF;
+      font-size: 12.5px;
+      font-weight: 900;
+      padding: 6px 14px;
+      border-radius: 20px;
+      letter-spacing: 1px;
+      white-space: nowrap;
+      box-shadow: 0 0 14px rgba(0, 229, 255, 0.4);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .predicted-sentence {
+      font-size: 17.5px;
+      font-weight: 600;
+      color: #E6EFFC;
+      line-height: 1.3;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      letter-spacing: 0.2px;
+    }
+
+    .btn-confirm-subtitle {
+      background: linear-gradient(180deg, #FFCA28 0%, #E69500 100%);
+      border: 1.5px solid #FFE082;
+      color: #261300;
+      padding: 8px 20px;
+      border-radius: 14px;
+      font-size: 14.5px;
+      font-weight: 900;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.16s ease;
+      white-space: nowrap;
+      box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.6), 0 4px 16px rgba(245, 158, 11, 0.45);
+      flex-shrink: 0;
+    }
+
+    .btn-confirm-subtitle:hover,
+    .btn-confirm-subtitle.focused {
+      transform: scale(1.04);
+      box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.7), 0 0 24px rgba(255, 202, 40, 0.85);
+    }
+
+    /* Screen Views Container */
+    .view-container {
+      flex: 1;
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(0, 229, 255, 0.3) rgba(10, 16, 28, 0.5);
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* WORDPOWER 80 FULL COMMUNICATION MATRIX (10 COLUMNS x 8 ROWS = 80 CELLS) */
+    .wordpower-grid {
+      display: grid;
+      grid-template-columns: repeat(10, 1fr);
+      gap: 7px;
+      padding: 2px 2px 8px 2px;
+    }
+
+    /* WORDPOWER 60 BASIC (8 COLUMNS x 6 ROWS = 48 CELLS - 1:1 TO SCREENSHOT) */
+    .wordpower-grid.wp60 {
+      grid-template-columns: repeat(8, 1fr);
+      gap: 9px;
+    }
+
+    /* 3D TILE CARDS (Exact match to screenshot) */
+    .wp-tile {
+      height: 76px;
+      background: linear-gradient(180deg, rgba(20, 31, 50, 0.95) 0%, rgba(11, 18, 30, 0.98) 100%);
+      border-radius: 13px;
+      border: 2.2px solid #28374E;
+      box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.16), 0 4px 10px rgba(0, 0, 0, 0.45);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      padding: 5px 3px 5px 3px;
+      cursor: pointer;
+      transition: all 0.16s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+      position: relative;
+    }
+
+    .wordpower-grid.wp60 .wp-tile {
+      height: 98px;
+      border-radius: 15px;
+      padding: 7px 4px 6px 4px;
+    }
+
+    .tile-icon-wrapper {
+      margin: auto 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 44px;
+    }
+
+    .wordpower-grid.wp60 .tile-icon-wrapper {
+      height: 58px;
+    }
+
+    .tile-3d-img {
+      width: 44px;
+      height: 44px;
+      object-fit: cover;
+      border-radius: 10px;
+      filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.5));
+      transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .tile-3d-img.memoji-fit {
+      object-fit: contain;
+      border-radius: 0;
+    }
+
+    .wordpower-grid.wp60 .tile-3d-img {
+      width: 56px;
+      height: 56px;
+    }
+
+    .tile-3d-svg {
+      width: 42px;
+      height: 42px;
+      display: block;
+      filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.5));
+      transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .wordpower-grid.wp60 .tile-3d-svg {
+      width: 52px;
+      height: 52px;
+    }
+
+    .dual-memoji {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      width: 52px;
+      height: 42px;
+    }
+
+    .dual-memoji img:first-child {
+      width: 32px;
+      height: 32px;
+      position: absolute;
+      left: 2px;
+      top: 5px;
+      z-index: 1;
+    }
+
+    .dual-memoji img:last-child {
+      width: 32px;
+      height: 32px;
+      position: absolute;
+      right: 2px;
+      top: 4px;
+      z-index: 2;
+      filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.6));
+    }
+
+    .tile-word {
+      font-size: 11px;
+      font-weight: 900;
+      text-align: center;
+      line-height: 1;
+      letter-spacing: 0.4px;
+      text-transform: uppercase;
+      color: #FFFFFF;
+      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.85);
+      margin-top: 1px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 96%;
+    }
+
+    .wordpower-grid.wp60 .tile-word {
+      font-size: 13.5px;
+      letter-spacing: 0.6px;
+      margin-top: 2px;
+    }
+
+    /* D-PAD TV FOCUS EFFECT (Apple 3D Pop Elevation) */
+    .wp-tile.focused {
+      transform: scale(1.1) translateY(-2px);
+      background: linear-gradient(180deg, rgba(34, 52, 84, 0.98) 0%, rgba(18, 29, 48, 1) 100%);
+      border-color: var(--focus-cyan) !important;
+      box-shadow: 0 0 24px rgba(0, 229, 255, 0.85), inset 0 0 8px rgba(0, 229, 255, 0.4);
+      z-index: 25;
+    }
+
+    .wp-tile.focused .tile-3d-img,
+    .wp-tile.focused .tile-3d-svg {
+      transform: scale(1.15) translateY(-1px);
+      filter: drop-shadow(0 8px 14px rgba(0, 0, 0, 0.7));
+    }
+
+    .wp-tile.focused .tile-word {
+      color: var(--focus-cyan);
+    }
+
+    /* STAGED 2-ROW TV VIEW */
+    .staged-section {
+      margin-bottom: 12px;
+    }
+
+    .staged-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 6px;
+      font-size: 13px;
+      font-weight: 900;
+      letter-spacing: 0.8px;
+    }
+
+    .staged-row {
+      display: flex;
+      gap: 12px;
+      overflow-x: auto;
+      padding: 4px;
+    }
+
+    .staged-tile {
+      min-width: 150px;
+      height: 136px;
+      background: linear-gradient(180deg, rgba(20, 31, 50, 0.95) 0%, rgba(11, 18, 30, 0.98) 100%);
+      border-radius: 16px;
+      border: 2.5px solid #28374E;
+      box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.16), 0 6px 14px rgba(0, 0, 0, 0.45);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 8px;
+      cursor: pointer;
+      transition: all 0.16s ease;
+      flex-shrink: 0;
+    }
+
+    .staged-tile.focused {
+      transform: scale(1.1) translateY(-3px);
+      border-color: var(--focus-cyan) !important;
+      box-shadow: 0 0 24px rgba(0, 229, 255, 0.85);
+    }
+
+    .staged-tile .tile-3d-img {
+      width: 58px;
+      height: 58px;
+    }
+
+    .staged-tile .tile-word {
+      font-size: 15px;
+    }
+
+    /* RIGHT SIDEBAR: TV REMOTE (Matches Screenshot 1:1) */
+    #remote-sidebar {
+      width: 320px;
+      background: linear-gradient(180deg, rgba(16, 25, 42, 0.94) 0%, rgba(9, 15, 26, 0.98) 100%);
+      border: 1.5px solid rgba(42, 64, 102, 0.5);
+      border-radius: 20px;
+      margin: 10px 10px 10px 0;
+      padding: 18px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      overflow-y: auto;
+      scrollbar-width: none;
+      box-shadow: 0 12px 36px rgba(0, 0, 0, 0.55);
+      flex-shrink: 0;
+    }
+
+    #remote-sidebar::-webkit-scrollbar {
+      display: none;
+    }
+
+    .remote-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .remote-title {
+      font-size: 16px;
+      font-weight: 900;
+      color: #CFDCED;
+      letter-spacing: 0.6px;
+    }
+
+    .ai-active-pill {
+      font-size: 10.5px;
+      background: rgba(0, 230, 118, 0.12);
+      color: #00E676;
+      border: 1.2px solid rgba(0, 230, 118, 0.45);
+      padding: 4px 10px;
+      border-radius: 10px;
+      font-weight: 900;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      letter-spacing: 0.6px;
+    }
+
+    .ai-active-dot {
+      width: 7px;
+      height: 7px;
+      background: #00E676;
+      border-radius: 50%;
+      box-shadow: 0 0 8px #00E676;
+      animation: pulse-dot 1.5s infinite;
+    }
+
+    @keyframes pulse-dot {
+
+      0%,
+      100% {
+        opacity: 1;
+        transform: scale(1);
+      }
+
+      50% {
+        opacity: 0.5;
+        transform: scale(0.8);
+      }
+    }
+
+    /* Mode Switcher Buttons (WP80, WP60, Staged) */
+    .mode-toggle-group {
+      display: flex;
+      background: #0E1624;
+      border: 1px solid #1C2B42;
+      padding: 3px;
+      border-radius: 12px;
+      gap: 3px;
+    }
+
+    .mode-btn {
+      flex: 1;
+      padding: 7px 6px;
+      font-size: 11px;
+      font-weight: 800;
+      background: transparent;
+      color: #7E93B0;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    .mode-btn.active {
+      background: var(--focus-cyan);
+      color: #031422;
+      box-shadow: 0 0 14px rgba(0, 229, 255, 0.5);
+    }
+
+    /* 3D TACTILE METALLIC D-PAD INTERFACE */
+    .dpad-container {
+      background: #111A29;
+      border: 1.5px solid #1F2E45;
+      padding: 14px 10px;
+      border-radius: 18px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.6), 0 4px 12px rgba(0, 0, 0, 0.4);
+    }
+
+    .dpad-row {
+      display: flex;
+      gap: 6px;
+    }
+
+    .dpad-btn {
+      width: 48px;
+      height: 48px;
+      background: linear-gradient(180deg, #24354E 0%, #152236 100%);
+      border: 1.5px solid #364B6C;
+      border-radius: 11px;
+      color: #CFDCED;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+      transition: all 0.12s ease;
+      box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.35), 0 4px 8px rgba(0, 0, 0, 0.5);
+    }
+
+    .dpad-btn:hover {
+      background: linear-gradient(180deg, #2E4363 0%, #1C2D46 100%);
+      color: #FFF;
+      border-color: var(--focus-cyan);
+    }
+
+    .dpad-btn:active {
+      transform: translateY(2px);
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.7);
+      background: var(--focus-cyan);
+      color: #000;
+    }
+
+    .dpad-btn.center {
+      background: linear-gradient(180deg, #1A2E4B 0%, #0E1D32 100%);
+      border: 1.5px solid #00E5FF;
+      font-size: 13px;
+      color: var(--focus-cyan);
+      font-weight: 900;
+      box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.3), 0 0 14px rgba(0, 229, 255, 0.35);
+    }
+
+    .back-btn-row {
+      width: 100%;
+      margin-top: 4px;
+    }
+
+    .dpad-btn.back-btn {
+      width: 100%;
+      height: 40px;
+      font-size: 12px;
+      letter-spacing: 0.8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      background: linear-gradient(180deg, #20314A 0%, #142032 100%);
+      border: 1.5px solid #314666;
+    }
+
+    .back-led-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #00E676;
+      box-shadow: 0 0 8px #00E676;
+    }
+
+    /* Curriculum Row */
+    .curriculum-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11.5px;
+      color: #8B9DB8;
+      font-weight: 700;
+      padding: 0 2px;
+    }
+
+    .curriculum-badge {
+      background: #121A29;
+      color: #CFDCED;
+      border: 1px solid #202E45;
+      padding: 3px 8px;
+      border-radius: 7px;
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    /* Telemetry Box */
+    .telemetry-box {
+      background: #101827;
+      border: 1.5px solid #1E2D44;
+      padding: 11px 13px;
+      border-radius: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .telemetry-title {
+      font-size: 11px;
+      font-weight: 900;
+      color: var(--focus-cyan);
+      letter-spacing: 0.8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 2px;
+    }
+
+    .telemetry-row {
+      font-size: 11.5px;
+      color: #8B9DB8;
+    }
+
+    .telemetry-row strong {
+      color: #FFFFFF;
+    }
+
+    /* Metric Badges */
+    .stat-badge {
+      background: #101827;
+      border: 1.5px solid #1E2D44;
+      border-radius: 12px;
+      padding: 9px 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .stat-label {
+      font-size: 11.5px;
+      color: #8B9DB8;
+      font-weight: 700;
+    }
+
+    .stat-val {
+      font-size: 16px;
+      font-weight: 900;
+      color: var(--focus-cyan);
+    }
+
+    /* Memoji Avatar Customizer Bar */
+    .memoji-picker-box {
+      background: #101827;
+      border: 1.5px solid #1E2D44;
+      border-radius: 14px;
+      padding: 9px 10px;
+    }
+
+    .memoji-picker-title {
+      font-size: 10.5px;
+      font-weight: 900;
+      color: var(--focus-cyan);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 6px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .memoji-avatar-row {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      padding-bottom: 2px;
+    }
+
+    .memoji-avatar-row::-webkit-scrollbar {
+      display: none;
+    }
+
+    .memoji-mini-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: 1.5px solid rgba(255, 255, 255, 0.2);
+      background: rgba(255, 255, 255, 0.05);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2px;
+      flex-shrink: 0;
+      transition: all 0.15s ease;
+    }
+
+    .memoji-mini-btn:hover {
+      transform: scale(1.15);
+      border-color: var(--focus-cyan);
+      box-shadow: 0 0 10px rgba(0, 229, 255, 0.6);
+    }
+
+    .memoji-mini-btn img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    /* Reward Video Player Overlay */
+    #reward-player-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(4, 7, 14, 0.96);
+      backdrop-filter: blur(16px);
+      z-index: 100;
+      display: none;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: center;
+      padding: clamp(10px, 1.4vh, 16px);
+      gap: 10px;
+      min-width: 0;
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    #reward-player-overlay.active {
+      display: flex;
+    }
+
+    .reward-header-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      margin-bottom: 0;
+      gap: 12px;
+      flex-wrap: wrap;
+      flex: 0 0 auto;
+    }
+
+    .reward-banner {
+      background: rgba(16, 24, 38, 0.95);
+      color: var(--focus-cyan);
+      font-size: 18px;
+      font-weight: 900;
+      padding: 8px 16px;
+      border-radius: 12px;
+      border-left: 5px solid var(--focus-yellow);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .reward-header-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .reward-episodes {
+      display: flex;
+      gap: 6px;
+    }
+
+    .reward-pill-btn {
+      background: rgba(25, 38, 60, 0.85);
+      color: #D6E4FF;
+      border: 1px solid rgba(0, 229, 255, 0.25);
+      border-radius: 18px;
+      padding: 5px 12px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .reward-pill-btn:hover,
+    .reward-pill-btn.active {
+      background: var(--focus-cyan);
+      color: #0A0E17;
+      border-color: var(--focus-cyan);
+      box-shadow: 0 0 12px rgba(0, 229, 255, 0.5);
+    }
+
+    .reward-yt-btn {
+      background: rgba(255, 0, 0, 0.15);
+      color: #FF5252;
+      border: 1px solid rgba(255, 82, 82, 0.4);
+      border-radius: 18px;
+      padding: 5px 12px;
+      font-size: 12px;
+      font-weight: 700;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .reward-yt-btn:hover {
+      background: #FF5252;
+      color: #FFFFFF;
+      box-shadow: 0 0 12px rgba(255, 82, 82, 0.6);
+    }
+
+    .reward-close-btn {
+      background: rgba(239, 83, 80, 0.15);
+      color: #EF5350;
+      border: 1px solid rgba(239, 83, 80, 0.4);
+      border-radius: 18px;
+      padding: 5px 14px;
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .reward-close-btn:hover {
+      background: #EF5350;
+      color: #FFF;
+      box-shadow: 0 0 12px rgba(239, 83, 80, 0.6);
+    }
+
+    .reward-iframe {
+      width: min(100%, calc((100vh - 154px) * 16 / 9));
+      height: auto;
+      flex: 1 1 auto;
+      min-height: 0;
+      max-height: calc(100% - 104px);
+      aspect-ratio: 16 / 9;
+      border: none;
+      border-radius: 16px;
+      box-shadow: 0 0 50px rgba(0, 200, 255, 0.25), 0 0 0 3px rgba(0, 229, 255, 0.3);
+      background: #000;
+    }
+
+    .reward-footer-bar {
+      width: min(100%, calc((100vh - 154px) * 16 / 9));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      min-height: 28px;
+      color: #B8C7DC;
+      font-size: 12px;
+      flex: 0 0 auto;
+    }
+
+    .reward-live-badge {
+      background: linear-gradient(135deg, #FF1744, #D50000);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 900;
+      padding: 5px 10px;
+      border-radius: 18px;
+      letter-spacing: 1.1px;
+      animation: pulse-live 1.4s infinite;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    @keyframes pulse-live {
+
+      0%,
+      100% {
+        opacity: 1;
+        box-shadow: 0 0 0 0 rgba(255, 23, 68, 0.6);
+      }
+
+      50% {
+        opacity: 0.85;
+        box-shadow: 0 0 0 8px rgba(255, 23, 68, 0);
+      }
+    }
+
+    /* ========================================================
+       FLOATING PICTURE-IN-PICTURE (PiP) LIVE COOKING WINDOW
+       1:1 Match to 4K 75" Android TV Screen Photo
+       ======================================================== */
+    .pip-window {
+      position: absolute;
+      bottom: 16px;
+      right: 18px;
+      width: 370px;
+      height: 228px;
+      background: linear-gradient(180deg, rgba(14, 22, 38, 0.96) 0%, rgba(8, 14, 26, 0.98) 100%);
+      border: 2.2px solid rgba(0, 229, 255, 0.6);
+      border-radius: 18px;
+      box-shadow: 0 16px 44px rgba(0, 0, 0, 0.85), 0 0 26px rgba(0, 229, 255, 0.38);
+      backdrop-filter: blur(16px);
+      z-index: 60;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .pip-window.expanded {
+      bottom: 24px;
+      right: 24px;
+      width: 760px;
+      height: 460px;
+      border-color: #00E5FF;
+      box-shadow: 0 24px 70px rgba(0, 0, 0, 0.95), 0 0 44px rgba(0, 229, 255, 0.65);
+      z-index: 95;
+    }
+
+    .pip-window.minimized {
+      display: none !important;
+    }
+
+    .pip-window.focused {
+      border-color: var(--focus-yellow) !important;
+      box-shadow: 0 0 32px rgba(255, 214, 0, 0.85), 0 16px 44px rgba(0, 0, 0, 0.85);
+      transform: scale(1.03);
+    }
+
+    .pip-header-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 6px 12px;
+      background: rgba(10, 16, 28, 0.92);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      flex-shrink: 0;
+      gap: 8px;
+    }
+
+    .pip-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      background: rgba(255, 23, 68, 0.16);
+      border: 1px solid rgba(255, 23, 68, 0.7);
+      border-radius: 12px;
+      padding: 3px 9px;
+      color: #FFF;
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: 0.5px;
+    }
+
+    .pip-live-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #FF1744;
+      box-shadow: 0 0 8px #FF1744;
+      animation: pulse-live 1.2s infinite;
+    }
+
+    .pip-controls {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .pip-ctrl-btn {
+      width: 26px;
+      height: 26px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      color: #D6E4FF;
+      font-size: 11px;
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .pip-ctrl-btn:hover {
+      background: var(--focus-cyan);
+      color: #0A0E17;
+      border-color: var(--focus-cyan);
+      transform: scale(1.1);
+    }
+
+    .pip-ctrl-btn.pip-close-btn:hover {
+      background: #EF4444;
+      color: #FFF;
+      border-color: #EF4444;
+    }
+
+    .pip-video-wrap {
+      flex: 1;
+      background: #000;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .pip-iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      display: block;
+    }
+
+    .pip-footer-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 5px 12px;
+      background: rgba(10, 16, 28, 0.95);
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+      font-size: 11px;
+      color: #8B9CB5;
+      flex-shrink: 0;
+    }
+
+    .pip-title-info {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 700;
+      color: #E2E8F0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .pip-yt-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-weight: 800;
+      color: #FFFFFF;
+      font-size: 10.5px;
+    }
+
+    .pip-yt-icon {
+      width: 16px;
+      height: 12px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- TV DISPLAY STAGE -->
+  <div id="tv-stage">
+
+    <!-- TOP BRAND & PHRASE CHIPS ROW (Matches Screenshot Header) -->
+    <div id="header-bar">
+      <div class="brand">
+        <div class="brand-icon">💬</div>
+        <div class="brand-info">
+          <div class="brand-title">TalkTV</div>
+          <div class="brand-sub" id="brand-sub-label">WORDPOWER™ 80 Grid</div>
+        </div>
+      </div>
+
+      <!-- Glossy 3D Staged Phrase Chips -->
+      <div id="phrase-container">
+        <!-- Rendered by JS: [ I ] [ DRINK ] [ MORE ] [ AGAIN ] -->
+      </div>
+
+      <button class="phrase-clear-btn" title="Clear Phrase" onclick="clearPhrase()">✕</button>
+    </div>
+
+    <!-- AI SUBTITLE PREDICTION BAR (Closed Captions Row in Screenshot) -->
+    <div id="ai-subtitle-bar">
+      <div class="subtitle-content-left">
+        <span class="cc-badge">AI SUBTITLE</span>
+        <div class="predicted-sentence" id="predicted-sentence-text">
+          "I would like a drink of water while watching TV please."
+        </div>
+      </div>
+      <button class="btn-confirm-subtitle" id="btn-confirm-sub" onclick="confirmAiSubtitle()">
+        <span style="font-size:16px;">✔</span>
+        <span>Speak &amp; Play Show</span>
+      </button>
+    </div>
+
+    <!-- MAIN AAC BOARD VIEW -->
+    <div class="view-container" id="grid-view-container">
+      <!-- 80-Cell WordPower Grid (or 48-Cell WP60 in screenshot mode) -->
+      <div class="wordpower-grid" id="main-aac-grid">
+        <!-- Populated dynamically by JS -->
+      </div>
+    </div>
+
+    <!-- STAGED 2-ROW CURRICULUM VIEW -->
+    <div class="view-container" id="staged-view-container" style="display: none;">
+      <div class="staged-section">
+        <div class="staged-header" style="color: var(--focus-yellow);">
+          <span style="width:10px; height:10px; border-radius:2px; background:var(--focus-yellow);"></span>
+          <span>CORE HIGH-FREQUENCY WORDS</span>
+        </div>
+        <div class="staged-row" id="staged-core-row"></div>
+      </div>
+      <div class="staged-section">
+        <div class="staged-header" style="color: var(--focus-cyan);">
+          <span style="width:10px; height:10px; border-radius:2px; background:var(--focus-cyan);"></span>
+          <span>REINFORCERS &amp; CATEGORIES</span>
+        </div>
+        <div class="staged-row" id="staged-cat-row"></div>
+      </div>
+    </div>
+
+    <!-- SUB-GRID CATEGORY VIEW (Shows & Deep Vocab) -->
+    <div class="view-container" id="subgrid-view-container" style="display: none;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+        <div style="display:flex; align-items:center; gap:12px;">
+          <button class="dpad-btn" style="width:40px; height:40px; font-size:14px;"
+            onclick="returnToMainView()">←</button>
+          <div style="font-size:18px; font-weight:900; color:#FFF;" id="subgrid-title">Category</div>
+        </div>
+        <span style="color:#8B9CB5; font-size:12px;">Choose show/word to add to TV subtitle</span>
+      </div>
+      <div class="staged-row" id="subgrid-row" style="flex-wrap: wrap;"></div>
+    </div>
+
+    <!-- REWARD VIDEO PLAYER OVERLAY (Kids Cooking, Monkeys, Bluey, Trains) -->
+    <div id="reward-player-overlay">
+      <div class="reward-header-bar">
+        <div class="reward-banner" id="reward-banner">★ REWARD: Playing Kids Cooking Show 🥞 ★</div>
+        <div class="reward-header-actions">
+          <span class="reward-live-badge" id="reward-live-badge">● LIVE - KIDS COOKING SHOW</span>
+          <div class="reward-episodes" id="reward-episodes"></div>
+          <a id="reward-yt-link" class="reward-yt-btn" href="#" target="_blank" rel="noopener noreferrer">↗ Watch on
+            YouTube</a>
+          <button class="reward-close-btn" id="reward-close-btn" onclick="closeRewardOverlay()">✕ Back to
+            TalkTV</button>
+        </div>
+      </div>
+      <iframe id="reward-iframe" class="reward-iframe" src=""
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        referrerpolicy="strict-origin-when-cross-origin" allowfullscreen frameborder="0"
+        title="Kids Live Show"></iframe>
+      <div class="reward-footer-bar">
+        <span>📺 Press Remote <strong style="color:var(--focus-cyan)">BACK</strong> or click Close to return</span>
+        <span style="color:#5E7599;">•</span>
+        <span id="reward-hint-text" style="color:#FFCA28; font-weight:700;">🥞 Kids Cooking Show — Noah's #1
+          Reinforcer</span>
+      </div>
+    </div>
+
+    <!-- FLOATING PICTURE-IN-PICTURE (PiP) LIVE COOKING WINDOW (Matches 4K 75" TV Photo) -->
+    <div id="pip-live-cooking-window" class="pip-window">
+      <div class="pip-header-bar">
+        <div class="pip-badge">
+          <span class="pip-live-dot"></span>
+          <span class="pip-badge-text">Live Video</span>
+        </div>
+        <div class="pip-controls">
+          <button class="pip-ctrl-btn" id="pip-mute-btn" onclick="togglePipMute()" title="Mute/Unmute Audio">
+            <span id="pip-mute-icon">🔇</span>
+          </button>
+          <button class="pip-ctrl-btn" id="pip-expand-btn" onclick="togglePipExpand()" title="Expand / Minimize">
+            <span id="pip-expand-icon">⛶</span>
+          </button>
+          <button class="pip-ctrl-btn pip-close-btn" onclick="closePipWindow()" title="Hide PiP">
+            <span>✕</span>
+          </button>
+        </div>
+      </div>
+      <div class="pip-video-wrap">
+        <iframe id="pip-video-iframe" class="pip-iframe"
+          src="https://www.youtube-nocookie.com/embed/J_e2m6Q8Tl8?autoplay=1&mute=1&playsinline=1&controls=1&loop=1&playlist=J_e2m6Q8Tl8&enablejsapi=1&origin=http://localhost:3000"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          referrerpolicy="strict-origin-when-cross-origin" allowfullscreen frameborder="0"
+          title="Kids Cooking Show Live Stream"></iframe>
+      </div>
+      <div class="pip-footer-bar">
+        <div class="pip-title-info">
+          <span>🥞 Kids Cooking Show Live</span>
+        </div>
+        <div class="pip-yt-badge">
+          <svg viewBox="0 0 28 20" class="pip-yt-icon">
+            <path fill="#FF0000"
+              d="M27.4 3.1c-.3-1.2-1.3-2.1-2.5-2.4C22.7 0 14 0 14 0S5.3 0 3.1.7C1.9 1 1 1.9.7 3.1 0 5.3 0 10 0 10s0 4.7.7 6.9c.3 1.2 1.3 2.1 2.5 2.4 2.2.7 10.9.7 10.9.7s8.7 0 10.9-.7c1.2-.3 2.1-1.2 2.5-2.4.7-2.2.7-6.9.7-6.9s0-4.7-.7-6.9z" />
+            <polygon fill="#FFFFFF" points="11,14.3 18.2,10 11,5.7" />
+          </svg>
+          <span>YouTube</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- RIGHT SIDEBAR: TV REMOTE (Matches Screenshot 1:1) -->
+  <div id="remote-sidebar">
+    <div class="remote-header">
+      <h2 class="remote-title">TV REMOTE</h2>
+      <span class="ai-active-pill"><span class="ai-active-dot"></span>AI ACTIVE</span>
+    </div>
+
+    <!-- BOARD MODE SWITCHER (WordPower 80 by default, plus WP 60 screenshot mode & Staged) -->
+    <div class="mode-toggle-group">
+      <button class="mode-btn" id="btn-mode-staged" onclick="switchBoardMode('staged')">Staged TV</button>
+      <button class="mode-btn" id="btn-mode-wp60" onclick="switchBoardMode('wp60')">WP 60 (Photo)</button>
+      <button class="mode-btn active" id="btn-mode-wp80" onclick="switchBoardMode('wp80')">WordPower 80</button>
+    </div>
+
+    <!-- 3D TACTILE METALLIC D-PAD INTERFACE -->
+    <div class="dpad-container">
+      <div class="dpad-row">
+        <button class="dpad-btn" onclick="navigateDpad('up')" title="Up">▲</button>
+      </div>
+      <div class="dpad-row">
+        <button class="dpad-btn" onclick="navigateDpad('left')" title="Left">◀</button>
+        <button class="dpad-btn center" onclick="navigateDpad('select')" title="Select">OK</button>
+        <button class="dpad-btn" onclick="navigateDpad('right')" title="Right">▶</button>
+      </div>
+      <div class="dpad-row">
+        <button class="dpad-btn" onclick="navigateDpad('down')" title="Down">▼</button>
+      </div>
+      <div class="back-btn-row">
+        <button class="dpad-btn back-btn" onclick="navigateDpad('back')">
+          <span>BACK BUTTON</span>
+          <span class="back-led-dot"></span>
+        </button>
+      </div>
+    </div>
+
+    <!-- PIP LIVE COOKING TOGGLE BUTTON -->
+    <div style="margin-top: 2px;">
+      <button class="dpad-btn back-btn" id="btn-toggle-pip" onclick="togglePipWindow()"
+        style="border-color: var(--focus-cyan); color: #FFF; background: linear-gradient(180deg, #183354 0%, #0F2036 100%);">
+        <span>📺 PIP COOKING SHOW</span>
+        <span class="back-led-dot" id="pip-led-indicator"
+          style="background:#00E5FF; box-shadow:0 0 8px #00E5FF;"></span>
+      </button>
+    </div>
+
+    <!-- VOCABULARY CURRICULUM STAGE -->
+    <div class="curriculum-row">
+      <span>Curriculum Stage</span>
+      <span class="curriculum-badge" id="curriculum-badge-text">Stage 4: WordPower 80</span>
+    </div>
+
+    <!-- AI SUBTITLE PREDICTOR TELEMETRY -->
+    <div class="telemetry-box">
+      <div class="telemetry-title">
+        <span>AI PREDICTION TELEMETRY</span>
+        <span class="back-led-dot"></span>
+      </div>
+      <div class="telemetry-row" id="ai-intent-label">Intent: <strong>Physical Request</strong></div>
+      <div class="telemetry-row" id="ai-confidence-label">Confidence: <strong>96%</strong></div>
+    </div>
+
+    <!-- 3D APPLE MEMOJI AVATAR CUSTOMIZER -->
+    <div class="memoji-picker-box">
+      <div class="memoji-picker-title">
+        <span>3D Memojis</span>
+        <span style="color: var(--focus-yellow);">CUSTOMIZE "I"</span>
+      </div>
+      <div class="memoji-avatar-row">
+        <button class="memoji-mini-btn" title="Noah (Freckles Boy)"
+          onclick="setNoahAvatar('./assets/memojis/memoji_noah_boy.png')">
+          <img src="./assets/memojis/memoji_noah_boy.png" alt="Noah">
+        </button>
+        <button class="memoji-mini-btn" title="Teacher Zayd (Brown Skin Man)"
+          onclick="setNoahAvatar('./assets/memojis/memoji_brown_skin_man.png')">
+          <img src="./assets/memojis/memoji_brown_skin_man.png" alt="Teacher">
+        </button>
+        <button class="memoji-mini-btn" title="Mom (Auburn Hair)"
+          onclick="setNoahAvatar('./assets/memojis/memoji_auburn_woman.png')">
+          <img src="./assets/memojis/memoji_auburn_woman.png" alt="Mom">
+        </button>
+        <button class="memoji-mini-btn" title="Dad (Dreadlocks)"
+          onclick="setNoahAvatar('./assets/memojis/memoji_dad_dreadlocks.png')">
+          <img src="./assets/memojis/memoji_dad_dreadlocks.png" alt="Dad">
+        </button>
+        <button class="memoji-mini-btn" title="Friend (Green Glasses)"
+          onclick="setNoahAvatar('./assets/memojis/memoji_boy_green_glasses.png')">
+          <img src="./assets/memojis/memoji_boy_green_glasses.png" alt="Friend">
+        </button>
+        <button class="memoji-mini-btn" title="Sister (Blonde Hair)"
+          onclick="setNoahAvatar('./assets/memojis/memoji_woman_blonde.png')">
+          <img src="./assets/memojis/memoji_woman_blonde.png" alt="Sister">
+        </button>
+      </div>
+    </div>
+
+    <!-- METRICS -->
+    <div class="stat-badge">
+      <span class="stat-label">Total Intentional Acts</span>
+      <span class="stat-val" id="stat-total">8</span>
+    </div>
+    <div class="stat-badge">
+      <span class="stat-label">Rewarded Show</span>
+      <span class="stat-val" id="stat-rewards" style="color:var(--focus-green)">1</span>
+    </div>
+
+  </div>
+
+  <script>
+    // State
+    let activePhrase = ["I", "DRINK", "MORE", "AGAIN"];
+    let focusedIndex = 0;
+    let focusableElements = [];
+    let totalPresses = 8;
+    let rewardedCount = 1;
+    let currentBoardMode = 'wp80'; // 'wp80', 'wp60', or 'staged'
+    let currentNoahAvatar = "./assets/memojis/memoji_noah_boy.png";
+
+    function setNoahAvatar(src) {
+      currentNoahAvatar = src;
+      document.querySelectorAll('img[data-avatar-target="noah"]').forEach(img => {
+        img.src = src;
+        img.style.transform = 'scale(1.25)';
+        setTimeout(() => { img.style.transform = 'scale(1)'; }, 250);
+      });
+    }
+
+    // ========================================================
+    // 3D VECTOR SVG ENGINE (High-fidelity Apple 3D Icons)
+    // Ensures ZERO broken glyphs / missing boxes across all OS
+    // ========================================================
+    const SVG_3D_ICONS = {
+      "IS": `<svg viewBox="0 0 100 100" class="tile-3d-svg"><defs><radialGradient id="g-is" cx="35%" cy="35%" r="65%"><stop offset="0%" stop-color="#FFFFFF"/><stop offset="30%" stop-color="#E2E8F0"/><stop offset="70%" stop-color="#94A3B8"/><stop offset="100%" stop-color="#334155"/></radialGradient></defs><circle cx="50" cy="50" r="38" fill="url(#g-is)"/><ellipse cx="38" cy="36" rx="14" ry="9" fill="#FFF" opacity="0.65"/></svg>`,
+      "ARE": `<svg viewBox="0 0 100 100" class="tile-3d-svg"><defs><radialGradient id="g-c" cx="35%" cy="35%" r="65%"><stop offset="0%" stop-color="#E0F7FA"/><stop offset="40%" stop-color="#00E5FF"/><stop offset="100%" stop-color="#006064"/></radialGradient><radialGradient id="g-p" cx="35%" cy="35%" r="65%"><stop offset="0%" stop-color="#F3E5F5"/><stop offset="40%" stop-color="#AB47BC"/><stop offset="100%" stop-color="#4A148C"/></radialGradient><radialGradient id="g-k" cx="35%" cy="35%" r="65%"><stop offset="0%" stop-color="#FCE4EC"/><stop offset="40%" stop-color="#EC407A"/><stop offset="100%" stop-color="#880E4F"/></radialGradient></defs><circle cx="24" cy="50" r="16" fill="url(#g-c)"/><circle cx="50" cy="50" r="16" fill="url(#g-p)"/><circle cx="76" cy="50" r="16" fill="url(#g-k)"/></svg>`,
+      "WILL": `<svg viewBox="0 0 100 100" class="tile-3d-svg"><defs><linearGradient id="g-will" x1="0%" y1="100%" x2="100%" y2="0%"><stop offset="0%" stop-color="#0091EA"/><stop offset="50%" stop-color="#00E5FF"/><stop offset="100%" stop-color="#E1F5FE"/></linearGradient></defs><path d="M26 74 L68 32 M48 29 L74 29 L74 55" fill="none" stroke="url(#g-will)" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+      "EAT": `<svg viewBox="0 0 100 100" class="tile-3d-svg"><defs><radialGradient id="g-plate" cx="40%" cy="35%" r="65%"><stop offset="0%" stop-color="#FFFFFF"/><stop offset="70%" stop-color="#E2E8F0"/><stop offset="100%" stop-color="#94A3B8"/></radialGradient><linearGradient id="g-silver" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#F8FAFC"/><stop offset="50%" stop-color="#CBD5E1"/><stop offset="100%" stop-color="#64748B"/></linearGradient></defs><circle cx="50" cy="50" r="34" fill="url(#g-plate)"/><circle cx="50" cy="50" r="23" fill="#F1F5F9" stroke="#CBD5E1" stroke-width="2"/><line x1="14" y1="28" x2="14" y2="72" stroke="url(#g-silver)" stroke-width="3.5" stroke-linecap="round"/><line x1="86" y1="28" x2="86" y2="72" stroke="url(#g-silver)" stroke-width="3.5" stroke-linecap="round"/></svg>`,
+      "DRINK": `<svg viewBox="0 0 100 100" class="tile-3d-svg"><defs><linearGradient id="g-cup" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#FF5252"/><stop offset="40%" stop-color="#FF1744"/><stop offset="80%" stop-color="#D50000"/><stop offset="100%" stop-color="#880000"/></linearGradient></defs><path d="M50 14 L50 24 L56 34" fill="none" stroke="#FFD600" stroke-width="5" stroke-linecap="round"/><polygon points="32,38 68,38 62,86 38,86" fill="url(#g-cup)"/><rect x="28" y="32" width="44" height="8" rx="4" fill="#FFFFFF"/></svg>`,
+      "GO": `<svg viewBox="0 0 100 100" class="tile-3d-svg"><defs><linearGradient id="g-go" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#0091EA"/><stop offset="50%" stop-color="#00B0FF"/><stop offset="100%" stop-color="#80D8FF"/></linearGradient></defs><path d="M22 28 L50 50 L22 72 Z" fill="url(#g-go)"/><path d="M50 28 L78 50 L50 72 Z" fill="url(#g-go)"/></svg>`,
+      "SOCIAL": `<svg viewBox="0 0 100 100" class="tile-3d-svg"><defs><linearGradient id="g-bub-w" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#FFFFFF"/><stop offset="100%" stop-color="#E2E8F0"/></linearGradient><linearGradient id="g-bub-b" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#60A5FA"/><stop offset="100%" stop-color="#1D4ED8"/></linearGradient></defs><path d="M20 22 C20 16 26 12 34 12 L62 12 C70 12 76 16 76 22 L76 42 C76 48 70 52 62 52 L36 52 L24 62 L26 52 C22 50 20 46 20 42 Z" fill="url(#g-bub-w)"/><circle cx="36" cy="32" r="3.5" fill="#94A3B8"/><circle cx="48" cy="32" r="3.5" fill="#94A3B8"/><circle cx="60" cy="32" r="3.5" fill="#94A3B8"/><path d="M44 48 C44 44 48 40 54 40 L78 40 C84 40 88 44 88 48 L88 64 C88 68 84 72 78 72 L62 72 L52 80 L54 72 C48 70 44 67 44 64 Z" fill="url(#g-bub-b)"/></svg>`,
+      "HOW": `<svg viewBox="0 0 100 100" class="tile-3d-svg"><defs><radialGradient id="g-gear" cx="40%" cy="35%" r="65%"><stop offset="0%" stop-color="#FFFFFF"/><stop offset="50%" stop-color="#94A3B8"/><stop offset="100%" stop-color="#334155"/></radialGradient></defs><path d="M50 14 L56 22 L66 20 L70 30 L80 32 L80 42 L88 48 L84 58 L88 68 L78 70 L74 80 L64 78 L58 86 L48 84 L42 86 L36 78 L26 80 L22 70 L12 68 L16 58 L12 48 L20 42 L20 32 L30 30 L34 20 L44 22 Z" fill="url(#g-gear)"/><circle cx="50" cy="50" r="14" fill="#0E1624" stroke="#64748B" stroke-width="3"/></svg>`,
+      "WHEN": `<svg viewBox="0 0 100 100" class="tile-3d-svg"><defs><radialGradient id="g-clock" cx="40%" cy="35%" r="65%"><stop offset="0%" stop-color="#FFF"/><stop offset="80%" stop-color="#F1F5F9"/><stop offset="100%" stop-color="#CBD5E1"/></radialGradient><radialGradient id="g-bell" cx="40%" cy="35%" r="60%"><stop offset="0%" stop-color="#FFD54F"/><stop offset="100%" stop-color="#FF8F00"/></radialGradient></defs><circle cx="28" cy="24" r="12" fill="url(#g-bell)"/><circle cx="72" cy="24" r="12" fill="url(#g-bell)"/><circle cx="50" cy="55" r="35" fill="#EF4444" stroke="#B91C1C" stroke-width="3"/><circle cx="50" cy="55" r="28" fill="url(#g-clock)"/><line x1="50" y1="55" x2="50" y2="38" stroke="#1E293B" stroke-width="4" stroke-linecap="round"/><line x1="50" y1="55" x2="64" y2="55" stroke="#1E293B" stroke-width="3.5" stroke-linecap="round"/><circle cx="50" cy="55" r="3" fill="#EF4444"/></svg>`,
+      "WHAT": `<svg viewBox="0 0 100 100" class="tile-3d-svg"><defs><linearGradient id="g-what" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#FF5252"/><stop offset="50%" stop-color="#FF1744"/><stop offset="100%" stop-color="#B71C1C"/></linearGradient></defs><path d="M34 32 C34 20 44 14 54 14 C66 14 74 20 74 30 C74 40 64 46 56 50 L56 62" fill="none" stroke="url(#g-what)" stroke-width="13" stroke-linecap="round"/><circle cx="56" cy="80" r="7.5" fill="url(#g-what)"/></svg>`,
+      "WHERE": `<svg viewBox="0 0 100 100" class="tile-3d-svg"><defs><radialGradient id="g-brass" cx="35%" cy="30%" r="70%"><stop offset="0%" stop-color="#FFE082"/><stop offset="50%" stop-color="#FFB300"/><stop offset="100%" stop-color="#8D6E63"/></radialGradient></defs><circle cx="50" cy="50" r="38" fill="url(#g-brass)"/><circle cx="50" cy="50" r="31" fill="#FFFFFF"/><polygon points="50,24 55,50 45,50" fill="#EF4444"/><polygon points="50,76 55,50 45,50" fill="#3B82F6"/><circle cx="50" cy="50" r="4.5" fill="#FFD54F"/></svg>`,
+      "WHO": `<svg viewBox="0 0 100 100" class="tile-3d-svg"><defs><radialGradient id="g-lens" cx="40%" cy="35%" r="65%"><stop offset="0%" stop-color="#E0F2FE"/><stop offset="70%" stop-color="#38BDF8"/><stop offset="100%" stop-color="#0284C7"/></radialGradient></defs><circle cx="44" cy="42" r="28" fill="url(#g-lens)" stroke="#94A3B8" stroke-width="7"/><ellipse cx="36" cy="32" rx="10" ry="5" fill="#FFF" opacity="0.6" transform="rotate(-30 36 32)"/><line x1="64" y1="62" x2="84" y2="84" stroke="#475569" stroke-width="11" stroke-linecap="round"/></svg>`,
+      "WHY": `<svg viewBox="0 0 100 100" class="tile-3d-svg"><defs><radialGradient id="g-cloud" cx="40%" cy="30%" r="70%"><stop offset="0%" stop-color="#FFFFFF"/><stop offset="70%" stop-color="#E2E8F0"/><stop offset="100%" stop-color="#94A3B8"/></radialGradient></defs><path d="M30 54 C24 54 20 50 20 44 C20 38 24 34 30 34 C32 26 38 20 48 20 C58 20 64 26 66 32 C72 32 78 36 78 42 C78 48 72 54 66 54 Z" fill="url(#g-cloud)"/><circle cx="34" cy="68" r="5" fill="url(#g-cloud)"/><circle cx="26" cy="78" r="3.5" fill="url(#g-cloud)"/></svg>`,
+      "STOP": `<svg viewBox="0 0 100 100" class="tile-3d-svg"><defs><radialGradient id="g-stop" cx="40%" cy="35%" r="65%"><stop offset="0%" stop-color="#EF4444"/><stop offset="70%" stop-color="#DC2626"/><stop offset="100%" stop-color="#991B1B"/></radialGradient></defs><polygon points="30,12 70,12 88,30 88,70 70,88 30,88 12,70 12,30" fill="url(#g-stop)" stroke="#FFFFFF" stroke-width="4"/><text x="50" y="58" font-family="-apple-system, sans-serif" font-weight="900" font-size="22" fill="#FFFFFF" text-anchor="middle" letter-spacing="1">STOP</text></svg>`,
+      "TURN": `<svg viewBox="0 0 100 100" class="tile-3d-svg"><defs><linearGradient id="g-turn" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#00E5FF"/><stop offset="60%" stop-color="#0284C7"/><stop offset="100%" stop-color="#0369A1"/></linearGradient></defs><path d="M50 20 A30 30 0 1 1 20 50" fill="none" stroke="url(#g-turn)" stroke-width="12" stroke-linecap="round"/><polygon points="12,28 20,52 38,44" fill="url(#g-turn)"/></svg>`,
+      "MAKE": `<svg viewBox="0 0 100 100" class="tile-3d-svg"><defs><linearGradient id="g-wood" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#D97706"/><stop offset="100%" stop-color="#78350F"/></linearGradient></defs><line x1="32" y1="74" x2="64" y2="42" stroke="url(#g-wood)" stroke-width="9" stroke-linecap="round"/><path d="M52 28 L74 50 L80 44 L58 22 Z" fill="#94A3B8"/><path d="M46 34 L56 24 L52 20 L42 30 Z" fill="#94A3B8"/></svg>`,
+      "+ MORE": `<svg viewBox="0 0 100 100" class="tile-3d-svg"><defs><linearGradient id="g-plus" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#FFFFFF"/><stop offset="40%" stop-color="#E2E8F0"/><stop offset="100%" stop-color="#64748B"/></linearGradient></defs><rect x="42" y="20" width="16" height="60" rx="6" fill="url(#g-plus)"/><rect x="20" y="42" width="60" height="16" rx="6" fill="url(#g-plus)"/></svg>`,
+      "AGAIN": `<svg viewBox="0 0 100 100" class="tile-3d-svg"><defs><linearGradient id="g-reload" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#00E5FF"/><stop offset="50%" stop-color="#0091EA"/><stop offset="100%" stop-color="#01579B"/></linearGradient></defs><path d="M50 20 A30 30 0 1 0 78 44" fill="none" stroke="url(#g-reload)" stroke-width="12" stroke-linecap="round"/><polygon points="68,14 86,22 80,40" fill="url(#g-reload)"/></svg>`,
+      "ON": `<svg viewBox="0 0 100 100" class="tile-3d-svg"><defs><radialGradient id="g-bon" cx="40%" cy="35%" r="65%"><stop offset="0%" stop-color="#FFFFE0"/><stop offset="40%" stop-color="#FFEB3B"/><stop offset="80%" stop-color="#FFC107"/><stop offset="100%" stop-color="#FF8F00"/></radialGradient></defs><circle cx="50" cy="42" r="38" fill="#FFEB3B" opacity="0.2"/><path d="M35 52 C30 46 28 38 30 30 C34 18 46 12 58 14 C70 16 78 26 78 38 C76 46 72 52 65 58 L63 68 L37 68 Z" fill="url(#g-bon)"/><rect x="40" y="68" width="20" height="10" rx="3" fill="#94A3B8"/></svg>`,
+      "OFF": `<svg viewBox="0 0 100 100" class="tile-3d-svg"><defs><radialGradient id="g-boff" cx="35%" cy="30%" r="70%"><stop offset="0%" stop-color="#CBD5E1"/><stop offset="60%" stop-color="#64748B"/><stop offset="100%" stop-color="#334155"/></radialGradient></defs><path d="M35 52 C30 46 28 38 30 30 C34 18 46 12 58 14 C70 16 78 26 78 38 C76 46 72 52 65 58 L63 68 L37 68 Z" fill="url(#g-boff)"/><rect x="40" y="68" width="20" height="10" rx="3" fill="#475569"/></svg>`,
+      "IN": `<svg viewBox="0 0 100 100" class="tile-3d-svg"><defs><linearGradient id="g-bxc" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#D97706"/><stop offset="100%" stop-color="#92400E"/></linearGradient><linearGradient id="g-arw" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#80D8FF"/><stop offset="100%" stop-color="#00B0FF"/></linearGradient></defs><rect x="24" y="48" width="52" height="36" rx="6" fill="url(#g-bxc)"/><path d="M50 14 L50 48 M40 38 L50 50 L60 38" fill="none" stroke="url(#g-arw)" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+      "OUT": `<svg viewBox="0 0 100 100" class="tile-3d-svg"><defs><linearGradient id="g-bxc2" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#D97706"/><stop offset="100%" stop-color="#92400E"/></linearGradient><linearGradient id="g-arw2" x1="0%" y1="100%" x2="0%" y2="0%"><stop offset="0%" stop-color="#0091EA"/><stop offset="100%" stop-color="#00E5FF"/></linearGradient></defs><rect x="24" y="52" width="52" height="34" rx="6" fill="url(#g-bxc2)"/><path d="M50 54 L50 16 M40 28 L50 14 L60 28" fill="none" stroke="url(#g-arw2)" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+      "UP": `<svg viewBox="0 0 100 100" class="tile-3d-svg"><defs><linearGradient id="g-up" x1="0%" y1="100%" x2="0%" y2="0%"><stop offset="0%" stop-color="#0091EA"/><stop offset="100%" stop-color="#00E5FF"/></linearGradient></defs><path d="M50 82 L50 24 M32 42 L50 20 L68 42" fill="none" stroke="url(#g-up)" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+      "DOWN": `<svg viewBox="0 0 100 100" class="tile-3d-svg"><defs><linearGradient id="g-down" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#00E5FF"/><stop offset="100%" stop-color="#0091EA"/></linearGradient></defs><path d="M50 18 L50 76 M32 58 L50 80 L68 58" fill="none" stroke="url(#g-down)" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+      "WITH": `<svg viewBox="0 0 100 100" class="tile-3d-svg"><defs><radialGradient id="g-puz" cx="35%" cy="35%" r="65%"><stop offset="0%" stop-color="#6EE7B7"/><stop offset="60%" stop-color="#10B981"/><stop offset="100%" stop-color="#047857"/></radialGradient></defs><path d="M25 35 L40 35 C42 25 58 25 60 35 L75 35 L75 50 C85 52 85 68 75 70 L75 85 L60 85 C58 75 42 75 40 85 L25 85 L25 70 C15 68 15 52 25 50 Z" fill="url(#g-puz)"/></svg>`,
+      "ALL": `<svg viewBox="0 0 100 100" class="tile-3d-svg"><defs><radialGradient id="g-orb" cx="35%" cy="30%" r="70%"><stop offset="0%" stop-color="#FFF9C4"/><stop offset="35%" stop-color="#FDD835"/><stop offset="75%" stop-color="#F57F17"/><stop offset="100%" stop-color="#BF360C"/></radialGradient></defs><circle cx="50" cy="50" r="36" fill="url(#g-orb)"/><ellipse cx="38" cy="36" rx="14" ry="8" fill="#FFF" opacity="0.6"/></svg>`,
+      "GIVE": `<svg viewBox="0 0 100 100" class="tile-3d-svg"><defs><linearGradient id="g-gbox" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#EF4444"/><stop offset="100%" stop-color="#991B1B"/></linearGradient><linearGradient id="g-ribb" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#FDE047"/><stop offset="100%" stop-color="#CA8A04"/></linearGradient></defs><rect x="22" y="44" width="56" height="42" rx="6" fill="url(#g-gbox)"/><rect x="18" y="36" width="64" height="12" rx="4" fill="#DC2626"/><rect x="44" y="36" width="12" height="50" fill="url(#g-ribb)"/><ellipse cx="40" cy="28" rx="10" ry="7" fill="url(#g-ribb)"/><ellipse cx="60" cy="28" rx="10" ry="7" fill="url(#g-ribb)"/></svg>`,
+      "NEED": `<svg viewBox="0 0 100 100" class="tile-3d-svg"><defs><radialGradient id="g-star" cx="40%" cy="35%" r="65%"><stop offset="0%" stop-color="#FFF9C4"/><stop offset="40%" stop-color="#FACC15"/><stop offset="80%" stop-color="#EAB308"/><stop offset="100%" stop-color="#A16207"/></radialGradient></defs><polygon points="50,12 62,38 90,40 68,58 75,86 50,70 25,86 32,58 10,40 38,38" fill="url(#g-star)"/><ellipse cx="46" cy="38" rx="8" ry="5" fill="#FFF" opacity="0.6"/></svg>`,
+      "WAIT": `<svg viewBox="0 0 100 100" class="tile-3d-svg"><rect x="24" y="16" width="52" height="8" rx="3" fill="#D97706"/><rect x="24" y="76" width="52" height="8" rx="3" fill="#D97706"/><path d="M30 24 L70 24 C68 44 56 46 56 50 C56 54 68 56 70 76 L30 76 C32 56 44 54 44 50 C44 46 32 44 30 24 Z" fill="#F1F5F9" opacity="0.4" stroke="#94A3B8" stroke-width="4"/><polygon points="40,30 60,30 50,48" fill="#F59E0B"/><polygon points="42,72 58,72 54,62 46,62" fill="#F59E0B"/></svg>`,
+      "BIG": `<svg viewBox="0 0 100 100" class="tile-3d-svg"><defs><radialGradient id="g-ele" cx="40%" cy="35%" r="65%"><stop offset="0%" stop-color="#F1F5F9"/><stop offset="60%" stop-color="#94A3B8"/><stop offset="100%" stop-color="#475569"/></radialGradient></defs><ellipse cx="50" cy="54" rx="28" ry="24" fill="url(#g-ele)"/><circle cx="32" cy="44" r="16" fill="url(#g-ele)"/><path d="M22 46 C16 50 14 62 18 70 C20 72 24 70 22 66 C20 62 20 54 26 50 Z" fill="url(#g-ele)"/><ellipse cx="44" cy="44" rx="10" ry="14" fill="#CBD5E1"/><circle cx="28" cy="40" r="3" fill="#1E293B"/></svg>`,
+      "LITTLE": `<svg viewBox="0 0 100 100" class="tile-3d-svg"><defs><radialGradient id="g-mou" cx="40%" cy="35%" r="65%"><stop offset="0%" stop-color="#FFFFFF"/><stop offset="60%" stop-color="#E2E8F0"/><stop offset="100%" stop-color="#94A3B8"/></radialGradient></defs><ellipse cx="54" cy="58" rx="24" ry="18" fill="url(#g-mou)"/><circle cx="34" cy="46" r="12" fill="url(#g-mou)"/><circle cx="42" cy="34" r="10" fill="#FDA4AF"/><circle cx="28" cy="34" r="9" fill="#FDA4AF"/><circle cx="28" cy="44" r="2.5" fill="#1E293B"/><circle cx="22" cy="50" r="3" fill="#FB7185"/></svg>`,
+      "CLEAR": `<svg viewBox="0 0 100 100" class="tile-3d-svg"><defs><linearGradient id="g-bm" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#F59E0B"/><stop offset="100%" stop-color="#B45309"/></linearGradient></defs><line x1="72" y1="20" x2="42" y2="58" stroke="url(#g-bm)" stroke-width="7" stroke-linecap="round"/><path d="M42 58 L54 68 L36 86 L20 74 Z" fill="#D97706"/><line x1="24" y1="78" x2="48" y2="60" stroke="#78350F" stroke-width="2"/></svg>`,
+      "IT": `<svg viewBox="0 0 100 100" class="tile-3d-svg"><defs><linearGradient id="g-bt" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#FBBF24"/><stop offset="100%" stop-color="#F59E0B"/></linearGradient><linearGradient id="g-bl" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#D97706"/><stop offset="100%" stop-color="#92400E"/></linearGradient><linearGradient id="g-br" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#B45309"/><stop offset="100%" stop-color="#78350F"/></linearGradient></defs><polygon points="50,18 84,34 50,50 16,34" fill="url(#g-bt)"/><polygon points="16,34 50,50 50,82 16,66" fill="url(#g-bl)"/><polygon points="50,50 84,34 84,66 50,82" fill="url(#g-br)"/><polygon points="46,20 54,24 54,78 46,74" fill="#CBD5E1" opacity="0.6"/></svg>`,
+      "HERE": `<svg viewBox="0 0 100 100" class="tile-3d-svg"><defs><radialGradient id="g-pin" cx="35%" cy="30%" r="65%"><stop offset="0%" stop-color="#FF5252"/><stop offset="40%" stop-color="#EF4444"/><stop offset="80%" stop-color="#DC2626"/><stop offset="100%" stop-color="#7F1D1D"/></radialGradient></defs><circle cx="50" cy="38" r="24" fill="url(#g-pin)"/><ellipse cx="42" cy="30" rx="9" ry="5" fill="#FFF" opacity="0.6"/><line x1="50" y1="62" x2="50" y2="88" stroke="#94A3B8" stroke-width="5" stroke-linecap="round"/></svg>`,
+      "YES": `<svg viewBox="0 0 100 100" class="tile-3d-svg"><defs><radialGradient id="g-face" cx="35%" cy="30%" r="70%"><stop offset="0%" stop-color="#FFF59D"/><stop offset="50%" stop-color="#FDD835"/><stop offset="85%" stop-color="#F57F17"/><stop offset="100%" stop-color="#E65100"/></radialGradient></defs><circle cx="50" cy="50" r="38" fill="url(#g-face)"/><ellipse cx="36" cy="40" rx="5" ry="7" fill="#263238"/><ellipse cx="64" cy="40" rx="5" ry="7" fill="#263238"/><circle cx="38" cy="38" r="2" fill="#FFF"/><circle cx="66" cy="38" r="2" fill="#FFF"/><path d="M30 56 Q50 82 70 56 Z" fill="#263238"/><path d="M34 56 Q50 66 66 56 Z" fill="#FFF"/></svg>`,
+      "NO/DON'T": `<svg viewBox="0 0 100 100" class="tile-3d-svg"><defs><radialGradient id="g-no" cx="40%" cy="35%" r="65%"><stop offset="0%" stop-color="#FF5252"/><stop offset="70%" stop-color="#DC2626"/><stop offset="100%" stop-color="#7F1D1D"/></radialGradient></defs><circle cx="50" cy="50" r="38" fill="url(#g-no)"/><circle cx="50" cy="50" r="28" fill="none" stroke="#FFFFFF" stroke-width="6"/><rect x="42" y="32" width="16" height="24" rx="4" fill="#FFFFFF"/><rect x="36" y="36" width="6" height="18" rx="3" fill="#FFFFFF"/><rect x="58" y="36" width="6" height="18" rx="3" fill="#FFFFFF"/></svg>`,
+      "CAN": `<svg viewBox="0 0 100 100" class="tile-3d-svg"><defs><radialGradient id="g-musc" cx="40%" cy="30%" r="70%"><stop offset="0%" stop-color="#FFE082"/><stop offset="40%" stop-color="#FFB300"/><stop offset="80%" stop-color="#FB8C00"/><stop offset="100%" stop-color="#E65100"/></radialGradient></defs><path d="M26 68 C22 58 24 44 34 38 C42 34 52 38 56 46 C62 38 72 36 78 42 C84 48 82 60 76 68 C68 76 56 74 48 76 C38 78 30 76 26 68 Z" fill="url(#g-musc)"/><circle cx="64" cy="50" r="14" fill="url(#g-musc)"/></svg>`,
+      "DO": `<svg viewBox="0 0 100 100" class="tile-3d-svg"><defs><linearGradient id="g-bolt" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#FFF59D"/><stop offset="30%" stop-color="#FFEB3B"/><stop offset="70%" stop-color="#F57F17"/><stop offset="100%" stop-color="#E65100"/></linearGradient></defs><polygon points="56,12 28,48 48,48 38,88 74,42 54,42" fill="url(#g-bolt)"/></svg>`,
+      "LIKE": `<svg viewBox="0 0 100 100" class="tile-3d-svg"><defs><radialGradient id="g-hrt" cx="35%" cy="30%" r="70%"><stop offset="0%" stop-color="#FF8A80"/><stop offset="30%" stop-color="#FF1744"/><stop offset="70%" stop-color="#D50000"/><stop offset="100%" stop-color="#880E4F"/></radialGradient></defs><path d="M50 82 C50 82 20 62 16 40 C12 24 24 14 36 16 C44 18 48 24 50 28 C52 24 56 18 64 16 C76 14 88 24 84 40 C80 62 50 82 50 82 Z" fill="url(#g-hrt)"/><ellipse cx="34" cy="28" rx="8" ry="4" fill="#FFF" opacity="0.6" transform="rotate(-30 34 28)"/></svg>`,
+      "ACTIONS": `<svg viewBox="0 0 100 100" class="tile-3d-svg"><defs><linearGradient id="g-run" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#00E5FF"/><stop offset="50%" stop-color="#00B0FF"/><stop offset="100%" stop-color="#0077FF"/></linearGradient></defs><circle cx="62" cy="22" r="9" fill="url(#g-run)"/><path d="M56 34 L46 48 L32 44 M46 48 L58 58 L68 50 M44 54 L36 74 L24 82 M52 64 L64 78 L80 80" fill="none" stroke="url(#g-run)" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+      "FEEL": `<svg viewBox="0 0 100 100" class="tile-3d-svg"><defs><radialGradient id="g-thnk" cx="35%" cy="30%" r="70%"><stop offset="0%" stop-color="#FFF59D"/><stop offset="45%" stop-color="#FDD835"/><stop offset="80%" stop-color="#F57F17"/><stop offset="100%" stop-color="#E65100"/></radialGradient></defs><circle cx="50" cy="46" r="36" fill="url(#g-thnk)"/><ellipse cx="36" cy="38" rx="4" ry="6" fill="#263238"/><ellipse cx="64" cy="38" rx="4" ry="6" fill="#263238"/><ellipse cx="38" cy="36" rx="1.5" ry="2" fill="#FFF"/><ellipse cx="66" cy="36" rx="1.5" ry="2" fill="#FFF"/><path d="M30 30 Q38 26 44 32" stroke="#263238" stroke-width="3" fill="none"/><path d="M58 32 Q64 26 72 30" stroke="#263238" stroke-width="3" fill="none"/><line x1="42" y1="62" x2="60" y2="58" stroke="#263238" stroke-width="4" stroke-linecap="round"/><path d="M38 72 C42 66 54 66 60 72 C62 76 56 84 46 84 C40 84 36 78 38 72 Z" fill="#FFE082"/></svg>`,
+      "HURT": `<svg viewBox="0 0 100 100" class="tile-3d-svg"><defs><linearGradient id="g-bnd" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#FED7AA"/><stop offset="50%" stop-color="#FDBA74"/><stop offset="100%" stop-color="#EA580C"/></linearGradient></defs><rect x="20" y="42" width="60" height="16" rx="8" fill="url(#g-bnd)" transform="rotate(45 50 50)"/><rect x="20" y="42" width="60" height="16" rx="8" fill="url(#g-bnd)" transform="rotate(-45 50 50)"/><rect x="42" y="42" width="16" height="16" fill="#FFEDD5" opacity="0.8"/></svg>`,
+      "HAPPY": `<svg viewBox="0 0 100 100" class="tile-3d-svg"><defs><radialGradient id="g-joy" cx="35%" cy="30%" r="70%"><stop offset="0%" stop-color="#FFF59D"/><stop offset="50%" stop-color="#FDD835"/><stop offset="85%" stop-color="#F57F17"/><stop offset="100%" stop-color="#E65100"/></radialGradient><linearGradient id="g-tr" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#E0F7FA"/><stop offset="50%" stop-color="#00E5FF"/><stop offset="100%" stop-color="#0284C7"/></linearGradient></defs><circle cx="50" cy="50" r="38" fill="url(#g-joy)"/><path d="M28 42 Q36 34 44 42" fill="none" stroke="#263238" stroke-width="4.5" stroke-linecap="round"/><path d="M56 42 Q64 34 72 42" fill="none" stroke="#263238" stroke-width="4.5" stroke-linecap="round"/><path d="M18 44 C18 40 22 36 26 44 C26 50 20 52 18 44 Z" fill="url(#g-tr)"/><path d="M82 44 C82 40 78 36 74 44 C74 50 80 52 82 44 Z" fill="url(#g-tr)"/><path d="M30 52 Q50 82 70 52 Z" fill="#263238"/><path d="M34 52 Q50 62 66 52 Z" fill="#FFF"/><path d="M42 66 Q50 78 58 66 Z" fill="#FF5252"/></svg>`,
+      "SAD": `<svg viewBox="0 0 100 100" class="tile-3d-svg"><defs><radialGradient id="g-sad" cx="35%" cy="30%" r="70%"><stop offset="0%" stop-color="#FFF59D"/><stop offset="50%" stop-color="#FDD835"/><stop offset="85%" stop-color="#F57F17"/><stop offset="100%" stop-color="#E65100"/></radialGradient></defs><circle cx="50" cy="50" r="38" fill="url(#g-sad)"/><ellipse cx="36" cy="42" rx="5" ry="7" fill="#263238"/><ellipse cx="64" cy="42" rx="5" ry="7" fill="#263238"/><path d="M34 68 Q50 54 66 68" fill="none" stroke="#263238" stroke-width="4.5" stroke-linecap="round"/><path d="M36 50 C36 46 32 44 32 52 C32 58 38 58 36 50 Z" fill="#00E5FF"/></svg>`,
+      "TIRED": `<svg viewBox="0 0 100 100" class="tile-3d-svg"><defs><radialGradient id="g-trd" cx="35%" cy="30%" r="70%"><stop offset="0%" stop-color="#FFF59D"/><stop offset="50%" stop-color="#FDD835"/><stop offset="85%" stop-color="#F57F17"/><stop offset="100%" stop-color="#E65100"/></radialGradient></defs><circle cx="50" cy="50" r="38" fill="url(#g-trd)"/><path d="M30 40 Q38 46 44 40" stroke="#263238" stroke-width="4" fill="none" stroke-linecap="round"/><path d="M56 40 Q62 46 70 40" stroke="#263238" stroke-width="4" fill="none" stroke-linecap="round"/><ellipse cx="50" cy="62" rx="14" ry="18" fill="#263238"/><ellipse cx="50" cy="66" rx="16" ry="10" fill="#FFE082"/></svg>`,
+      "LOOK": `<svg viewBox="0 0 100 100" class="tile-3d-svg"><ellipse cx="32" cy="50" rx="18" ry="24" fill="#FFFFFF"/><ellipse cx="68" cy="50" rx="18" ry="24" fill="#FFFFFF"/><circle cx="28" cy="50" r="10" fill="#1E293B"/><circle cx="64" cy="50" r="10" fill="#1E293B"/><circle cx="26" cy="46" r="3.5" fill="#FFFFFF"/><circle cx="62" cy="46" r="3.5" fill="#FFFFFF"/></svg>`,
+      "GOOD": `<svg viewBox="0 0 100 100" class="tile-3d-svg"><defs><radialGradient id="g-tup" cx="35%" cy="30%" r="70%"><stop offset="0%" stop-color="#FFE082"/><stop offset="50%" stop-color="#FFB74D"/><stop offset="100%" stop-color="#E65100"/></radialGradient></defs><rect x="36" y="44" width="34" height="34" rx="8" fill="url(#g-tup)"/><rect x="42" y="16" width="16" height="36" rx="8" fill="url(#g-tup)"/><rect x="22" y="60" width="20" height="24" rx="4" fill="#2563EB"/></svg>`,
+      "BAD": `<svg viewBox="0 0 100 100" class="tile-3d-svg"><defs><radialGradient id="g-tdn" cx="35%" cy="30%" r="70%"><stop offset="0%" stop-color="#FFE082"/><stop offset="50%" stop-color="#FFB74D"/><stop offset="100%" stop-color="#E65100"/></radialGradient></defs><rect x="36" y="24" width="34" height="34" rx="8" fill="url(#g-tdn)"/><rect x="42" y="50" width="16" height="36" rx="8" fill="url(#g-tdn)"/><rect x="22" y="18" width="20" height="24" rx="4" fill="#2563EB"/></svg>`,
+      "THAT": `<svg viewBox="0 0 100 100" class="tile-3d-svg"><defs><radialGradient id="g-tht" cx="35%" cy="30%" r="70%"><stop offset="0%" stop-color="#FFE082"/><stop offset="50%" stop-color="#FFB74D"/><stop offset="100%" stop-color="#E65100"/></radialGradient></defs><rect x="38" y="46" width="30" height="32" rx="8" fill="url(#g-tht)"/><rect x="44" y="16" width="14" height="38" rx="7" fill="url(#g-tht)"/></svg>`,
+      "THIS": `<svg viewBox="0 0 100 100" class="tile-3d-svg"><defs><radialGradient id="g-ths" cx="35%" cy="30%" r="70%"><stop offset="0%" stop-color="#FFE082"/><stop offset="50%" stop-color="#FFB74D"/><stop offset="100%" stop-color="#E65100"/></radialGradient></defs><rect x="38" y="24" width="30" height="32" rx="8" fill="url(#g-ths)"/><rect x="44" y="48" width="14" height="38" rx="7" fill="url(#g-ths)"/></svg>`,
+      "TAKE": `<svg viewBox="0 0 100 100" class="tile-3d-svg"><defs><radialGradient id="g-tak" cx="35%" cy="30%" r="70%"><stop offset="0%" stop-color="#FFE082"/><stop offset="50%" stop-color="#FFB74D"/><stop offset="100%" stop-color="#E65100"/></radialGradient></defs><path d="M30 64 C26 56 32 46 42 42 L64 32 C68 30 74 34 72 40 L60 52 C64 54 66 60 62 66 L52 74 C42 80 34 74 30 64 Z" fill="url(#g-tak)"/></svg>`,
+      "SICK": `<svg viewBox="0 0 100 100" class="tile-3d-svg"><defs><radialGradient id="g-sck" cx="35%" cy="30%" r="70%"><stop offset="0%" stop-color="#FFF59D"/><stop offset="50%" stop-color="#FDD835"/><stop offset="85%" stop-color="#F57F17"/><stop offset="100%" stop-color="#E65100"/></radialGradient></defs><circle cx="50" cy="50" r="38" fill="url(#g-sck)"/><circle cx="28" cy="54" r="9" fill="#FF5252" opacity="0.6"/><circle cx="72" cy="54" r="9" fill="#FF5252" opacity="0.6"/><line x1="42" y1="62" x2="22" y2="76" stroke="#E2E8F0" stroke-width="6" stroke-linecap="round"/><circle cx="20" cy="78" r="5" fill="#EF4444"/></svg>`,
+      "PLEASE": `<svg viewBox="0 0 100 100" class="tile-3d-svg"><defs><linearGradient id="g-pls" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#FFE082"/><stop offset="50%" stop-color="#FFB74D"/><stop offset="100%" stop-color="#E65100"/></linearGradient></defs><path d="M50 16 L42 50 C40 60 44 76 50 82 C56 76 60 60 58 50 Z" fill="url(#g-pls)"/><path d="M50 20 L58 48 C62 58 68 68 76 72" fill="none" stroke="url(#g-pls)" stroke-width="8" stroke-linecap="round"/><path d="M50 20 L42 48 C38 58 32 68 24 72" fill="none" stroke="url(#g-pls)" stroke-width="8" stroke-linecap="round"/></svg>`,
+      "THANK YOU": `<svg viewBox="0 0 100 100" class="tile-3d-svg"><defs><radialGradient id="g-spk" cx="40%" cy="35%" r="65%"><stop offset="0%" stop-color="#FFFDE7"/><stop offset="40%" stop-color="#FFEB3B"/><stop offset="80%" stop-color="#F57F17"/><stop offset="100%" stop-color="#E65100"/></radialGradient></defs><path d="M50 14 Q50 44 20 50 Q50 56 50 86 Q50 56 80 50 Q50 44 50 14 Z" fill="url(#g-spk)"/><path d="M76 16 Q76 30 62 34 Q76 38 76 52 Q76 38 90 34 Q76 30 76 16 Z" fill="url(#g-spk)"/></svg>`,
+      "HELLO": `<svg viewBox="0 0 100 100" class="tile-3d-svg"><defs><radialGradient id="g-wav" cx="35%" cy="30%" r="70%"><stop offset="0%" stop-color="#FFE082"/><stop offset="50%" stop-color="#FFB74D"/><stop offset="100%" stop-color="#E65100"/></radialGradient></defs><path d="M38 74 L42 46 C42 42 46 40 50 42 C54 40 58 42 58 46 C60 42 66 42 68 46 C72 44 76 46 76 52 L72 74 C68 84 46 84 38 74 Z" fill="url(#g-wav)"/><path d="M20 28 Q26 22 34 26" stroke="#00E5FF" stroke-width="4" fill="none" stroke-linecap="round"/><path d="M14 40 Q22 32 30 38" stroke="#00E5FF" stroke-width="4" fill="none" stroke-linecap="round"/></svg>`,
+      "GET": `<svg viewBox="0 0 100 100" class="tile-3d-svg"><defs><radialGradient id="g-get" cx="35%" cy="30%" r="70%"><stop offset="0%" stop-color="#FFE082"/><stop offset="50%" stop-color="#FFB74D"/><stop offset="100%" stop-color="#E65100"/></radialGradient></defs><rect x="34" y="44" width="34" height="38" rx="8" fill="url(#g-get)"/><rect x="38" y="16" width="10" height="34" rx="5" fill="url(#g-get)"/><rect x="50" y="14" width="10" height="36" rx="5" fill="url(#g-get)"/><rect x="62" y="18" width="10" height="32" rx="5" fill="url(#g-get)"/></svg>`
+    };
+
+    function renderTileIcon(tile) {
+      const lower = (tile.word || "").toLowerCase();
+
+      const generatedCoreIcons = {
+        "WANT": "ic_3d_want.png",
+        "+ MORE": "ic_3d_more.png",
+        "AGAIN": "ic_3d_again.png",
+        "STOP": "ic_3d_stop.png",
+        "LIKE": "ic_3d_like.png",
+        "NO/DON'T": "ic_3d_no.png",
+        "HELP": "ic_3d_help.png",
+        "FEEL": "ic_3d_feel.png"
+      };
+      if (generatedCoreIcons[tile.word]) {
+        return `<img src="./assets/renders/core/${generatedCoreIcons[tile.word]}" alt="${tile.word}" class="tile-3d-img">`;
+      }
+
+      // Primary Memojis
+      if (tile.word === "I" || tile.word === "ME" || tile.word === "Noah") {
+        return `<img src="${currentNoahAvatar}" alt="${tile.word}" class="tile-3d-img memoji-fit" data-avatar-target="noah">`;
+      }
+      if (tile.word === "MY/MINE" || lower === "mom") {
+        return `<img src="./assets/memojis/memoji_auburn_woman.png" alt="My" class="tile-3d-img memoji-fit">`;
+      }
+      if (lower === "he") {
+        return `<img src="./assets/memojis/memoji_boy_green_glasses.png" alt="He" class="tile-3d-img memoji-fit">`;
+      }
+      if (lower === "she") {
+        return `<img src="./assets/memojis/memoji_woman_blonde.png" alt="She" class="tile-3d-img memoji-fit">`;
+      }
+      if (lower === "you" || lower === "your") {
+        return `<img src="./assets/memojis/memoji_orange_hair_man.png" alt="You" class="tile-3d-img memoji-fit">`;
+      }
+      if (lower === "dad") {
+        return `<img src="./assets/memojis/memoji_dad_dreadlocks.png" alt="Dad" class="tile-3d-img memoji-fit">`;
+      }
+
+      // Dual Memoji Combinations (Eliminating missing glyphs)
+      if (tile.word === "WE") {
+        return `
+          <div class="dual-memoji">
+            <img src="./assets/memojis/memoji_noah_boy.png" alt="We 1" class="memoji-fit" />
+            <img src="./assets/memojis/memoji_boy_green_glasses.png" alt="We 2" class="memoji-fit" />
+          </div>
+        `;
+      }
+      if (tile.word === "THEY") {
+        return `
+          <div class="dual-memoji">
+            <img src="./assets/memojis/memoji_dad_dreadlocks.png" alt="They 1" class="memoji-fit" />
+            <img src="./assets/memojis/memoji_woman_blonde.png" alt="They 2" class="memoji-fit" />
+          </div>
+        `;
+      }
+      if (tile.word === "PEOPLE") {
+        return `
+          <div class="dual-memoji">
+            <img src="./assets/memojis/memoji_brown_skin_man.png" alt="People 1" class="memoji-fit" />
+            <img src="./assets/memojis/memoji_auburn_woman.png" alt="People 2" class="memoji-fit" />
+          </div>
+        `;
+      }
+      if (tile.word === "BYE") {
+        return `
+          <div class="dual-memoji">
+            <img src="./assets/memojis/memoji_noah_boy.png" alt="Bye" class="memoji-fit" />
+            <span style="position:absolute; right:1px; top:2px; font-size:18px;">👋</span>
+          </div>
+        `;
+      }
+
+      // Generated 3D Asset Renders
+      if (tile.icon3d) {
+        return `<img src="${tile.icon3d}" alt="${tile.word}" class="tile-3d-img">`;
+      }
+      if (tile.word === "HELP") {
+        return `<img src="./assets/renders/apple_3d_help.jpg" alt="Help" class="tile-3d-img">`;
+      }
+      if (tile.word === "COME") {
+        return `<img src="./assets/renders/apple_3d_come.jpg" alt="Come" class="tile-3d-img">`;
+      }
+      if (tile.word === "WATCH") {
+        return `<img src="./assets/renders/apple_3d_tv.jpg" alt="Watch TV" class="tile-3d-img">`;
+      }
+      if (tile.word === "TRAINS") {
+        return `<img src="./assets/renders/apple_3d_train.jpg" alt="Trains" class="tile-3d-img">`;
+      }
+      if (tile.word === "PLAY") {
+        return `<img src="./assets/renders/apple_3d_controller.jpg" alt="Play" class="tile-3d-img">`;
+      }
+      if (tile.word === "OPEN") {
+        return `<img src="./assets/renders/apple_3d_open_box.jpg" alt="Open" class="tile-3d-img">`;
+      }
+      if (tile.word === "PLACES") {
+        return `<img src="./assets/renders/apple_3d_house.jpg" alt="Places" class="tile-3d-img">`;
+      }
+      if (tile.word === "DESCRB") {
+        return `<img src="./assets/renders/apple_3d_palette.jpg" alt="Describe" class="tile-3d-img">`;
+      }
+      if (tile.word === "BLUEY") {
+        return `<img src="./assets/renders/apple_3d_bluey.jpg" alt="Bluey" class="tile-3d-img">`;
+      }
+      if (tile.word === "COCOMELON") {
+        return `<img src="./assets/renders/apple_3d_cocomelon.jpg" alt="CoComelon" class="tile-3d-img">`;
+      }
+      if (lower.includes("pancake") || tile.word === "COOKING") {
+        return `<img src="./assets/renders/apple_3d_pancakes.png" alt="Cooking" class="tile-3d-img">`;
+      }
+      if (lower.includes("monkey")) {
+        return `<img src="./assets/renders/apple_3d_monkey.png" alt="Monkey" class="tile-3d-img">`;
+      }
+      if (tile.word === "HAVE" || tile.word === "WANT") {
+        return `<img src="./assets/renders/apple_3d_want_hands.png" alt="Hands" class="tile-3d-img">`;
+      }
+
+      // Dedicated 3D SVG Renderers
+      if (SVG_3D_ICONS[tile.word]) {
+        return SVG_3D_ICONS[tile.word];
+      }
+
+      return `<span style="font-size:32px; filter:drop-shadow(0 4px 6px rgba(0,0,0,0.5));">${tile.icon || '★'}</span>`;
+    }
+
+    // ========================================================
+    // WORDPOWER 60 BASIC (8 Columns x 6 Rows = 48 Cells)
+    // EXACT 1:1 REPLICATION OF THE ATTACHED SCREENSHOT
+    // ========================================================
+    const wordpower60Tiles = [
+      // ROW 1
+      { word: "I", color: "#E08738", action: "speak" },
+      { word: "IT", color: "#E08738", action: "speak" },
+      { word: "YOU", color: "#E08738", action: "speak" },
+      { word: "YOUR", color: "#E08738", action: "speak" },
+      { word: "HERE", color: "#E08738", action: "speak" },
+      { word: "YES", color: "#FACC15", action: "speak" },
+      { word: "NO/DON'T", color: "#EF4444", action: "speak" },
+      { word: "PEOPLE", color: "#475569", action: "category", id: "cat_people" },
+
+      // ROW 2
+      { word: "ME", color: "#E08738", action: "speak" },
+      { word: "IS", color: "#2E72B8", action: "speak" },
+      { word: "CAN", color: "#FACC15", action: "speak" },
+      { word: "DO", color: "#FACC15", action: "speak" },
+      { word: "HAVE", color: "#A16207", action: "speak" },
+      { word: "LIKE", color: "#2E72B8", action: "speak" },
+      { word: "WANT", color: "#E08738", action: "speak" },
+      { word: "ACTIONS", color: "#475569", action: "category", id: "cat_cartoons" },
+
+      // ROW 3
+      { word: "MY/MINE", color: "#E08738", action: "speak" },
+      { word: "ARE", color: "#2E72B8", action: "speak" },
+      { word: "WILL", color: "#2E72B8", action: "speak" },
+      { word: "EAT", color: "#2E72B8", action: "speak" },
+      { word: "DRINK", color: "#EF4444", action: "speak" },
+      { word: "GO", color: "#2E72B8", action: "speak" },
+      { word: "HELP", color: "#10B981", action: "speak" },
+      { word: "SOCIAL", color: "#475569", action: "category", id: "cat_music" },
+
+      // ROW 4
+      { word: "FEEL", color: "#FACC15", action: "speak" },
+      { word: "HURT", color: "#475569", action: "speak" },
+      { word: "HAPPY", color: "#FACC15", action: "speak" },
+      { word: "SAD", color: "#2E72B8", action: "speak" },
+      { word: "TIRED", color: "#10B981", action: "speak" },
+      { word: "STOP", color: "#991B1B", action: "speak" },
+      { word: "TURN", color: "#2E72B8", action: "speak" },
+      { word: "PLACES", color: "#475569", action: "category", id: "cat_places" },
+
+      // ROW 5
+      { word: "WATCH", color: "#10B981", action: "speak" },
+      { word: "PLAY", color: "#475569", action: "speak" },
+      { word: "OPEN", color: "#475569", action: "speak" },
+      { word: "BLUEY", color: "#2E72B8", action: "reward" },
+      { word: "COCOMELON", color: "#10B981", action: "reward" },
+      { word: "COOKING", color: "#475569", action: "reward" },
+      { word: "TRAINS", color: "#2E72B8", action: "reward" },
+      { word: "DESCRB", color: "#475569", action: "category", id: "cat_describe" },
+
+      // ROW 6
+      { word: "+ MORE", color: "#475569", action: "speak" },
+      { word: "AGAIN", color: "#2E72B8", action: "speak" },
+      { word: "GOOD", color: "#475569", action: "speak" },
+      { word: "BAD", color: "#EF4444", action: "speak" },
+      { word: "IN", color: "#2E72B8", action: "speak" },
+      { word: "OUT", color: "#2E72B8", action: "speak" },
+      { word: "ON", color: "#FACC15", action: "speak" },
+      { word: "OFF", color: "#475569", action: "speak" }
+    ];
+
+    // ========================================================
+    // WORDPOWER 80 FULL COMMUNICATION MATRIX (10 Cols x 8 Rows = 80 Cells)
+    // COMPLETE CLINICAL HIGH-DENSITY AAC SYSTEM FOR TALKTV
+    // ========================================================
+    const wordpower80Tiles = [
+      // ROW 1: Pronouns, Affirmation & Questions (Cols 1-10)
+      { word: "I", color: "#E08738", action: "speak" },
+      { word: "IT", color: "#E08738", action: "speak" },
+      { word: "YOU", color: "#E08738", action: "speak" },
+      { word: "YOUR", color: "#E08738", action: "speak" },
+      { word: "HERE", color: "#E08738", action: "speak" },
+      { word: "YES", color: "#FACC15", action: "speak" },
+      { word: "NO/DON'T", color: "#EF4444", action: "speak" },
+      { word: "PEOPLE", color: "#475569", action: "category", id: "cat_people" },
+      { word: "WHAT", color: "#00B0FF", action: "speak" },
+      { word: "WHERE", color: "#00B0FF", action: "speak" },
+
+      // ROW 2: Auxiliaries & Actions (Cols 1-10)
+      { word: "ME", color: "#E08738", action: "speak" },
+      { word: "IS", color: "#2E72B8", action: "speak" },
+      { word: "CAN", color: "#FACC15", action: "speak" },
+      { word: "DO", color: "#FACC15", action: "speak" },
+      { word: "HAVE", color: "#A16207", action: "speak" },
+      { word: "LIKE", color: "#2E72B8", action: "speak" },
+      { word: "WANT", color: "#E08738", action: "speak" },
+      { word: "ACTIONS", color: "#475569", action: "category", id: "cat_cartoons" },
+      { word: "WHO", color: "#00B0FF", action: "speak" },
+      { word: "WHY", color: "#00B0FF", action: "speak" },
+
+      // ROW 3: Verbs & Social (Cols 1-10)
+      { word: "MY/MINE", color: "#E08738", action: "speak" },
+      { word: "ARE", color: "#2E72B8", action: "speak" },
+      { word: "WILL", color: "#2E72B8", action: "speak" },
+      { word: "EAT", color: "#2E72B8", action: "speak" },
+      { word: "DRINK", color: "#EF4444", action: "speak" },
+      { word: "GO", color: "#2E72B8", action: "speak" },
+      { word: "HELP", color: "#10B981", action: "speak" },
+      { word: "SOCIAL", color: "#475569", action: "category", id: "cat_music" },
+      { word: "HOW", color: "#00B0FF", action: "speak" },
+      { word: "WHEN", color: "#00B0FF", action: "speak" },
+
+      // ROW 4: Feelings & Directives (Cols 1-10)
+      { word: "FEEL", color: "#FACC15", action: "speak" },
+      { word: "HURT", color: "#475569", action: "speak" },
+      { word: "HAPPY", color: "#FACC15", action: "speak" },
+      { word: "SAD", color: "#2E72B8", action: "speak" },
+      { word: "TIRED", color: "#10B981", action: "speak" },
+      { word: "STOP", color: "#991B1B", action: "speak" },
+      { word: "TURN", color: "#2E72B8", action: "speak" },
+      { word: "PLACES", color: "#475569", action: "category", id: "cat_places" },
+      { word: "COME", color: "#10B981", action: "speak" },
+      { word: "LOOK", color: "#10B981", action: "speak" },
+
+      // ROW 5: Media & Shows (Cols 1-10)
+      { word: "WATCH", color: "#10B981", action: "speak" },
+      { word: "PLAY", color: "#475569", action: "speak" },
+      { word: "OPEN", color: "#475569", action: "speak" },
+      { word: "BLUEY", color: "#2E72B8", action: "reward" },
+      { word: "COCOMELON", color: "#10B981", action: "reward" },
+      { word: "COOKING", color: "#475569", action: "reward" },
+      { word: "TRAINS", color: "#2E72B8", action: "reward" },
+      { word: "DESCRB", color: "#475569", action: "category", id: "cat_describe" },
+      { word: "MAKE", color: "#10B981", action: "speak" },
+      { word: "GET", color: "#10B981", action: "speak" },
+
+      // ROW 6: Modifiers & Prepositions (Cols 1-10)
+      { word: "+ MORE", color: "#475569", action: "speak" },
+      { word: "AGAIN", color: "#2E72B8", action: "speak" },
+      { word: "GOOD", color: "#475569", action: "speak" },
+      { word: "BAD", color: "#EF4444", action: "speak" },
+      { word: "IN", color: "#2E72B8", action: "speak" },
+      { word: "OUT", color: "#2E72B8", action: "speak" },
+      { word: "ON", color: "#FACC15", action: "speak" },
+      { word: "OFF", color: "#475569", action: "speak" },
+      { word: "UP", color: "#2E72B8", action: "speak" },
+      { word: "DOWN", color: "#2E72B8", action: "speak" },
+
+      // ROW 7: Expanded Pronouns & Modifiers (Cols 1-10)
+      { word: "WE", color: "#E08738", action: "speak" },
+      { word: "THEY", color: "#E08738", action: "speak" },
+      { word: "HE", color: "#E08738", action: "speak" },
+      { word: "SHE", color: "#E08738", action: "speak" },
+      { word: "THAT", color: "#E08738", action: "speak" },
+      { word: "THIS", color: "#E08738", action: "speak" },
+      { word: "BIG", color: "#2E72B8", action: "speak" },
+      { word: "LITTLE", color: "#2E72B8", action: "speak" },
+      { word: "WITH", color: "#2E72B8", action: "speak" },
+      { word: "ALL", color: "#2E72B8", action: "speak" },
+
+      // ROW 8: Expanded Core Verbs, Courtesies & Clean (Cols 1-10)
+      { word: "GIVE", color: "#10B981", action: "speak" },
+      { word: "TAKE", color: "#10B981", action: "speak" },
+      { word: "WAIT", color: "#2E72B8", action: "speak" },
+      { word: "NEED", color: "#10B981", action: "speak" },
+      { word: "SICK", color: "#FACC15", action: "speak" },
+      { word: "PLEASE", color: "#8B5CF6", action: "speak" },
+      { word: "THANK YOU", color: "#8B5CF6", action: "speak" },
+      { word: "HELLO", color: "#8B5CF6", action: "speak" },
+      { word: "BYE", color: "#8B5CF6", action: "speak" },
+      { word: "CLEAR", color: "#EF4444", action: "clear" }
+    ];
+
+    // Sub-category contents for drill-down
+    const showTiles = {
+      cat_cartoons: [
+        { word: "Bluey", color: "#2E72B8", action: "reward" },
+        { word: "CoComelon", color: "#10B981", action: "reward" },
+        { word: "Trains", color: "#2E72B8", action: "reward" }
+      ],
+      cat_people: [
+        { word: "Noah", color: "#E08738", action: "speak" },
+        { word: "Mom", color: "#E08738", action: "speak" },
+        { word: "Dad", color: "#E08738", action: "speak" },
+        { word: "Teacher", color: "#E08738", action: "speak" }
+      ],
+      cat_places: [
+        { word: "PLACES", color: "#E08738", action: "speak" }
+      ],
+      cat_describe: [
+        { word: "DESCRB", color: "#2E72B8", action: "speak" },
+        { word: "BIG", color: "#2E72B8", action: "speak" },
+        { word: "LITTLE", color: "#2E72B8", action: "speak" }
+      ]
+    };
+
+    // Staged View Tiles
+    const stagedCore = [
+      { word: "I", color: "#E08738", action: "speak" },
+      { word: "WANT", color: "#10B981", action: "speak" },
+      { word: "+ MORE", color: "#10B981", action: "speak" },
+      { word: "AGAIN", color: "#2E72B8", action: "speak" },
+      { word: "STOP", color: "#EF4444", action: "speak" },
+      { word: "HELP", color: "#10B981", action: "speak" },
+      { word: "LIKE", color: "#EF4444", action: "speak" }
+    ];
+
+    const stagedCategories = [
+      { word: "COOKING", color: "#E08738", action: "reward" },
+      { word: "BLUEY", color: "#2E72B8", action: "reward" },
+      { word: "COCOMELON", color: "#10B981", action: "reward" },
+      { word: "TRAINS", color: "#2E72B8", action: "reward" },
+      { word: "PEOPLE", color: "#E08738", action: "category", id: "cat_people" }
+    ];
+
+    // ========================================================
+    // AI SUBTITLE PREDICTION ENGINE
+    // ========================================================
+    function predictAiSubtitle(phrase) {
+      if (!phrase || phrase.length === 0) {
+        return {
+          sentence: "I would like to make a choice on TV please.",
+          intent: "Prompt",
+          confidence: "70%"
+        };
+      }
+
+      const joined = phrase.join(" ").toLowerCase();
+
+      if (joined.includes("monkey")) {
+        return { sentence: "I want to watch monkey videos and funny animal clips please!", intent: "Content Request", confidence: "99%" };
+      }
+      if (joined.includes("pancake") || joined.includes("cooking")) {
+        return { sentence: "I would like to watch the pancake cooking show please!", intent: "Content Request", confidence: "98%" };
+      }
+      if (joined.includes("bluey")) {
+        return { sentence: "I want to watch Bluey on TV please!", intent: "Content Request", confidence: "99%" };
+      }
+      if (joined.includes("cocomelon")) {
+        return { sentence: "I want to listen to CoComelon nursery rhymes please!", intent: "Content Request", confidence: "99%" };
+      }
+      if (joined.includes("train") || joined.includes("trains")) {
+        return { sentence: "I want to watch steam trains and locomotives please!", intent: "Content Request", confidence: "98%" };
+      }
+      if (joined.includes("stop") || joined.includes("no/don't")) {
+        return { sentence: "I want to stop now, I am all done watching TV.", intent: "Cessation / Rejection", confidence: "98%" };
+      }
+      if (joined.includes("tired")) {
+        return { sentence: "I feel tired and I want to rest while watching TV.", intent: "Emotional State", confidence: "95%" };
+      }
+      if (joined.includes("happy")) {
+        return { sentence: "I feel so happy watching this with you!", intent: "Social Expression", confidence: "96%" };
+      }
+      if (joined.includes("sad")) {
+        return { sentence: "I feel sad right now and need some comfort.", intent: "Emotional Support", confidence: "95%" };
+      }
+      if (joined.includes("hurt")) {
+        return { sentence: "I feel hurt and I need help please.", intent: "Urgent Need", confidence: "99%" };
+      }
+      if (joined.includes("help")) {
+        return { sentence: "Can you please help me with the TV remote?", intent: "Assistance Request", confidence: "97%" };
+      }
+      if (joined.includes("eat") || joined.includes("drink")) {
+        const item = joined.includes("drink") ? "a drink of water" : "a snack to eat";
+        return { sentence: `I would like ${item} while watching TV please.`, intent: "Physical Request", confidence: "96%" };
+      }
+      if (joined.includes("more") || joined.includes("again")) {
+        return { sentence: "I want to watch that one more time please!", intent: "Repetition Request", confidence: "95%" };
+      }
+      if (joined.includes("like")) {
+        return { sentence: "I really like this show, it is so fun!", intent: "Social Sharing", confidence: "93%" };
+      }
+      if (joined.includes("want")) {
+        return { sentence: "I want to watch my favorite show on TV please.", intent: "Core Request", confidence: "92%" };
+      }
+
+      return {
+        sentence: `I am saying: "${phrase.join(" ")}" on the TV screen.`,
+        intent: "Expressive Statement",
+        confidence: "90%"
+      };
+    }
+
+    function updateAiSubtitles() {
+      const pred = predictAiSubtitle(activePhrase);
+      document.getElementById("predicted-sentence-text").innerText = `"${pred.sentence}"`;
+      document.getElementById("ai-intent-label").innerHTML = `Intent: <strong>${pred.intent}</strong>`;
+      document.getElementById("ai-confidence-label").innerHTML = `Confidence: <strong>${pred.confidence}</strong>`;
+    }
+
+    function confirmAiSubtitle() {
+      const pred = predictAiSubtitle(activePhrase);
+      speak(pred.sentence, () => {
+        const show = ["Monkey", "Pancake", "Bluey", "CoComelon", "Cooking", "Trains"].find(s => pred.sentence.toLowerCase().includes(s.toLowerCase()));
+        if (show) {
+          triggerReward(show);
+        }
+      });
+      totalPresses++;
+      updateStats();
+    }
+
+    // ========================================================
+    // RENDER LOGIC
+    // ========================================================
+    function renderBoard() {
+      const mainGrid = document.getElementById("main-aac-grid");
+      mainGrid.innerHTML = "";
+
+      if (currentBoardMode === 'wp60') {
+        mainGrid.className = "wordpower-grid wp60";
+        document.getElementById("brand-sub-label").innerText = "WORDPOWER™ 60 Basic Grid";
+        document.getElementById("curriculum-badge-text").innerText = "Stage 2: Two-Tile (60 Grid)";
+        wordpower60Tiles.forEach(tile => mainGrid.appendChild(createTileElement(tile)));
+      } else if (currentBoardMode === 'wp80') {
+        mainGrid.className = "wordpower-grid";
+        document.getElementById("brand-sub-label").innerText = "WORDPOWER™ 80 Grid";
+        document.getElementById("curriculum-badge-text").innerText = "Stage 4: WordPower 80";
+        wordpower80Tiles.forEach(tile => mainGrid.appendChild(createTileElement(tile)));
+      } else {
+        // Staged Mode
+        renderStagedView();
+      }
+
+      updateFocusableElements();
+    }
+
+    function createTileElement(tile) {
+      const el = document.createElement("div");
+      el.className = "wp-tile";
+      el.style.borderColor = tile.color;
+      el.dataset.word = tile.word;
+
+      el.innerHTML = `
+        <div class="tile-icon-wrapper">${renderTileIcon(tile)}</div>
+        <div class="tile-word">${tile.word}</div>
+      `;
+
+      el.onclick = () => handleTileClick(tile);
+      return el;
+    }
+
+    function renderStagedView() {
+      document.getElementById("brand-sub-label").innerText = "TALKTV STAGED GRID";
+      document.getElementById("curriculum-badge-text").innerText = "Stage 2: Two-Tile (Curated)";
+      const coreRow = document.getElementById("staged-core-row");
+      const catRow = document.getElementById("staged-cat-row");
+      coreRow.innerHTML = "";
+      catRow.innerHTML = "";
+
+      stagedCore.forEach(t => {
+        const el = document.createElement("div");
+        el.className = "staged-tile";
+        el.style.borderColor = t.color;
+        el.innerHTML = `<div class="tile-icon-wrapper">${renderTileIcon(t)}</div><div class="tile-word">${t.word}</div>`;
+        el.onclick = () => handleTileClick(t);
+        coreRow.appendChild(el);
+      });
+
+      stagedCategories.forEach(t => {
+        const el = document.createElement("div");
+        el.className = "staged-tile";
+        el.style.borderColor = t.color;
+        el.innerHTML = `<div class="tile-icon-wrapper">${renderTileIcon(t)}</div><div class="tile-word">${t.word}</div>`;
+        el.onclick = () => handleTileClick(t);
+        catRow.appendChild(el);
+      });
+    }
+
+    function handleTileClick(tile) {
+      totalPresses++;
+      updateStats();
+
+      if (tile.action === "clear") {
+        clearPhrase();
+        return;
+      }
+
+      if (tile.action === "category") {
+        speak(tile.word);
+        openSubGrid(tile.id || "cat_cartoons", tile.word);
+        return;
+      }
+
+      speak(tile.word);
+      activePhrase.push(tile.word);
+      updatePhraseDisplay();
+      updateAiSubtitles();
+
+      // Notify Companion Dashboard over BroadcastChannel
+      broadcastSyncEvent("TILE_PRESS", {
+        word: tile.word,
+        phrase: activePhrase,
+        wasReward: tile.action === "reward",
+        show: tile.action === "reward" ? tile.word : null
+      });
+
+      if (tile.action === "reward") {
+        rewardedCount++;
+        updateStats();
+        const pred = predictAiSubtitle(activePhrase);
+        speak(pred.sentence, () => {
+          triggerReward(tile.word);
+        });
+      }
+    }
+
+    function updatePhraseDisplay() {
+      const container = document.getElementById("phrase-container");
+      container.innerHTML = "";
+      if (activePhrase.length === 0) {
+        container.innerHTML = '<span style="color:#6C819F; font-size:14px; font-weight:600; padding-left:8px;">Select words using TV Remote...</span>';
+      } else {
+        activePhrase.forEach((word, idx) => {
+          const chip = document.createElement("div");
+          chip.className = "phrase-chip";
+          chip.innerHTML = `<span>${word}</span><span style="font-size:11px; opacity:0.6;">✕</span>`;
+          chip.title = "Click to remove word";
+          chip.onclick = () => {
+            activePhrase.splice(idx, 1);
+            updatePhraseDisplay();
+            updateAiSubtitles();
+          };
+          container.appendChild(chip);
+        });
+      }
+    }
+
+    function clearPhrase() {
+      activePhrase = [];
+      updatePhraseDisplay();
+      updateAiSubtitles();
+      broadcastSyncEvent("PHRASE_CLEAR", {});
+    }
+
+    function speak(text, onComplete) {
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.rate = 0.95;
+        if (onComplete) utterance.onend = onComplete;
+        window.speechSynthesis.speak(utterance);
+      } else if (onComplete) {
+        onComplete();
+      }
+    }
+
+    function openSubGrid(categoryId, categoryName) {
+      document.getElementById("grid-view-container").style.display = "none";
+      document.getElementById("staged-view-container").style.display = "none";
+      const subView = document.getElementById("subgrid-view-container");
+      subView.style.display = "flex";
+      document.getElementById("subgrid-title").innerText = categoryName;
+
+      const row = document.getElementById("subgrid-row");
+      row.innerHTML = "";
+      const shows = showTiles[categoryId] || showTiles.cat_cartoons;
+      shows.forEach(s => {
+        const el = document.createElement("div");
+        el.className = "staged-tile";
+        el.style.borderColor = s.color;
+        el.innerHTML = `<div class="tile-icon-wrapper">${renderTileIcon(s)}</div><div class="tile-word">${s.word}</div>`;
+        el.onclick = () => handleTileClick(s);
+        row.appendChild(el);
+      });
+
+      updateFocusableElements();
+      focusedIndex = 0;
+      applyFocus();
+    }
+
+    function returnToMainView() {
+      document.getElementById("subgrid-view-container").style.display = "none";
+      if (currentBoardMode === 'staged') {
+        document.getElementById("staged-view-container").style.display = "flex";
+        document.getElementById("grid-view-container").style.display = "none";
+      } else {
+        document.getElementById("staged-view-container").style.display = "none";
+        document.getElementById("grid-view-container").style.display = "flex";
+      }
+      updateFocusableElements();
+      focusedIndex = 0;
+      applyFocus();
+    }
+
+    function switchBoardMode(mode) {
+      currentBoardMode = mode;
+      document.getElementById("btn-mode-staged").classList.toggle("active", mode === 'staged');
+      document.getElementById("btn-mode-wp60").classList.toggle("active", mode === 'wp60');
+      document.getElementById("btn-mode-wp80").classList.toggle("active", mode === 'wp80');
+
+      document.getElementById("subgrid-view-container").style.display = "none";
+      if (mode === 'staged') {
+        document.getElementById("grid-view-container").style.display = "none";
+        document.getElementById("staged-view-container").style.display = "flex";
+      } else {
+        document.getElementById("staged-view-container").style.display = "none";
+        document.getElementById("grid-view-container").style.display = "flex";
+      }
+
+      renderBoard();
+      focusedIndex = 0;
+      applyFocus();
+    }
+
+    // ========================================================
+    // CURATED KIDS SHOWS & COOKING VIDEOS - NO ERROR 153
+    // ========================================================
+    const SHOW_CONFIG = {
+      'cooking': {
+        name: 'Cooking Show',
+        banner: '★ REWARD: Playing Kids Cooking Show 🥞 ★',
+        isLive: true,
+        defaultId: 'J_e2m6Q8Tl8',
+        episodes: [
+          { label: '🥞 Fluffy Pancakes', id: 'J_e2m6Q8Tl8', title: "Easy Fluffy Pancake Recipe for Kids" },
+          { label: '👩‍🍳 Chef Paisley Pancakes', id: 'WFtA4ZJzQpA', title: "6-Year-Old Chef Paisley Makes Pancakes" },
+          { label: '🍳 Disney Jr Ze Pancakes', id: 'MI4nKNa85qc', title: "Tasty Time with ZeFronk - Ze Pancakes!" }
+        ]
+      },
+      'monkey': {
+        name: 'Monkey Show',
+        banner: '★ REWARD: Playing Funny Monkey Show 🐒 ★',
+        isLive: false,
+        defaultId: 'wC4pwiGfpsU',
+        episodes: [
+          { label: '🍼 Baby Monkeys Milk', id: 'wC4pwiGfpsU', title: "Baby monkeys drink milk bottle" },
+          { label: '🐵 Baby Monkey KiKi', id: 'IU5Qibz3qYs', title: "Baby Monkey KiKi Adventures" }
+        ]
+      },
+      'bluey': {
+        name: 'Bluey',
+        banner: '★ REWARD: Playing Bluey 🐶 ★',
+        isLive: false,
+        defaultId: 'FkWG_f80saA',
+        episodes: [
+          { label: '💙 Bluey Disney Kids', id: 'FkWG_f80saA', title: "Bluey Kids Episodes" },
+          { label: '✨ Bluey Minisodes', id: 'wXLBNFd1xro', title: "Bluey Minisodes Part 2" }
+        ]
+      },
+      'cocomelon': {
+        name: 'CoComelon',
+        banner: '★ REWARD: Playing CoComelon Nursery Songs 🍉 ★',
+        isLive: false,
+        defaultId: 'e_04ZrNroTo',
+        episodes: [
+          { label: '🚌 Wheels on the Bus', id: 'e_04ZrNroTo', title: "Wheels on the Bus Official" },
+          { label: '🎵 Nursery Rhymes', id: 'wV3N-wCRL2k', title: "CoComelon Songs Collection" }
+        ]
+      },
+      'trains': {
+        name: 'Trains',
+        banner: '★ REWARD: Playing Toy Trains 🚂 ★',
+        isLive: false,
+        defaultId: 'Gyr139yDaSE',
+        episodes: [
+          { label: '🦖 BRIO Dino Train', id: 'Gyr139yDaSE', title: "Jurassic BRIO Dino Train" },
+          { label: '🛤️ Wooden Track Build', id: 'fNdHAWzqXps', title: "Building BRIO Wooden Track" }
+        ]
+      }
+    };
+
+    function resolveShowConfig(showName) {
+      const s = (showName || '').toLowerCase().trim();
+      if (s.includes('pancake') || s.includes('cooking') || s.includes('cook')) return SHOW_CONFIG['cooking'];
+      if (s.includes('monkey')) return SHOW_CONFIG['monkey'];
+      if (s.includes('bluey')) return SHOW_CONFIG['bluey'];
+      if (s.includes('cocomelon') || s.includes('nursery') || s.includes('music')) return SHOW_CONFIG['cocomelon'];
+      if (s.includes('train')) return SHOW_CONFIG['trains'];
+      return SHOW_CONFIG['cooking'];
+    }
+
+    function playRewardVideo(videoId) {
+      const iframe = document.getElementById('reward-iframe');
+      const ytLink = document.getElementById('reward-yt-link');
+      if (iframe) {
+        iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1&enablejsapi=1`;
+      }
+      if (ytLink) {
+        ytLink.href = `https://www.youtube.com/watch?v=${videoId}`;
+      }
+      document.querySelectorAll('.reward-pill-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.videoid === videoId);
+      });
+    }
+
+    function triggerReward(showName) {
+      const overlay = document.getElementById('reward-player-overlay');
+      const banner = document.getElementById('reward-banner');
+      const liveBadge = document.getElementById('reward-live-badge');
+      const episodesContainer = document.getElementById('reward-episodes');
+
+      const config = resolveShowConfig(showName);
+      banner.innerText = config.banner;
+      liveBadge.style.display = config.isLive ? 'inline-flex' : 'none';
+
+      if (episodesContainer) {
+        episodesContainer.innerHTML = '';
+        config.episodes.forEach((ep, idx) => {
+          const pill = document.createElement('button');
+          pill.className = `reward-pill-btn ${idx === 0 ? 'active' : ''}`;
+          pill.dataset.videoid = ep.id;
+          pill.innerText = ep.label;
+          pill.title = ep.title;
+          pill.onclick = (e) => {
+            e.stopPropagation();
+            playRewardVideo(ep.id);
+          };
+          episodesContainer.appendChild(pill);
+        });
+      }
+
+      playRewardVideo(config.defaultId);
+      overlay.classList.add('active');
+    }
+
+    function closeRewardOverlay() {
+      const overlay = document.getElementById('reward-player-overlay');
+      const iframe = document.getElementById('reward-iframe');
+      if (iframe) iframe.src = '';
+      if (overlay) overlay.classList.remove('active');
+      clearPhrase();
+      returnToMainView();
+    }
+
+    function updateStats() {
+      document.getElementById("stat-total").innerText = totalPresses;
+      document.getElementById("stat-rewards").innerText = rewardedCount;
+    }
+
+    // ========================================================
+    // REMOTE D-PAD NAVIGATION & FOCUS
+    // ========================================================
+    function updateFocusableElements() {
+      const activeContainer = currentBoardMode === 'staged' ? '#staged-view-container' : '#tv-stage';
+      focusableElements = Array.from(document.querySelectorAll(`${activeContainer} .wp-tile, ${activeContainer} .staged-tile, #btn-confirm-sub`));
+      if (focusedIndex >= focusableElements.length) {
+        focusedIndex = 0;
+      }
+      applyFocus();
+    }
+
+    function applyFocus() {
+      focusableElements.forEach((el, idx) => {
+        if (idx === focusedIndex) {
+          el.classList.add("focused");
+          el.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+        } else {
+          el.classList.remove("focused");
+        }
+      });
+    }
+
+    function navigateDpad(direction) {
+      const overlay = document.getElementById("reward-player-overlay");
+      if (overlay.classList.contains("active")) {
+        if (direction === 'back') {
+          closeRewardOverlay();
+        } else if (direction === 'left' || direction === 'right') {
+          const pills = Array.from(document.querySelectorAll('.reward-pill-btn'));
+          if (pills.length > 1) {
+            const activeIdx = pills.findIndex(p => p.classList.contains('active'));
+            const nextIdx = direction === 'right'
+              ? (activeIdx + 1) % pills.length
+              : (activeIdx - 1 + pills.length) % pills.length;
+            pills[nextIdx].click();
+          }
+        }
+        return;
+      }
+
+      if (direction === 'back') {
+        const subgrid = document.getElementById("subgrid-view-container");
+        if (subgrid.style.display === "flex") {
+          returnToMainView();
+        } else if (activePhrase.length > 0) {
+          clearPhrase();
+        }
+        return;
+      }
+
+      if (direction === 'select') {
+        if (focusableElements[focusedIndex]) {
+          focusableElements[focusedIndex].click();
+        }
+        return;
+      }
+
+      const cols = currentBoardMode === 'wp80' ? 10 : (currentBoardMode === 'wp60' ? 8 : 4);
+      if (direction === 'right') {
+        focusedIndex = (focusedIndex + 1) % focusableElements.length;
+      } else if (direction === 'left') {
+        focusedIndex = (focusedIndex - 1 + focusableElements.length) % focusableElements.length;
+      } else if (direction === 'down') {
+        focusedIndex = Math.min(focusedIndex + cols, focusableElements.length - 1);
+      } else if (direction === 'up') {
+        focusedIndex = Math.max(focusedIndex - cols, 0);
+      }
+
+      applyFocus();
+    }
+
+    window.addEventListener("keydown", (e) => {
+      if (e.key === "ArrowRight") { navigateDpad("right"); e.preventDefault(); }
+      if (e.key === "ArrowLeft") { navigateDpad("left"); e.preventDefault(); }
+      if (e.key === "ArrowDown") { navigateDpad("down"); e.preventDefault(); }
+      if (e.key === "ArrowUp") { navigateDpad("up"); e.preventDefault(); }
+      if (e.key === "Enter") { navigateDpad("select"); e.preventDefault(); }
+      if (e.key === "Escape" || e.key === "Backspace") { navigateDpad("back"); e.preventDefault(); }
+    });
+
+    // Realtime Broadcast Sync with Companion Dashboard
+    const syncChannel = new BroadcastChannel("talktv_sync_channel");
+    function broadcastSyncEvent(eventType, payload) {
+      syncChannel.postMessage({
+        type: "TV_EVENT",
+        event: eventType,
+        ...payload
+      });
+    }
+
+    syncChannel.onmessage = (msg) => {
+      if (msg.data && msg.data.type === "MODEL_WORD") {
+        speak(msg.data.word);
+        activePhrase.push(msg.data.word);
+        updatePhraseDisplay();
+        updateAiSubtitles();
+      }
+    };
+
+    // ========================================================
+    // PICTURE-IN-PICTURE (PiP) CONTROLLER
+    // ========================================================
+    let isPipActive = true;
+    let isPipExpanded = false;
+    let isPipMuted = true;
+    const cookingShowVideoId = "J_e2m6Q8Tl8";
+
+    function togglePipWindow() {
+      const pip = document.getElementById("pip-live-cooking-window");
+      const led = document.getElementById("pip-led-indicator");
+      isPipActive = !isPipActive;
+      if (isPipActive) {
+        pip.classList.remove("minimized");
+        if (led) { led.style.background = "#00E5FF"; led.style.boxShadow = "0 0 8px #00E5FF"; }
+      } else {
+        pip.classList.add("minimized");
+        if (led) { led.style.background = "#64748B"; led.style.boxShadow = "none"; }
+      }
+    }
+
+    function closePipWindow() {
+      const pip = document.getElementById("pip-live-cooking-window");
+      const led = document.getElementById("pip-led-indicator");
+      isPipActive = false;
+      pip.classList.add("minimized");
+      if (led) { led.style.background = "#64748B"; led.style.boxShadow = "none"; }
+    }
+
+    function togglePipExpand() {
+      const pip = document.getElementById("pip-live-cooking-window");
+      const icon = document.getElementById("pip-expand-icon");
+      isPipExpanded = !isPipExpanded;
+      if (isPipExpanded) {
+        pip.classList.add("expanded");
+        if (icon) icon.textContent = "❐";
+      } else {
+        pip.classList.remove("expanded");
+        if (icon) icon.textContent = "⛶";
+      }
+    }
+
+    function togglePipMute() {
+      const iframe = document.getElementById("pip-video-iframe");
+      const icon = document.getElementById("pip-mute-icon");
+      isPipMuted = !isPipMuted;
+      if (icon) icon.textContent = isPipMuted ? "🔇" : "🔊";
+      if (iframe && iframe.contentWindow) {
+        iframe.contentWindow.postMessage(JSON.stringify({
+          event: "command",
+          func: isPipMuted ? "mute" : "unMute"
+        }), "*");
+      }
+    }
+
+    window.addEventListener("keydown", (e) => {
+      if (e.key === "p" || e.key === "P") {
+        togglePipWindow();
+      }
+    });
+
+    // Init
+    renderBoard();
+    updatePhraseDisplay();
+    updateAiSubtitles();
+    updateStats();
+  </script>
+</body>
+
+</html>

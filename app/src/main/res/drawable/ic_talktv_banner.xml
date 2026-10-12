@@ -1,0 +1,32 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="320dp"
+    android:height="180dp"
+    android:viewportWidth="320"
+    android:viewportHeight="180">
+    <path
+        android:fillColor="#0A0E17"
+        android:pathData="M0,0h320v180h-320z"/>
+    <!-- Glowing background accent -->
+    <path
+        android:fillColor="#132438"
+        android:pathData="M20,20h280v140h-280z"/>
+    <!-- Remote & Speech Bubble Icon -->
+    <path
+        android:fillColor="#00E5FF"
+        android:pathData="M50,55h40a10,10 0,0 1,10 10v45a10,10 0,0 1,-10 10h-20l-15,12v-12h-5a10,10 0,0 1,-10 -10v-45a10,10 0,0 1,10 -10z"/>
+    <!-- Inner D-Pad icon -->
+    <path
+        android:fillColor="#0A0E17"
+        android:pathData="M65,72h10v6h-10z M65,86h10v6h-10z M58,79h6v6h-6z M76,79h6v6h-6z M67,81h6v2h-6z"/>
+    <!-- Title Text simulation / geometry -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M120,65h35v10h-12v35h-11v-35h-12z M160,85a15,15 0,1 1,30 0v25h-10v-6a12,12 0,1 1,-20 -19zm19,3a8,8 0,1 0,-16 0,8 8,0 1,0 16,0z M195,60h11v50h-11z M212,60h11v26l14,-16h14l-16,17l18,23h-14l-12,-16l-5,5v11h-11z"/>
+    <!-- Subtitle badge: AAC TV -->
+    <path
+        android:fillColor="#FFD600"
+        android:pathData="M120,118h70a4,4 0,0 1,4 4v16a4,4 0,0 1,-4 4h-70a4,4 0,0 1,-4 -4v-16a4,4 0,0 1,4 -4z"/>
+    <path
+        android:fillColor="#0A0E17"
+        android:pathData="M130,123h12v3h-4v9h-4v-9h-4z M145,123h12v12h-3v-4h-6v4h-3zm3,3v3h6v-3z M161,123h12v12h-3v-4h-6v4h-3zm3,3v3h6v-3z M178,123h11v3h-8v2h7v3h-7v2h8v2h-11z"/>
+</vector>

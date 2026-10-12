@@ -1,0 +1,32 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="96dp"
+    android:height="96dp"
+    android:viewportWidth="96"
+    android:viewportHeight="96">
+    <!-- Cartoon TV with Bunny Ears / Antenna -->
+    <!-- Antenna -->
+    <path
+        android:strokeColor="#FFA726"
+        android:strokeWidth="4"
+        android:strokeLineCap="round"
+        android:pathData="M32,18l16,14l16,-14"/>
+    <!-- TV Box -->
+    <path
+        android:fillColor="#FFA726"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="3.5"
+        android:pathData="M16,32h64a8,8 0,0 1,8 8v40a8,8 0,0 1,-8 8h-64a8,8 0,0 1,-8 -8v-40a8,8 0,0 1,8 -8z"/>
+    <!-- Inner Screen with cartoon smile -->
+    <path
+        android:fillColor="#1D2A40"
+        android:pathData="M24,40h48a4,4 0,0 1,4 4v26a4,4 0,0 1,-4 4h-48a4,4 0,0 1,-4 -4v-26a4,4 0,0 1,4 -4z"/>
+    <!-- Cartoon face in screen -->
+    <path
+        android:fillColor="#FFD600"
+        android:pathData="M36,50a3,3 0,1 1,-0.01 0z M60,50a3,3 0,1 1,-0.01 0z"/>
+    <path
+        android:strokeColor="#FFD600"
+        android:strokeWidth="3"
+        android:strokeLineCap="round"
+        android:pathData="M40,60q8,6 16,0"/>
+</vector>

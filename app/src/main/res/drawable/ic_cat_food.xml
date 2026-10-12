@@ -1,0 +1,25 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="96dp"
+    android:height="96dp"
+    android:viewportWidth="96"
+    android:viewportHeight="96">
+    <!-- Chef Hat & Steaming Delicious Bowl (Food Shows) -->
+    <!-- Chef Hat -->
+    <path
+        android:fillColor="#FFA726"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="3.5"
+        android:pathData="M30,44c-5,-10 0,-18 8,-18c4,-8 16,-8 20,0c8,0 13,8 8,18z"/>
+    <!-- Bowl -->
+    <path
+        android:fillColor="#FFA726"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="3.5"
+        android:pathData="M20,52h56c0,16 -12,28 -28,28s-28,-12 -28,-28z"/>
+    <!-- Steam curls -->
+    <path
+        android:strokeColor="#FFD600"
+        android:strokeWidth="3"
+        android:strokeLineCap="round"
+        android:pathData="M36,22q-4,-5 0,-9 M48,20q-4,-5 0,-9 M60,22q-4,-5 0,-9"/>
+</vector>

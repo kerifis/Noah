@@ -1,0 +1,36 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="96dp"
+    android:height="96dp"
+    android:viewportWidth="96"
+    android:viewportHeight="96">
+    <!-- Watermelon TV icon (CoComelon) -->
+    <!-- Watermelon Round Body -->
+    <path
+        android:fillColor="#4CAF50"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="3.5"
+        android:pathData="M48,16a32,32 0,1 1,-0.01 0z"/>
+    <!-- Stripes -->
+    <path
+        android:strokeColor="#2E7D32"
+        android:strokeWidth="4"
+        android:pathData="M32,24c-6,14 -6,34 0,48 M64,24c6,14 6,34 0,48 M48,16v64"/>
+    <!-- TV Antenna & Ladybug -->
+    <path
+        android:strokeColor="#FFD600"
+        android:strokeWidth="3"
+        android:pathData="M42,16l-8,-8 M54,16l8,-8"/>
+    <!-- Cute Eyes -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M38,44a5,5 0,1 1,-0.01 0z M58,44a5,5 0,1 1,-0.01 0z"/>
+    <path
+        android:fillColor="#0A0E17"
+        android:pathData="M40,44a2.5,2.5 0,1 1,-0.01 0z M60,44a2.5,2.5 0,1 1,-0.01 0z"/>
+    <!-- Smile -->
+    <path
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="3"
+        android:strokeLineCap="round"
+        android:pathData="M42,56q6,6 12,0"/>
+</vector>

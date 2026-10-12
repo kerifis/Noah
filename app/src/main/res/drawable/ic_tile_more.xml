@@ -1,0 +1,33 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="96dp"
+    android:height="96dp"
+    android:viewportWidth="96"
+    android:viewportHeight="96">
+    <!-- Big distinct Plus symbol and multiple shapes (AAC MORE) -->
+    <path
+        android:fillColor="#4CAF50"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="4"
+        android:pathData="M40,18h16v22h22v16h-22v22h-16v-22h-22v-16h22z"/>
+    <!-- Stack of circles / accumulating items -->
+    <path
+        android:fillColor="#FFD600"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="2"
+        android:pathData="M24,24a8,8 0,1 1,-0.01 0z"/>
+    <path
+        android:fillColor="#FFD600"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="2"
+        android:pathData="M72,72a8,8 0,1 1,-0.01 0z"/>
+    <path
+        android:fillColor="#00E5FF"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="2"
+        android:pathData="M72,24a8,8 0,1 1,-0.01 0z"/>
+    <path
+        android:fillColor="#00E5FF"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="2"
+        android:pathData="M24,72a8,8 0,1 1,-0.01 0z"/>
+</vector>

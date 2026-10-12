@@ -1,0 +1,22 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="96dp"
+    android:height="96dp"
+    android:viewportWidth="96"
+    android:viewportHeight="96">
+    <!-- Circular refresh / repeat arrow (AGAIN / REPEAT) -->
+    <path
+        android:strokeColor="#4CAF50"
+        android:strokeWidth="8"
+        android:strokeLineCap="round"
+        android:pathData="M74,48a26,26 0,1 1,-7 -18"/>
+    <!-- Arrowhead -->
+    <path
+        android:fillColor="#4CAF50"
+        android:pathData="M64,16l14,14l-18,6z"/>
+    <!-- Number 1 or exclamation in center -->
+    <path
+        android:fillColor="#FFD600"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="1.5"
+        android:pathData="M48,34a5,5 0,1 0,0 10a5,5 0,1 0,0 -10z M44,48h8v16h-8z"/>
+</vector>

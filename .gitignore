@@ -1,0 +1,31 @@
+# Gradle
+.gradle/
+.gradle-user/
+build/
+local.properties
+
+# Android
+.android-user/
+
+# IDE
+.idea/
+*.iml
+
+# Keystore (keep debug keystore in repo for team builds)
+# keystore/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Analytics
+analytics.settings
+
+# AbacusAI
+.abacusai/
+
+# Gemini / Antigravity
+.agents/
+
+# Logs
+*.log

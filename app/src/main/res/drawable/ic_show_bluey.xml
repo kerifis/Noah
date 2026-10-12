@@ -1,0 +1,34 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="96dp"
+    android:height="96dp"
+    android:viewportWidth="96"
+    android:viewportHeight="96">
+    <!-- Blue Heeler Puppy Face / Bluey Silhouette -->
+    <!-- Head -->
+    <path
+        android:fillColor="#29B6F6"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="3.5"
+        android:pathData="M24,34h48v44h-48z"/>
+    <!-- Ears -->
+    <path
+        android:fillColor="#0288D1"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="3"
+        android:pathData="M24,34l-8,-18l18,6z M72,34l8,-18l-18,6z"/>
+    <!-- Eyebrows / patches -->
+    <path
+        android:fillColor="#B3E5FC"
+        android:pathData="M28,40h16v14h-16z M52,40h16v14h-16z"/>
+    <!-- Eyes -->
+    <path
+        android:fillColor="#0A0E17"
+        android:pathData="M34,46a3,3 0,1 1,-0.01 0z M58,46a3,3 0,1 1,-0.01 0z"/>
+    <!-- Snout & Nose -->
+    <path
+        android:fillColor="#FFE082"
+        android:pathData="M38,58h20v14h-20z"/>
+    <path
+        android:fillColor="#0A0E17"
+        android:pathData="M44,60h8v5h-8z"/>
+</vector>

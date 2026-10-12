@@ -1,0 +1,23 @@
+<resources>
+    <string name="app_name">TalkTV</string>
+    <string name="app_tagline">AAC Remote Communication for TV</string>
+    
+    <!-- Actions -->
+    <string name="action_clear">Clear</string>
+    <string name="action_speak">Speak Phrase</string>
+    <string name="action_settings">Caregiver Settings</string>
+    <string name="action_unlock_next">Unlock Next Stage</string>
+    <string name="action_back">Back to Home</string>
+    <string name="action_pin_enter">Enter Caregiver PIN (Default: 1234)</string>
+    <string name="action_pin_error">Incorrect PIN. Try again.</string>
+    
+    <!-- Stages -->
+    <string name="stage_1_name">Stage 1: Single-Tile Requests</string>
+    <string name="stage_2_name">Stage 2: Two-Tile Phrases ("I want")</string>
+    <string name="stage_3_name">Stage 3: Feelings &amp; Choices</string>
+    <string name="stage_4_name">Stage 4: Full Communication Board</string>
+    
+    <!-- TTS Defaults -->
+    <string name="phrase_empty_hint">Select tiles using remote D-pad to communicate</string>
+    <string name="caregiver_pin_default">1234</string>
+</resources>

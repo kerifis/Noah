@@ -1,0 +1,29 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="96dp"
+    android:height="96dp"
+    android:viewportWidth="96"
+    android:viewportHeight="96">
+    <!-- Artist Palette & Color Swatches (Describe / Descriptors - Blue) -->
+    <path
+        android:fillColor="#29B6F6"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="3.5"
+        android:pathData="M48,16c-18,0 -32,13 -32,29c0,16 11,26 23,26c4,0 7,-3 7,-7c0,-2 -1,-5 -2,-6c-1,-2 -2,-4 -2,-6c0,-4 3,-7 7,-7h6c14,0 25,-11 25,-25c0,-16 -13,-4 -32,-4z"/>
+    <!-- Palette Paint spots -->
+    <path
+        android:fillColor="#FFCA28"
+        android:pathData="M32,32a4,4 0,1 1,-0.01 0z"/>
+    <path
+        android:fillColor="#4CAF50"
+        android:pathData="M44,26a4,4 0,1 1,-0.01 0z"/>
+    <path
+        android:fillColor="#EF5350"
+        android:pathData="M58,28a4,4 0,1 1,-0.01 0z"/>
+    <path
+        android:fillColor="#AB47BC"
+        android:pathData="M66,38a4,4 0,1 1,-0.01 0z"/>
+    <!-- Thumb hole -->
+    <path
+        android:fillColor="#0A0E17"
+        android:pathData="M34,54a5,5 0,1 1,-0.01 0z"/>
+</vector>

@@ -1,0 +1,16 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="96dp"
+    android:height="96dp"
+    android:viewportWidth="96"
+    android:viewportHeight="96">
+    <!-- Red Stop Octagon -->
+    <path
+        android:fillColor="#E53935"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="4"
+        android:pathData="M30,12h36l20,20v36l-20,20h-36l-20,-20v-36z"/>
+    <!-- Open Hand Palm inside (ARASAAC STOP) -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M48,26c-3,0 -5,2 -5,5v16h-2c-2,0 -4,2 -4,4v8c0,11 8,20 18,20s18,-9 18,-20v-10c0,-2 -2,-4 -4,-4h-2v-9c0,-3 -2,-5 -5,-5c-2,0 -3,1 -4,3c-1,-2 -3,-3 -5,-3c-2,0 -4,1 -5,3v-5c0,-3 -2,-5 -5,-5z"/>
+</vector>

@@ -1,0 +1,40 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="96dp"
+    android:height="96dp"
+    android:viewportWidth="96"
+    android:viewportHeight="96">
+    <!-- People group (Family / Mom / Dad / Teacher - Yellow / AAC Core Group) -->
+    <!-- Center Person -->
+    <path
+        android:fillColor="#FFCA28"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="2.5"
+        android:pathData="M48,22a8,8 0,1 1,-0.01 0z"/>
+    <path
+        android:fillColor="#FFCA28"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="2.5"
+        android:pathData="M38,44c0,-6 4,-10 10,-10s10,4 10,10v22h-20z"/>
+    <!-- Left Person -->
+    <path
+        android:fillColor="#FFA726"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="2"
+        android:pathData="M26,30a6,6 0,1 1,-0.01 0z"/>
+    <path
+        android:fillColor="#FFA726"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="2"
+        android:pathData="M18,48c0,-5 3,-8 8,-8s8,3 8,8v18h-16z"/>
+    <!-- Right Person -->
+    <path
+        android:fillColor="#FFA726"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="2"
+        android:pathData="M70,30a6,6 0,1 1,-0.01 0z"/>
+    <path
+        android:fillColor="#FFA726"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="2"
+        android:pathData="M62,48c0,-5 3,-8 8,-8s8,3 8,8v18h-16z"/>
+</vector>

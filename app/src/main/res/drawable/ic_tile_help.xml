@@ -1,0 +1,19 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="96dp"
+    android:height="96dp"
+    android:viewportWidth="96"
+    android:viewportHeight="96">
+    <!-- Lifebuoy / Helping Hands (AAC HELP) -->
+    <path
+        android:strokeColor="#FF9800"
+        android:strokeWidth="10"
+        android:pathData="M48,16a32,32 0,1 1,-0.01 0z"/>
+    <!-- Cross stripes on lifebuoy -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M43,16h10v16h-10z M43,64h10v16h-10z M16,43h16v10h-16z M64,43h16v10h-16z"/>
+    <!-- Exclamation / hand symbol inside -->
+    <path
+        android:fillColor="#FFD600"
+        android:pathData="M45,34h6v18h-6z M45,56h6v6h-6z"/>
+</vector>

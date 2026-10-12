@@ -1,0 +1,36 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="96dp"
+    android:height="96dp"
+    android:viewportWidth="96"
+    android:viewportHeight="96">
+    <!-- Friendly Lion Face (Animal Documentaries / Kids Wildlife) -->
+    <!-- Mane -->
+    <path
+        android:fillColor="#FF9800"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="3"
+        android:pathData="M48,12a36,36 0,1 1,-0.01 0z"/>
+    <!-- Face -->
+    <path
+        android:fillColor="#FFCA28"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="2"
+        android:pathData="M48,22a24,24 0,1 1,-0.01 0z"/>
+    <!-- Ears -->
+    <path
+        android:fillColor="#FF9800"
+        android:pathData="M28,26a6,6 0,1 1,-0.01 0z M68,26a6,6 0,1 1,-0.01 0z"/>
+    <!-- Eyes -->
+    <path
+        android:fillColor="#0A0E17"
+        android:pathData="M40,38a3,3 0,1 1,-0.01 0z M56,38a3,3 0,1 1,-0.01 0z"/>
+    <!-- Nose & Whiskers -->
+    <path
+        android:fillColor="#8D6E63"
+        android:pathData="M44,48h8l-4,5z"/>
+    <path
+        android:strokeColor="#0A0E17"
+        android:strokeWidth="2"
+        android:strokeLineCap="round"
+        android:pathData="M44,53q4,4 8,0 M28,50h10 M28,54h10 M58,50h10 M58,54h10"/>
+</vector>

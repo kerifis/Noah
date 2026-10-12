@@ -1,0 +1,23 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="96dp"
+    android:height="96dp"
+    android:viewportWidth="96"
+    android:viewportHeight="96">
+    <!-- Headphones & Beamed Eighth Notes (Music) -->
+    <!-- Headphone band -->
+    <path
+        android:strokeColor="#AB47BC"
+        android:strokeWidth="6"
+        android:strokeLineCap="round"
+        android:pathData="M24,54c0,-16 10,-28 24,-28s24,12 24,28"/>
+    <!-- Headphone cups -->
+    <path
+        android:fillColor="#AB47BC"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="3"
+        android:pathData="M16,50h12a4,4 0,0 1,4 4v16a4,4 0,0 1,-4 4h-12a4,4 0,0 1,-4 -4v-16a4,4 0,0 1,4 -4z M68,50h12a4,4 0,0 1,4 4v16a4,4 0,0 1,-4 4h-12a4,4 0,0 1,-4 -4v-16a4,4 0,0 1,4 -4z"/>
+    <!-- Music note in center -->
+    <path
+        android:fillColor="#FFD600"
+        android:pathData="M44,48v16a6,6 0,1 1,-4 -5.5v-10.5h12v16a6,6 0,1 1,-4 -5.5v-10h-4z"/>
+</vector>

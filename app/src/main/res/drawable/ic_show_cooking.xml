@@ -1,0 +1,37 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="96dp"
+    android:height="96dp"
+    android:viewportWidth="96"
+    android:viewportHeight="96">
+    <!-- Stack of fluffy golden pancakes with butter & syrup (Cooking Show) -->
+    <!-- Plate -->
+    <path
+        android:fillColor="#90CAF9"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="3"
+        android:pathData="M16,68h64a6,6 0,0 1,0 12h-64a6,6 0,0 1,0 -12z"/>
+    <!-- Bottom Pancake -->
+    <path
+        android:fillColor="#FFA726"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="2.5"
+        android:pathData="M24,56h48a6,6 0,0 1,0 12h-48a6,6 0,0 1,0 -12z"/>
+    <!-- Middle Pancake -->
+    <path
+        android:fillColor="#FFB74D"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="2.5"
+        android:pathData="M26,44h44a6,6 0,0 1,0 12h-44a6,6 0,0 1,0 -12z"/>
+    <!-- Top Pancake -->
+    <path
+        android:fillColor="#FFCC80"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="2.5"
+        android:pathData="M28,32h40a6,6 0,0 1,0 12h-40a6,6 0,0 1,0 -12z"/>
+    <!-- Melting Butter Cube -->
+    <path
+        android:fillColor="#FFD600"
+        android:strokeColor="#0A0E17"
+        android:strokeWidth="1.5"
+        android:pathData="M42,24h12v8h-12z"/>
+</vector>

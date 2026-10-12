@@ -1,0 +1,17 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="96dp"
+    android:height="96dp"
+    android:viewportWidth="96"
+    android:viewportHeight="96">
+    <!-- Star with golden glow (Favorites) -->
+    <path
+        android:fillColor="#FFCA28"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="4"
+        android:strokeLineJoin="round"
+        android:pathData="M48,14l10,21l23,3l-17,16l4,23l-20,-11l-20,11l4,-23l-17,-16l23,-3z"/>
+    <!-- Center sparkle -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M48,34l2,6l6,2l-6,2l-2,6l-2,-6l-6,-2l6,-2z"/>
+</vector>

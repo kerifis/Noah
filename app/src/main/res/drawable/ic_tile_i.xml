@@ -1,0 +1,31 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="96dp"
+    android:height="96dp"
+    android:viewportWidth="96"
+    android:viewportHeight="96">
+    <!-- Person figure pointing to chest (AAC standard representation of "I / ME") -->
+    <!-- Head -->
+    <path
+        android:fillColor="#FFCA28"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="3"
+        android:pathData="M48,16a12,12 0,1 1,-0.01 0z"/>
+    <!-- Body -->
+    <path
+        android:fillColor="#FFCA28"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="3"
+        android:pathData="M32,48c0,-8 7,-14 16,-14s16,6 16,14v28h-32z"/>
+    <!-- Arrow pointing directly to self/chest -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:strokeColor="#0A0E17"
+        android:strokeWidth="2"
+        android:pathData="M78,48h-18l6,-6 -14,6 14,6 -6,-6z"/>
+    <!-- Left arm pointing to chest -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:strokeColor="#0A0E17"
+        android:strokeWidth="2.5"
+        android:pathData="M64,52L52,52l4,-4z"/>
+</vector>

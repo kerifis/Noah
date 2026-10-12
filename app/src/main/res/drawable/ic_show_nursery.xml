@@ -1,0 +1,30 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="96dp"
+    android:height="96dp"
+    android:viewportWidth="96"
+    android:viewportHeight="96">
+    <!-- Star & Musical Notes (Nursery Rhymes / Kids Songs) -->
+    <!-- Smiling Star -->
+    <path
+        android:fillColor="#FFD600"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="3.5"
+        android:strokeLineJoin="round"
+        android:pathData="M48,16l9,18l20,3l-15,14l4,20l-18,-10l-18,10l4,-20l-15,-14l20,-3z"/>
+    <!-- Eyes and smile on star -->
+    <path
+        android:fillColor="#0A0E17"
+        android:pathData="M42,36a2.5,2.5 0,1 1,-0.01 0z M54,36a2.5,2.5 0,1 1,-0.01 0z"/>
+    <path
+        android:strokeColor="#0A0E17"
+        android:strokeWidth="2"
+        android:strokeLineCap="round"
+        android:pathData="M44,44q4,4 8,0"/>
+    <!-- Floating Music Notes -->
+    <path
+        android:fillColor="#00E5FF"
+        android:pathData="M18,32v12a4,4 0,1 1,-3 -3.8v-8.2h8v12a4,4 0,1 1,-3 -3.8v-8.2z"/>
+    <path
+        android:fillColor="#00E5FF"
+        android:pathData="M78,60v10a3,3 0,1 1,-2 -2.8v-7.2h6z"/>
+</vector>

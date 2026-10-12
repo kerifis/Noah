@@ -1,0 +1,21 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="128dp"
+    android:height="128dp"
+    android:viewportWidth="128"
+    android:viewportHeight="128">
+    <path
+        android:fillColor="#0A0E17"
+        android:pathData="M16,16h96a16,16 0,0 1,16 16v64a16,16 0,0 1,-16 16h-96a16,16 0,0 1,-16 -16v-64a16,16 0,0 1,16 -16z"/>
+    <!-- Screen frame -->
+    <path
+        android:fillColor="#00E5FF"
+        android:pathData="M24,26h80a8,8 0,0 1,8 8v48a8,8 0,0 1,-8 8h-80a8,8 0,0 1,-8 -8v-48a8,8 0,0 1,8 -8z"/>
+    <!-- Inner speech & heart symbol -->
+    <path
+        android:fillColor="#0A0E17"
+        android:pathData="M44,40h40a6,6 0,0 1,6 6v22a6,6 0,0 1,-6 6h-14l-10,8v-8h-16a6,6 0,0 1,-6 -6v-22a6,6 0,0 1,6 -6z"/>
+    <!-- Yellow soundwaves / smile -->
+    <path
+        android:fillColor="#FFD600"
+        android:pathData="M54,53a10,10 0,0 0,20 0h-4a6,6 0,0 1,-12 0z"/>
+</vector>

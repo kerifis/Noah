@@ -1,0 +1,26 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="96dp"
+    android:height="96dp"
+    android:viewportWidth="96"
+    android:viewportHeight="96">
+    <!-- Smiling & Gentle Face (FEEL / EMOTIONS - Blue / Descriptors) -->
+    <path
+        android:fillColor="#29B6F6"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="3.5"
+        android:pathData="M48,16a32,32 0,1 1,-0.01 0z"/>
+    <!-- Eyes -->
+    <path
+        android:fillColor="#0A0E17"
+        android:pathData="M34,40a4,4 0,1 1,-0.01 0z M62,40a4,4 0,1 1,-0.01 0z"/>
+    <!-- Gentle Smile -->
+    <path
+        android:strokeColor="#0A0E17"
+        android:strokeWidth="4"
+        android:strokeLineCap="round"
+        android:pathData="M34,56c4,8 20,8 28,0"/>
+    <!-- Heart above for emotional state -->
+    <path
+        android:fillColor="#FFD600"
+        android:pathData="M48,32l-4,-4c-2,-2 -2,-5 0,-7c2,-2 5,-2 7,0c2,-2 5,-2 7,0c2,2 2,5 0,7z"/>
+</vector>

@@ -1,0 +1,36 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="96dp"
+    android:height="96dp"
+    android:viewportWidth="96"
+    android:viewportHeight="96">
+    <!-- Steam Train Locomotive (Favorite / Trains) -->
+    <!-- Cabin -->
+    <path
+        android:fillColor="#2196F3"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="3"
+        android:pathData="M48,32h28v36h-28z"/>
+    <!-- Window -->
+    <path
+        android:fillColor="#FFD600"
+        android:pathData="M54,38h16v14h-16z"/>
+    <!-- Engine Boiler -->
+    <path
+        android:fillColor="#EF5350"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="3"
+        android:pathData="M20,44h30v24h-30z"/>
+    <!-- Smokestack & Steam -->
+    <path
+        android:fillColor="#FFA726"
+        android:pathData="M26,30h8v14h-8z"/>
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M24,20a5,5 0,1 1,-0.01 0z M32,14a6,6 0,1 1,-0.01 0z"/>
+    <!-- Wheels -->
+    <path
+        android:fillColor="#FFCA28"
+        android:strokeColor="#0A0E17"
+        android:strokeWidth="2"
+        android:pathData="M28,68a7,7 0,1 1,-0.01 0z M44,68a7,7 0,1 1,-0.01 0z M64,66a9,9 0,1 1,-0.01 0z"/>
+</vector>
