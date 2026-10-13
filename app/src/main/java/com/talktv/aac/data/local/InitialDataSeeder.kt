@@ -91,7 +91,7 @@ object InitialDataSeeder {
             Tile(
                 id = "core_i",
                 word = "I",
-                iconRes = "ic_3d_i",
+                iconRes = "memoji_noah_3d_v2",
                 category = TileCategory.CORE,
                 action = TileAction.SPEAK_ONLY,
                 unlockStage = 2,

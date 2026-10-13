@@ -53,7 +53,8 @@ fun TileCard(
     // Determine drawable resource ID
     val drawableResId = remember(tile.iconRes) {
         val upgradedIcon = mapOf(
-            "ic_tile_i" to "ic_3d_i",
+            "ic_tile_i" to "memoji_noah_3d_v2",
+            "ic_3d_i" to "memoji_noah_3d_v2",
             "ic_tile_want" to "ic_3d_want",
             "ic_tile_more" to "ic_3d_more",
             "ic_tile_stop" to "ic_3d_stop",

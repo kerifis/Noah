@@ -44,7 +44,7 @@ fun Apple3DHomeScreen(
     val tiles = remember {
         listOf(
             // Column 1-2: Core Pronouns & People (Yellow Frosted Glass with Apple Memojis)
-            TileModel("i", "I", TileGrammarCategory.PRONOUN, "👦", 0, 0, "memoji_noah_boy"),
+            TileModel("i", "I", TileGrammarCategory.PRONOUN, "👦", 0, 0, "memoji_noah_3d_v2"),
             TileModel("you", "you", TileGrammarCategory.PRONOUN, "👤", 1, 0, "memoji_orange_hair_man"),
 
             // Column 3-4: Core Verbs (Emerald Green Frosted Glass with 3D Textured Hands)

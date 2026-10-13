@@ -1138,10 +1138,101 @@
       width: 16px;
       height: 12px;
     }
+
+    /* 4K TV MASTER LAYOUT — authored at 3840 × 2160 and uniformly scaled. */
+    body {
+      display: grid;
+      place-items: center;
+      width: 100vw;
+      height: 100vh;
+      background: radial-gradient(circle at 50% 45%, rgba(23,47,88,.28), transparent 55%), #02050B;
+    }
+    #tv-canvas {
+      --canvas-scale: 1;
+      position: absolute;
+      left: 50%; top: 50%;
+      width: 3840px; height: 2160px;
+      padding: 48px;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 720px;
+      gap: 28px;
+      overflow: hidden;
+      transform: translate(-50%, -50%) scale(var(--canvas-scale));
+      transform-origin: center;
+      background: radial-gradient(130% 110% at 38% 0%, rgba(35,75,139,.36), transparent 58%), linear-gradient(145deg,#07101F,#030812 70%,#02050B);
+    }
+    #tv-stage {
+      width: auto; height: auto; min-width: 0; min-height: 0;
+      padding: 28px 32px 32px; gap: 22px;
+      border: 2px solid rgba(93,139,211,.34); border-radius: 34px;
+      background: radial-gradient(110% 80% at 50% -10%,rgba(41,87,158,.42),transparent 58%),linear-gradient(180deg,rgba(13,27,50,.98),rgba(5,12,24,.99));
+      box-shadow: inset 0 1px rgba(255,255,255,.12),0 35px 90px rgba(0,0,0,.55);
+    }
+    #header-bar { height: 132px; gap: 28px; }
+    .brand { gap: 22px; }
+    .brand-icon { width:92px;height:92px;border-radius:25px;font-size:46px;box-shadow:0 0 34px rgba(0,229,255,.48),inset 0 2px 2px rgba(255,255,255,.55); }
+    .brand-title { font-size:48px;letter-spacing:-1px; }
+    .brand-sub { font-size:19px;letter-spacing:2.4px;margin-top:5px; }
+    #phrase-container { gap:18px;padding:5px 8px; }
+    .phrase-chip { padding:17px 34px;border-radius:26px;border-width:3px;font-size:28px;box-shadow:inset 0 2px 2px rgba(255,255,255,.35),0 0 28px rgba(43,104,197,.5); }
+    .phrase-clear-btn { width:68px;height:68px;font-size:28px;border-width:2px; }
+    #tv-clock { min-width:150px;padding:14px 22px;border:2px solid rgba(92,127,182,.42);border-radius:24px;background:linear-gradient(180deg,#172641,#0A1425);color:#DCEAFF;font-size:25px;font-weight:900;text-align:center;box-shadow:inset 0 2px rgba(255,255,255,.13),0 12px 30px rgba(0,0,0,.4); }
+    #ai-subtitle-bar { min-height:112px;padding:16px 24px;border-radius:26px;border-width:2px;gap:28px; }
+    .subtitle-content-left { gap:24px; }
+    .cc-badge { font-size:24px;padding:13px 26px;border-radius:30px;border-width:2px; }
+    .predicted-sentence { font-size:32px; }
+    .btn-confirm-subtitle { padding:18px 38px;border-radius:24px;border-width:2px;font-size:27px;gap:14px;box-shadow:inset 0 2px rgba(255,255,255,.6),0 10px 36px rgba(245,158,11,.42); }
+    .btn-confirm-subtitle span:first-child { font-size:30px !important; }
+    .view-container { min-height:0;overflow:hidden; }
+    .wordpower-grid,.wordpower-grid.wp60 { height:100%;min-height:0;grid-template-columns:repeat(8,minmax(0,1fr));grid-template-rows:repeat(6,minmax(0,1fr));gap:18px;padding:0; }
+    .wordpower-grid.wp80 { grid-template-columns:repeat(10,minmax(0,1fr));grid-template-rows:repeat(8,minmax(0,1fr));gap:12px; }
+    .wp-tile,.wordpower-grid.wp60 .wp-tile { width:100%;height:100%;min-height:0;padding:12px 9px 13px;border-width:4px;border-radius:24px;background:linear-gradient(155deg,rgba(29,48,80,.97),rgba(8,17,31,.99) 68%);box-shadow:inset 0 2px rgba(255,255,255,.17),0 12px 28px rgba(0,0,0,.44); }
+    .tile-icon-wrapper,.wordpower-grid.wp60 .tile-icon-wrapper { height:auto;min-height:0;flex:1; }
+    .tile-3d-img,.wordpower-grid.wp60 .tile-3d-img { width:158px;height:158px;border-radius:28px;filter:drop-shadow(0 14px 18px rgba(0,0,0,.58)); }
+    .tile-3d-svg,.wordpower-grid.wp60 .tile-3d-svg { width:144px;height:144px; }
+    .dual-memoji { width:168px;height:136px; }
+    .dual-memoji img:first-child,.dual-memoji img:last-child { width:108px;height:108px; }
+    .tile-word,.wordpower-grid.wp60 .tile-word { font-size:28px;letter-spacing:1.2px;margin-top:4px;text-shadow:0 3px 7px rgba(0,0,0,.95); }
+    .wp-tile.focused { transform:scale(1.055) translateY(-5px);box-shadow:0 0 50px rgba(0,229,255,.9),inset 0 0 18px rgba(0,229,255,.34); }
+    #remote-sidebar { width:auto;height:auto;min-height:0;margin:0;padding:30px;gap:22px;overflow:hidden;border-width:2px;border-radius:34px;background:radial-gradient(110% 65% at 50% 0%,rgba(31,70,132,.32),transparent 62%),linear-gradient(180deg,rgba(12,25,47,.99),rgba(4,10,20,.99));box-shadow:inset 0 1px rgba(255,255,255,.12),0 35px 90px rgba(0,0,0,.55); }
+    .remote-title { font-size:34px;letter-spacing:1.4px; }
+    .ai-active-pill { font-size:20px;padding:9px 18px;border-radius:18px; }
+    .ai-active-dot,.back-led-dot { width:13px;height:13px; }
+    .mode-toggle-group { padding:7px;border-radius:22px;gap:6px;border-width:2px; }
+    .mode-btn { padding:15px 8px;font-size:20px;border-radius:16px; }
+    .dpad-container { padding:26px 20px;border-radius:28px;gap:10px;border-width:2px; }
+    .dpad-row { gap:12px; }
+    .dpad-btn { width:96px;height:88px;border-radius:20px;font-size:31px;border-width:2px; }
+    .dpad-btn.center { font-size:25px;border-width:3px; }
+    .back-btn-row { margin-top:10px; }
+    .dpad-btn.back-btn { height:70px;font-size:23px;border-radius:20px;border-width:2px; }
+    #btn-toggle-pip { display:none; }
+    .curriculum-row { font-size:20px;padding:2px 4px; }
+    .curriculum-badge { padding:8px 14px;border-radius:13px;font-size:19px; }
+    .telemetry-box { padding:18px 20px;border-radius:22px;gap:8px;border-width:2px; }
+    .telemetry-title { font-size:19px;margin-bottom:4px; }
+    .telemetry-row { font-size:20px; }
+    .memoji-picker-box,.stat-badge { display:none; }
+    .pip-window { position:static;width:100%;height:430px;margin-top:auto;flex:0 0 auto;border-width:3px;border-radius:26px;z-index:auto; }
+    .pip-window.expanded { position:absolute;left:650px;top:360px;right:auto;bottom:auto;width:2540px;height:1429px;z-index:150; }
+    .pip-header-bar { padding:12px 18px;gap:12px; }
+    .pip-badge { padding:7px 14px;border-radius:18px;font-size:18px; }
+    .pip-live-dot { width:12px;height:12px; }
+    .pip-controls { gap:9px; }
+    .pip-ctrl-btn { width:42px;height:42px;border-radius:12px;font-size:18px; }
+    .pip-footer-bar { padding:10px 18px;font-size:18px; }
+    .pip-yt-badge { font-size:17px; }
+    .pip-yt-icon { width:28px;height:20px; }
+    #reward-player-overlay { border-radius:32px;padding:32px;gap:22px; }
+    .reward-banner { font-size:32px;padding:16px 26px;border-radius:20px; }
+    .reward-pill-btn,.reward-yt-btn,.reward-close-btn { font-size:22px;padding:11px 20px; }
+    .reward-footer-bar { font-size:22px;min-height:46px; }
   </style>
 </head>
 
 <body>
+
+  <main id="tv-canvas" aria-label="TalkTV 4K simulator">
 
   <!-- TV DISPLAY STAGE -->
   <div id="tv-stage">
@@ -1162,6 +1253,7 @@
       </div>
 
       <button class="phrase-clear-btn" title="Clear Phrase" onclick="clearPhrase()">✕</button>
+      <div id="tv-clock" aria-label="Current time">10:30 AM</div>
     </div>
 
     <!-- AI SUBTITLE PREDICTION BAR (Closed Captions Row in Screenshot) -->
@@ -1295,8 +1387,8 @@
     <!-- BOARD MODE SWITCHER (WordPower 80 by default, plus WP 60 screenshot mode & Staged) -->
     <div class="mode-toggle-group">
       <button class="mode-btn" id="btn-mode-staged" onclick="switchBoardMode('staged')">Staged TV</button>
-      <button class="mode-btn" id="btn-mode-wp60" onclick="switchBoardMode('wp60')">WP 60 (Photo)</button>
-      <button class="mode-btn active" id="btn-mode-wp80" onclick="switchBoardMode('wp80')">WordPower 80</button>
+      <button class="mode-btn active" id="btn-mode-wp60" onclick="switchBoardMode('wp60')">WordPower 60</button>
+      <button class="mode-btn" id="btn-mode-wp80" onclick="switchBoardMode('wp80')">WordPower 80</button>
     </div>
 
     <!-- 3D TACTILE METALLIC D-PAD INTERFACE -->
@@ -1354,8 +1446,8 @@
       </div>
       <div class="memoji-avatar-row">
         <button class="memoji-mini-btn" title="Noah (Freckles Boy)"
-          onclick="setNoahAvatar('./assets/memojis/memoji_noah_boy.png')">
-          <img src="./assets/memojis/memoji_noah_boy.png" alt="Noah">
+          onclick="setNoahAvatar('./assets/memojis/memoji_noah_3d_v2.png')">
+          <img src="./assets/memojis/memoji_noah_3d_v2.png" alt="Noah">
         </button>
         <button class="memoji-mini-btn" title="Teacher Zayd (Brown Skin Man)"
           onclick="setNoahAvatar('./assets/memojis/memoji_brown_skin_man.png')">
@@ -1392,6 +1484,8 @@
 
   </div>
 
+  </main>
+
   <script>
     // State
     let activePhrase = ["I", "DRINK", "MORE", "AGAIN"];
@@ -1399,8 +1493,8 @@
     let focusableElements = [];
     let totalPresses = 8;
     let rewardedCount = 1;
-    let currentBoardMode = 'wp80'; // 'wp80', 'wp60', or 'staged'
-    let currentNoahAvatar = "./assets/memojis/memoji_noah_boy.png";
+    let currentBoardMode = 'wp60'; // 4K default: compact 8 × 6 board
+    let currentNoahAvatar = "./assets/memojis/memoji_noah_3d_v2.png";
 
     function setNoahAvatar(src) {
       currentNoahAvatar = src;
@@ -1515,7 +1609,7 @@
       if (tile.word === "WE") {
         return `
           <div class="dual-memoji">
-            <img src="./assets/memojis/memoji_noah_boy.png" alt="We 1" class="memoji-fit" />
+            <img src="./assets/memojis/memoji_noah_3d_v2.png" alt="We 1" class="memoji-fit" />
             <img src="./assets/memojis/memoji_boy_green_glasses.png" alt="We 2" class="memoji-fit" />
           </div>
         `;
@@ -1539,7 +1633,7 @@
       if (tile.word === "BYE") {
         return `
           <div class="dual-memoji">
-            <img src="./assets/memojis/memoji_noah_boy.png" alt="Bye" class="memoji-fit" />
+            <img src="./assets/memojis/memoji_noah_3d_v2.png" alt="Bye" class="memoji-fit" />
             <span style="position:absolute; right:1px; top:2px; font-size:18px;">👋</span>
           </div>
         `;
@@ -1907,7 +2001,7 @@
         document.getElementById("curriculum-badge-text").innerText = "Stage 2: Two-Tile (60 Grid)";
         wordpower60Tiles.forEach(tile => mainGrid.appendChild(createTileElement(tile)));
       } else if (currentBoardMode === 'wp80') {
-        mainGrid.className = "wordpower-grid";
+        mainGrid.className = "wordpower-grid wp80";
         document.getElementById("brand-sub-label").innerText = "WORDPOWER™ 80 Grid";
         document.getElementById("curriculum-badge-text").innerText = "Stage 4: WordPower 80";
         wordpower80Tiles.forEach(tile => mainGrid.appendChild(createTileElement(tile)));
@@ -2382,6 +2476,32 @@
         togglePipWindow();
       }
     });
+
+    function fit4kCanvas() {
+      const canvas = document.getElementById("tv-canvas");
+      if (!canvas) return;
+      const scale = Math.min(window.innerWidth / 3840, window.innerHeight / 2160);
+      canvas.style.setProperty("--canvas-scale", scale.toFixed(5));
+    }
+
+    function updateTvClock() {
+      const clock = document.getElementById("tv-clock");
+      if (clock) {
+        clock.textContent = new Intl.DateTimeFormat([], {
+          hour: "numeric",
+          minute: "2-digit"
+        }).format(new Date());
+      }
+    }
+
+    // The concept layout keeps video inside the remote rail instead of over the word grid.
+    const remoteRail = document.getElementById("remote-sidebar");
+    const pipWindow = document.getElementById("pip-live-cooking-window");
+    if (remoteRail && pipWindow) remoteRail.appendChild(pipWindow);
+    window.addEventListener("resize", fit4kCanvas);
+    fit4kCanvas();
+    updateTvClock();
+    setInterval(updateTvClock, 30000);
 
     // Init
     renderBoard();

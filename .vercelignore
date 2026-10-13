@@ -1,0 +1,17 @@
+.git
+.gradle
+.gradle-user
+.android-user
+.tools
+.abacusai
+.agents
+.idea
+tmp
+app
+gradle
+keystore
+TalkTV_Apple3DEdition
+USB-INSTALL
+*.apk
+*.log
+local.properties

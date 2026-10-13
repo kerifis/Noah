@@ -30,6 +30,10 @@ analytics.settings
 # Logs
 *.log
 
+# Local image-generation and browser validation artifacts
+.tools/
+tmp/
+
 # Release artifacts in root
 /*.apk
 release_notes.md

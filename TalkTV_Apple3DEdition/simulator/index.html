@@ -1198,8 +1198,8 @@
         <span style="color: var(--focus-yellow);">CUSTOMIZE "I"</span>
       </div>
       <div class="memoji-avatar-row">
-        <button class="memoji-mini-btn" title="Noah (Freckles Boy)" onclick="setNoahAvatar('./assets/memojis/memoji_noah_boy.png')">
-          <img src="./assets/memojis/memoji_noah_boy.png" alt="Noah">
+        <button class="memoji-mini-btn" title="Noah (Freckles Boy)" onclick="setNoahAvatar('./assets/memojis/memoji_noah_3d_v2.png')">
+          <img src="./assets/memojis/memoji_noah_3d_v2.png" alt="Noah">
         </button>
         <button class="memoji-mini-btn" title="Teacher Zayd (Brown Skin Man)" onclick="setNoahAvatar('./assets/memojis/memoji_brown_skin_man.png')">
           <img src="./assets/memojis/memoji_brown_skin_man.png" alt="Teacher">
@@ -1239,7 +1239,7 @@
     let totalPresses = 8;
     let rewardedCount = 1;
     let currentBoardMode = 'wp80'; // 'wp80', 'wp60', or 'staged'
-    let currentNoahAvatar = "./assets/memojis/memoji_noah_boy.png";
+    let currentNoahAvatar = "./assets/memojis/memoji_noah_3d_v2.png";
 
     function setNoahAvatar(src) {
       currentNoahAvatar = src;
@@ -1340,7 +1340,7 @@
       if (tile.word === "WE") {
         return `
           <div class="dual-memoji">
-            <img src="./assets/memojis/memoji_noah_boy.png" alt="We 1" class="memoji-fit" />
+            <img src="./assets/memojis/memoji_noah_3d_v2.png" alt="We 1" class="memoji-fit" />
             <img src="./assets/memojis/memoji_boy_green_glasses.png" alt="We 2" class="memoji-fit" />
           </div>
         `;
@@ -1364,7 +1364,7 @@
       if (tile.word === "BYE") {
         return `
           <div class="dual-memoji">
-            <img src="./assets/memojis/memoji_noah_boy.png" alt="Bye" class="memoji-fit" />
+            <img src="./assets/memojis/memoji_noah_3d_v2.png" alt="Bye" class="memoji-fit" />
             <span style="position:absolute; right:1px; top:2px; font-size:18px;">👋</span>
           </div>
         `;
