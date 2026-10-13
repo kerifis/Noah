@@ -37,3 +37,5 @@ tmp/
 # Release artifacts in root
 /*.apk
 release_notes.md
+
+.vercel
