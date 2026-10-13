@@ -1335,7 +1335,7 @@
     </div>
 
     <!-- FLOATING PICTURE-IN-PICTURE (PiP) LIVE COOKING WINDOW (Matches 4K 75" TV Photo) -->
-    <div id="pip-live-cooking-window" class="pip-window">
+    <div id="pip-live-cooking-window" class="pip-window minimized">
       <div class="pip-header-bar">
         <div class="pip-badge">
           <span class="pip-live-dot"></span>
@@ -1354,8 +1354,7 @@
         </div>
       </div>
       <div class="pip-video-wrap">
-        <iframe id="pip-video-iframe" class="pip-iframe"
-          src="https://www.youtube-nocookie.com/embed/J_e2m6Q8Tl8?autoplay=1&mute=1&playsinline=1&controls=1&loop=1&playlist=J_e2m6Q8Tl8&enablejsapi=1&origin=http://localhost:3000"
+        <iframe id="pip-video-iframe" class="pip-iframe" src=""
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
           referrerpolicy="strict-origin-when-cross-origin" allowfullscreen frameborder="0"
           title="Kids Cooking Show Live Stream"></iframe>
@@ -1743,7 +1742,7 @@
       { word: "BLUEY", color: "#2E72B8", action: "reward" },
       { word: "COCOMELON", color: "#10B981", action: "reward" },
       { word: "COOKING", color: "#475569", action: "reward" },
-      { word: "TRAINS", color: "#2E72B8", action: "reward" },
+      { word: "TRAINS", color: "#2E72B8", action: "speak" },
       { word: "DESCRB", color: "#475569", action: "category", id: "cat_describe" },
 
       // ROW 6
@@ -1817,7 +1816,7 @@
       { word: "BLUEY", color: "#2E72B8", action: "reward" },
       { word: "COCOMELON", color: "#10B981", action: "reward" },
       { word: "COOKING", color: "#475569", action: "reward" },
-      { word: "TRAINS", color: "#2E72B8", action: "reward" },
+      { word: "TRAINS", color: "#2E72B8", action: "speak" },
       { word: "DESCRB", color: "#475569", action: "category", id: "cat_describe" },
       { word: "MAKE", color: "#10B981", action: "speak" },
       { word: "GET", color: "#10B981", action: "speak" },
@@ -1864,7 +1863,7 @@
       cat_cartoons: [
         { word: "Bluey", color: "#2E72B8", action: "reward" },
         { word: "CoComelon", color: "#10B981", action: "reward" },
-        { word: "Trains", color: "#2E72B8", action: "reward" }
+        { word: "Trains", color: "#2E72B8", action: "speak" }
       ],
       cat_people: [
         { word: "Noah", color: "#E08738", action: "speak" },
@@ -1897,7 +1896,7 @@
       { word: "COOKING", color: "#E08738", action: "reward" },
       { word: "BLUEY", color: "#2E72B8", action: "reward" },
       { word: "COCOMELON", color: "#10B981", action: "reward" },
-      { word: "TRAINS", color: "#2E72B8", action: "reward" },
+      { word: "TRAINS", color: "#2E72B8", action: "speak" },
       { word: "PEOPLE", color: "#E08738", action: "category", id: "cat_people" }
     ];
 
@@ -1979,7 +1978,7 @@
     function confirmAiSubtitle() {
       const pred = predictAiSubtitle(activePhrase);
       speak(pred.sentence, () => {
-        const show = ["Monkey", "Pancake", "Bluey", "CoComelon", "Cooking", "Trains"].find(s => pred.sentence.toLowerCase().includes(s.toLowerCase()));
+        const show = ["Pancake", "Bluey", "CoComelon", "Cooking"].find(s => pred.sentence.toLowerCase().includes(s.toLowerCase()));
         if (show) {
           triggerReward(show);
         }
@@ -2251,11 +2250,9 @@
     function resolveShowConfig(showName) {
       const s = (showName || '').toLowerCase().trim();
       if (s.includes('pancake') || s.includes('cooking') || s.includes('cook')) return SHOW_CONFIG['cooking'];
-      if (s.includes('monkey')) return SHOW_CONFIG['monkey'];
       if (s.includes('bluey')) return SHOW_CONFIG['bluey'];
-      if (s.includes('cocomelon') || s.includes('nursery') || s.includes('music')) return SHOW_CONFIG['cocomelon'];
-      if (s.includes('train')) return SHOW_CONFIG['trains'];
-      return SHOW_CONFIG['cooking'];
+      if (s.includes('cocomelon')) return SHOW_CONFIG['cocomelon'];
+      return null;
     }
 
     function playRewardVideo(videoId) {
@@ -2279,6 +2276,8 @@
       const episodesContainer = document.getElementById('reward-episodes');
 
       const config = resolveShowConfig(showName);
+      if (!config) return false;
+      currentApprovedShow = config;
       banner.innerText = config.banner;
       liveBadge.style.display = config.isLive ? 'inline-flex' : 'none';
 
@@ -2300,6 +2299,7 @@
 
       playRewardVideo(config.defaultId);
       overlay.classList.add('active');
+      return true;
     }
 
     function closeRewardOverlay() {
@@ -2419,19 +2419,24 @@
     // ========================================================
     // PICTURE-IN-PICTURE (PiP) CONTROLLER
     // ========================================================
-    let isPipActive = true;
+    let isPipActive = false;
     let isPipExpanded = false;
     let isPipMuted = true;
     const cookingShowVideoId = "J_e2m6Q8Tl8";
+    let currentApprovedShow = null;
 
     function togglePipWindow() {
       const pip = document.getElementById("pip-live-cooking-window");
       const led = document.getElementById("pip-led-indicator");
+      if (!currentApprovedShow) return;
       isPipActive = !isPipActive;
       if (isPipActive) {
+        const iframe = document.getElementById("pip-video-iframe");
+        iframe.src = `https://www.youtube-nocookie.com/embed/${currentApprovedShow.defaultId}?autoplay=1&mute=1&playsinline=1&controls=1&enablejsapi=1`;
         pip.classList.remove("minimized");
         if (led) { led.style.background = "#00E5FF"; led.style.boxShadow = "0 0 8px #00E5FF"; }
       } else {
+        document.getElementById("pip-video-iframe").src = "";
         pip.classList.add("minimized");
         if (led) { led.style.background = "#64748B"; led.style.boxShadow = "none"; }
       }
@@ -2441,6 +2446,7 @@
       const pip = document.getElementById("pip-live-cooking-window");
       const led = document.getElementById("pip-led-indicator");
       isPipActive = false;
+      document.getElementById("pip-video-iframe").src = "";
       pip.classList.add("minimized");
       if (led) { led.style.background = "#64748B"; led.style.boxShadow = "none"; }
     }

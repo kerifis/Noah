@@ -35,6 +35,7 @@ data class HomeUiState(
 
 @OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)
 class HomeViewModel(application: Application) : AndroidViewModel(application) {
+    private val approvedVideoTileIds = setOf("show_bluey", "show_cocomelon", "show_cooking")
     private val repository: TalkTvRepository
     private val ttsManager: TtsManager
 
@@ -109,14 +110,16 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
                 idleResetJob?.cancel()
                 _uiState.update { it.copy(currentPhrase = emptyList()) }
                 ttsManager.speakPhrase(spokenPhrase) {
-                    ContentLauncher.launchReward(
-                        context = getApplication(),
-                        contentUri = tile.contentUri,
-                        title = tile.word,
-                        preferInternalPlayer = _uiState.value.preferInternalPlayer
-                    )
+                    if (tile.id in approvedVideoTileIds) {
+                        ContentLauncher.launchReward(
+                            context = getApplication(),
+                            contentUri = tile.contentUri,
+                            title = tile.word,
+                            preferInternalPlayer = _uiState.value.preferInternalPlayer
+                        )
+                    }
                 }
-                recordPress(tile, phrase, rewarded = true)
+                recordPress(tile, phrase, rewarded = tile.id in approvedVideoTileIds)
             }
         }
     }

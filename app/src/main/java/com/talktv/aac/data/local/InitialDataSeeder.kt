@@ -325,8 +325,8 @@ object InitialDataSeeder {
                 word = "Nursery Songs",
                 iconRes = "ic_show_nursery",
                 category = TileCategory.MUSIC,
-                action = TileAction.SPEAK_AND_LAUNCH,
-                contentUri = "https://www.youtube.com/results?search_query=super+simple+songs",
+                action = TileAction.SPEAK_ONLY,
+                contentUri = null,
                 unlockStage = 1,
                 parentCategoryId = "cat_music",
                 orderIndex = 1
@@ -340,8 +340,8 @@ object InitialDataSeeder {
                 word = "Animals",
                 iconRes = "ic_show_animals",
                 category = TileCategory.FAVORITE,
-                action = TileAction.SPEAK_AND_LAUNCH,
-                contentUri = "https://www.youtube.com/results?search_query=national+geographic+kids+animals",
+                action = TileAction.SPEAK_ONLY,
+                contentUri = null,
                 unlockStage = 1,
                 parentCategoryId = "cat_favorites",
                 orderIndex = 1
@@ -353,8 +353,8 @@ object InitialDataSeeder {
                 word = "Trains",
                 iconRes = "ic_show_trains",
                 category = TileCategory.FAVORITE,
-                action = TileAction.SPEAK_AND_LAUNCH,
-                contentUri = "https://www.youtube.com/results?search_query=steam+trains+for+children",
+                action = TileAction.SPEAK_ONLY,
+                contentUri = null,
                 unlockStage = 2,
                 parentCategoryId = "cat_favorites",
                 orderIndex = 2

@@ -87,9 +87,9 @@ const TalkTvDataStore = {
     { id: "show_bluey", word: "Bluey", icon: "🐶", category: "CARTOON", color: "#29B6F6", stage: 1, isCore: false, action: "SPEAK_AND_LAUNCH", contentUri: "https://www.youtube.com/results?search_query=bluey+full+episodes" },
     { id: "show_cocomelon", word: "CoComelon", icon: "🍉", category: "CARTOON", color: "#4CAF50", stage: 1, isCore: false, action: "SPEAK_AND_LAUNCH", contentUri: "https://www.youtube.com/results?search_query=cocomelon+nursery+rhymes" },
     { id: "show_cooking", word: "Cooking Show", icon: "🍳", category: "FOOD", color: "#FFA726", stage: 1, isCore: false, action: "SPEAK_AND_LAUNCH", contentUri: "https://www.youtube.com/results?search_query=kid+pancake+cooking+show" },
-    { id: "show_nursery", word: "Nursery Songs", icon: "🎶", category: "MUSIC", color: "#AB47BC", stage: 1, isCore: false, action: "SPEAK_AND_LAUNCH", contentUri: "https://www.youtube.com/results?search_query=super+simple+songs" },
-    { id: "show_animals", word: "Animals", icon: "🦁", category: "FAVORITE", color: "#FFD600", stage: 1, isCore: false, action: "SPEAK_AND_LAUNCH", contentUri: "https://www.youtube.com/results?search_query=national+geographic+kids" },
-    { id: "show_trains", word: "Trains", icon: "🚂", category: "FAVORITE", color: "#2196F3", stage: 2, isCore: false, action: "SPEAK_AND_LAUNCH", contentUri: "https://www.youtube.com/results?search_query=steam+trains+for+children" }
+    { id: "show_nursery", word: "Nursery Songs", icon: "🎶", category: "MUSIC", color: "#AB47BC", stage: 1, isCore: false, action: "SPEAK_ONLY", contentUri: null },
+    { id: "show_animals", word: "Animals", icon: "🦁", category: "FAVORITE", color: "#FFD600", stage: 1, isCore: false, action: "SPEAK_ONLY", contentUri: null },
+    { id: "show_trains", word: "Trains", icon: "🚂", category: "FAVORITE", color: "#2196F3", stage: 2, isCore: false, action: "SPEAK_ONLY", contentUri: null }
   ],
 
   // Recent Event Logs for Clinical Analytics
@@ -367,4 +367,3 @@ syncChannel.onmessage = (msg) => {
 };
 
 TalkTvDataStore.load();
-

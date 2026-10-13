@@ -33,6 +33,7 @@ fun CategorySubGridScreen(
     initialPhrase: List<String>,
     onBackToHome: () -> Unit
 ) {
+    val approvedVideoTileIds = remember { setOf("show_bluey", "show_cocomelon", "show_cooking") }
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
     val database = remember { TalkTvDatabase.getInstance(context, coroutineScope) }
@@ -85,7 +86,7 @@ fun CategorySubGridScreen(
             TileAction.SPEAK_AND_LAUNCH -> {
                 val fullPhrase = updatedPhrase.joinToString(" ")
                 ttsManager.speakPhrase(fullPhrase) {
-                    coroutineScope.launch {
+                    if (tile.id in approvedVideoTileIds) coroutineScope.launch {
                         val settings = database.settingsDao().getSettingsSync()
                         val preferInternal = settings?.useInternalPlayerFallback ?: true
                         ContentLauncher.launchReward(
@@ -104,7 +105,7 @@ fun CategorySubGridScreen(
                             tileWord = tile.word,
                             timestampMillis = System.currentTimeMillis(),
                             phraseAtPress = updatedPhrase,
-                            wasRewardTriggered = true,
+                            wasRewardTriggered = tile.id in approvedVideoTileIds,
                             contentUri = tile.contentUri
                         )
                     )
