@@ -114,19 +114,26 @@ The dashboard and app both support logging objective mastery stats, review dates
 
 ## Getting Started
 
-### Build & Install the Android TV App
+### 📥 Hosted Download & Installation
+
+- **GitHub Repository**: [kerifis/Noah](https://github.com/kerifis/Noah)
+- **Latest Release (v1.2)**: [TalkTV v1.2 Release Page](https://github.com/kerifis/Noah/releases/tag/v1.2)
+- **Direct APK Download**: [TalkTV-v1.2.apk](https://github.com/kerifis/Noah/releases/download/v1.2/TalkTV-v1.2.apk)
 
 ```powershell
-# Prerequisites: Android Studio Iguana+, SDK 34, Java 17
-
-./gradlew assembleDebug
-adb install -r app/build/outputs/apk/debug/app-debug.apk
+# Install downloaded APK directly to Android TV via ADB:
+adb install -r TalkTV-v1.2.apk
 ```
 
-Or sideload the pre-built APK:
+### Build & Sideload Alternatives
 
 ```powershell
+# Sideload pre-built local APK from USB-INSTALL:
 adb install USB-INSTALL/TalkTV-USB-Install.apk
+
+# Or build and install from source (requires Android Studio / SDK 34 / Java 17):
+./gradlew assembleDebug
+adb install -r app/build/outputs/apk/debug/app-debug.apk
 ```
 
 ### Run the Web Dashboard

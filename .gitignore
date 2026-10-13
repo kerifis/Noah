@@ -29,3 +29,7 @@ analytics.settings
 
 # Logs
 *.log
+
+# Release artifacts in root
+/*.apk
+release_notes.md

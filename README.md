@@ -129,7 +129,22 @@ NOAH/
 
 ---
 
-## 🚀 Building & Running on Android TV
+## 📥 Hosted Download & Installation
+
+- **Release Page**: [kerifis/Noah Releases (v1.2)](https://github.com/kerifis/Noah/releases/tag/v1.2)
+- **Direct APK Download**: [TalkTV-v1.2.apk](https://github.com/kerifis/Noah/releases/download/v1.2/TalkTV-v1.2.apk)
+
+```powershell
+# Install downloaded APK directly to Android TV via ADB:
+adb install -r TalkTV-v1.2.apk
+
+# Or install from local USB directory:
+adb install USB-INSTALL/TalkTV-USB-Install.apk
+```
+
+---
+
+## 🚀 Building from Source on Android TV
 
 ### Prerequisites
 - Android Studio Iguana / Jellyfish (or newer)
