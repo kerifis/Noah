@@ -1376,7 +1376,7 @@
     <div id="sonic-game-overlay" role="dialog" aria-label="Sonic runner game">
       <div class="sonic-game-header">
         <span class="sonic-game-title">SONIC RUNNER</span>
-        <span>RINGS <strong id="sonic-ring-score">0</strong> &nbsp; BEST <strong id="sonic-best-score">0</strong></span>
+        <span>RINGS <strong id="sonic-ring-score">0</strong> &nbsp; SPEED <strong id="sonic-speed-label">1×</strong> &nbsp; BEST <strong id="sonic-best-score">0</strong></span>
         <button class="reward-close-btn" onclick="closeSonicGame()">✕ BACK TO TALKTV</button>
       </div>
       <canvas id="sonic-game-canvas" width="1600" height="800"></canvas>
@@ -2376,8 +2376,10 @@
     // ========================================================
     const sonicGame = {
       running: false, frame: 0, score: 0, best: 0, y: 0, velocity: 0,
-      obstacleX: 1650, ringX: 1050, animationId: null
+      obstacleX: 1650, ringX: 1050, legPhase: 0, animationId: null
     };
+    const sonicRunnerSprite = new Image();
+    sonicRunnerSprite.src = "./assets/games/sonic-runner.png";
 
     function openSonicGame() {
       closeRewardOverlayForGame();
@@ -2388,6 +2390,7 @@
       sonicGame.score = 0;
       sonicGame.y = 0;
       sonicGame.velocity = 0;
+      sonicGame.legPhase = 0;
       sonicGame.obstacleX = 1650;
       sonicGame.ringX = 1000;
       document.getElementById("sonic-ring-score").textContent = "0";
@@ -2435,6 +2438,10 @@
       sonicGame.y = Math.max(0, sonicGame.y + sonicGame.velocity);
       if (sonicGame.y === 0 && sonicGame.velocity < 0) sonicGame.velocity = 0;
       const speed = Math.min(19, 10 + sonicGame.frame / 900);
+      const speedProgress = (speed - 10) / 9;
+      const legCadence = 0.07 + speedProgress * 0.25;
+      sonicGame.legPhase += legCadence;
+      document.getElementById("sonic-speed-label").textContent = `${(1 + speedProgress * 2).toFixed(1)}×`;
       sonicGame.obstacleX -= speed;
       sonicGame.ringX -= speed;
       if (sonicGame.obstacleX < -100) sonicGame.obstacleX = 1650 + Math.random() * 500;
@@ -2467,17 +2474,29 @@
       // Obstacle
       ctx.fillStyle = "#e53935"; ctx.beginPath(); ctx.moveTo(sonicGame.obstacleX, ground); ctx.lineTo(sonicGame.obstacleX + 48, ground - 90); ctx.lineTo(sonicGame.obstacleX + 96, ground); ctx.fill();
 
-      // Friendly blue speedster, drawn locally without external assets.
-      const py = ground - 75 - sonicGame.y;
-      ctx.save(); ctx.translate(playerX, py); ctx.rotate(sonicGame.y > 0 ? sonicGame.frame * .12 : 0);
-      ctx.fillStyle = "#0868dc";
-      for (let i = 0; i < 6; i++) { ctx.rotate(Math.PI / 3); ctx.beginPath(); ctx.moveTo(-20, 0); ctx.lineTo(-82, -28); ctx.lineTo(-58, 20); ctx.fill(); }
-      ctx.beginPath(); ctx.arc(0, 0, 62, 0, Math.PI * 2); ctx.fill();
-      ctx.fillStyle = "#f4c29b"; ctx.beginPath(); ctx.ellipse(24, 12, 34, 26, 0, 0, Math.PI * 2); ctx.fill();
-      ctx.fillStyle = "#fff"; ctx.beginPath(); ctx.ellipse(25, -28, 16, 25, 0, 0, Math.PI * 2); ctx.fill();
-      ctx.fillStyle = "#111827"; ctx.beginPath(); ctx.arc(31, -27, 6, 0, Math.PI * 2); ctx.fill();
-      ctx.fillStyle = "#ef233c"; ctx.fillRect(-48, 46, 55, 23); ctx.fillRect(18, 46, 55, 23);
-      ctx.restore();
+      // Reference-based runner sprite. The lower-body crop swings independently;
+      // cadence and motion blur rise smoothly with the game's acceleration.
+      const spriteX = playerX - 145;
+      const spriteY = ground - 315 - sonicGame.y;
+      const spriteSize = 340;
+      const sourceSplit = 700;
+      const displaySplit = spriteSize * sourceSplit / sonicRunnerSprite.naturalHeight;
+      const stride = Math.sin(sonicGame.legPhase);
+      const bob = Math.abs(Math.cos(sonicGame.legPhase)) * (3 + speedProgress * 7);
+      if (sonicRunnerSprite.complete && sonicRunnerSprite.naturalWidth) {
+        ctx.save();
+        ctx.translate(0, bob);
+        ctx.drawImage(sonicRunnerSprite, 0, 0, sonicRunnerSprite.naturalWidth, sourceSplit,
+          spriteX, spriteY, spriteSize, displaySplit);
+        ctx.translate(spriteX + spriteSize * .52, spriteY + displaySplit);
+        ctx.rotate(stride * (0.035 + speedProgress * .09));
+        ctx.filter = `blur(${(speedProgress * 2.4).toFixed(1)}px)`;
+        ctx.drawImage(sonicRunnerSprite, 0, sourceSplit,
+          sonicRunnerSprite.naturalWidth, sonicRunnerSprite.naturalHeight - sourceSplit,
+          -spriteSize * .52 + stride * (4 + speedProgress * 13), 0,
+          spriteSize, spriteSize - displaySplit);
+        ctx.restore();
+      }
 
       sonicGame.animationId = requestAnimationFrame(runSonicGame);
     }
