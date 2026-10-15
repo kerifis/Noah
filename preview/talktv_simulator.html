@@ -1394,7 +1394,7 @@
           <span class="sonic-level-pill">LEVEL <strong id="sonic-level-label">1</strong>/7</span>
           <span>RINGS <strong id="sonic-ring-score">0</strong></span>
           <span>SPEED <strong id="sonic-speed-label">1×</strong></span>
-          <span>3D IN <strong id="sonic-time-label">5:00</strong></span>
+          <span>NEXT <strong id="sonic-next-level-label">100 PTS</strong></span>
           <span class="sonic-progress-track"><span class="sonic-progress-fill" id="sonic-level-progress"></span></span>
         </div>
         <button class="reward-close-btn" onclick="closeSonicGame()">✕ BACK TO TALKTV</button>
@@ -2408,13 +2408,16 @@
     const sonicGame = {
       running: false, won: false, frame: 0, level: 1, points: 0, rings: 0, distance: 0,
       y: 0, velocity: 0, lane: 0, legPhase: 0, objects: [], nextSpawnAt: 0,
-      transitionFrames: 0, message: "", messageFrames: 0, animationId: null,
-      elapsedSeconds: 0, lastFrameTime: 0
+      transitionFrames: 0, message: "", messageFrames: 0, animationId: null
     };
     const sonicRunnerSprite = new Image();
     sonicRunnerSprite.src = "./assets/games/sonic-runner.png";
     const sonicChaseSprite = new Image();
     sonicChaseSprite.src = "./assets/games/sonic-chase-rear.png";
+    const sonicSideCycle = new Image();
+    sonicSideCycle.src = "./assets/games/sonic-side-cycle.png";
+    const sonicRearCycle = new Image();
+    sonicRearCycle.src = "./assets/games/sonic-rear-cycle.png";
 
     function currentSonicLevel() {
       return SONIC_LEVELS[sonicGame.level - 1];
@@ -2426,17 +2429,13 @@
       document.getElementById("sonic-ring-score").textContent = sonicGame.rings;
       document.getElementById("sonic-points-score").textContent = sonicGame.points;
       document.getElementById("sonic-speed-label").textContent = `${level.speed.toFixed(1)}×`;
-      const sideLevelProgress = sonicGame.level === 1
-        ? sonicGame.elapsedSeconds / 150
-        : (sonicGame.elapsedSeconds - 150) / 150;
-      const progress = sonicGame.level <= 2 ? sideLevelProgress : sonicGame.distance / level.target;
+      const scoreProgress = sonicGame.level === 1
+        ? sonicGame.points / 100
+        : (sonicGame.points - 100) / 200;
+      const progress = sonicGame.level <= 2 ? scoreProgress : sonicGame.distance / level.target;
       document.getElementById("sonic-level-progress").style.width = `${Math.max(0, Math.min(100, progress * 100))}%`;
-      const remaining = Math.max(0, 300 - sonicGame.elapsedSeconds);
-      const mins = Math.floor(remaining / 60);
-      const secs = Math.floor(remaining % 60).toString().padStart(2, "0");
-      const timeLabel = document.getElementById("sonic-time-label");
-      timeLabel.parentElement.style.display = sonicGame.level <= 2 ? "inline" : "none";
-      timeLabel.textContent = `${mins}:${secs}`;
+      const nextLabel = document.getElementById("sonic-next-level-label");
+      nextLabel.textContent = sonicGame.level === 1 ? "100 PTS" : sonicGame.level === 2 ? "300 PTS" : "FINISH";
       document.getElementById("sonic-game-help").textContent = level.mode === "3d"
         ? "◀ ▶ change lanes · ▲ or OK jumps · Gold rings +10 · Red obstacles −15"
         : "▲ or OK jumps · Gold rings +10 · Avoid red obstacles: −15 points";
@@ -2448,8 +2447,7 @@
       Object.assign(sonicGame, {
         running: true, won: false, frame: 0, level: 1, points: 0, rings: 0, distance: 0,
         y: 0, velocity: 0, lane: 0, legPhase: 0, objects: [], nextSpawnAt: 45,
-        transitionFrames: 0, message: "LEVEL 1 · SUNNY SPRINT", messageFrames: 105,
-        elapsedSeconds: 0, lastFrameTime: 0
+        transitionFrames: 0, message: "LEVEL 1 · REACH 100 POINTS", messageFrames: 105
       });
       updateSonicHud();
       cancelAnimationFrame(sonicGame.animationId);
@@ -2585,21 +2583,24 @@
     }
 
     function drawSonicSprite(ctx, playerX, ground, speedMultiplier, chaseView = false) {
-      const sprite = chaseView ? sonicChaseSprite : sonicRunnerSprite;
+      const cycle = chaseView ? sonicRearCycle : sonicSideCycle;
+      const fallback = chaseView ? sonicChaseSprite : sonicRunnerSprite;
       const spriteSize = chaseView ? 270 : 340;
       const spriteX = playerX - spriteSize * .5;
       const spriteY = ground - spriteSize * .92 - sonicGame.y;
-      const sourceSplit = chaseView ? 735 : 700;
-      if (!(sprite.complete && sprite.naturalWidth)) return;
-      const displaySplit = spriteSize * sourceSplit / sprite.naturalHeight;
-      const stride = Math.sin(sonicGame.legPhase);
-      const bob = Math.abs(Math.cos(sonicGame.legPhase)) * (3 + speedMultiplier * 5);
-      ctx.save(); ctx.translate(0, bob);
-      ctx.drawImage(sprite, 0, 0, sprite.naturalWidth, sourceSplit, spriteX, spriteY, spriteSize, displaySplit);
-      ctx.translate(spriteX + spriteSize * .52, spriteY + displaySplit);
-      ctx.rotate(stride * (chaseView ? .025 : .035) + stride * speedMultiplier * .045);
-      ctx.filter = `blur(${Math.min(3.2, speedMultiplier * .75).toFixed(1)}px)`;
-      ctx.drawImage(sprite, 0, sourceSplit, sprite.naturalWidth, sprite.naturalHeight - sourceSplit, -spriteSize * .52 + stride * (4 + speedMultiplier * 6), 0, spriteSize, spriteSize - displaySplit);
+      const frameIndex = sonicGame.y > 0 ? 3 : Math.floor(sonicGame.legPhase) % 4;
+      const bob = sonicGame.y > 0 ? 0 : Math.abs(Math.cos(sonicGame.legPhase * Math.PI / 2)) * (2 + speedMultiplier * 2);
+      ctx.save();
+      ctx.translate(0, bob);
+      if (cycle.complete && cycle.naturalWidth) {
+        const frameWidth = cycle.naturalWidth / 2;
+        const frameHeight = cycle.naturalHeight / 2;
+        const sourceX = (frameIndex % 2) * frameWidth;
+        const sourceY = Math.floor(frameIndex / 2) * frameHeight;
+        ctx.drawImage(cycle, sourceX, sourceY, frameWidth, frameHeight, spriteX, spriteY, spriteSize, spriteSize);
+      } else if (fallback.complete && fallback.naturalWidth) {
+        ctx.drawImage(fallback, spriteX, spriteY, spriteSize, spriteSize);
+      }
       ctx.restore();
     }
 
@@ -2637,14 +2638,10 @@
       ctx.strokeStyle = "rgba(2,7,18,.75)"; ctx.lineWidth = 11; ctx.strokeText(sonicGame.message, 800, 105); ctx.fillText(sonicGame.message, 800, 105); ctx.restore();
     }
 
-    function runSonicGame(timestamp = 0) {
+    function runSonicGame() {
       if (!sonicGame.running) return;
       const canvas = document.getElementById("sonic-game-canvas");
       const ctx = canvas.getContext("2d");
-      if (sonicGame.lastFrameTime > 0 && timestamp > 0) {
-        sonicGame.elapsedSeconds += Math.min(.05, (timestamp - sonicGame.lastFrameTime) / 1000);
-      }
-      sonicGame.lastFrameTime = timestamp;
       sonicGame.frame++;
       if (sonicGame.messageFrames !== Infinity && sonicGame.messageFrames > 0) sonicGame.messageFrames--;
       if (!sonicGame.won) {
@@ -2654,13 +2651,14 @@
         const level = currentSonicLevel();
         const acceleration = Math.min(.35, sonicGame.distance / level.target * .35);
         const movement = 8.5 * (level.speed + acceleration);
-        sonicGame.legPhase += .055 + (level.speed - 1) * .07 + acceleration * .08;
+        // True four-pose run cycle: cadence rises with each speed level.
+        sonicGame.legPhase += .12 + level.speed * .055 + acceleration * .08;
         sonicGame.distance += movement / 28;
         if (sonicGame.transitionFrames > 0) sonicGame.transitionFrames--;
         if (sonicGame.frame >= sonicGame.nextSpawnAt && sonicGame.transitionFrames === 0) spawnSonicObject();
-        // Levels 1 and 2 share exactly five minutes of active play: 2:30 each.
-        if (sonicGame.level === 1 && sonicGame.elapsedSeconds >= 150 && sonicGame.transitionFrames === 0) advanceSonicLevel();
-        else if (sonicGame.level === 2 && sonicGame.elapsedSeconds >= 300 && sonicGame.transitionFrames === 0) advanceSonicLevel();
+        // Score-gated progression: 100 points unlocks 1.5×; 300 points enters 3D.
+        if (sonicGame.level === 1 && sonicGame.points >= 100 && sonicGame.transitionFrames === 0) advanceSonicLevel();
+        else if (sonicGame.level === 2 && sonicGame.points >= 300 && sonicGame.transitionFrames === 0) advanceSonicLevel();
         else if (sonicGame.level >= 3 && sonicGame.distance >= level.target && sonicGame.transitionFrames === 0) advanceSonicLevel();
         updateSonicHud();
       }
