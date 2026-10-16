@@ -510,6 +510,127 @@
       font-size: 15px;
     }
 
+    /* Full-board Actions vocabulary. Thirty-three large choices are shown at
+       once so the labels stay readable from across a room. */
+    .actions-view {
+      display: none;
+      min-height: 0;
+      flex: 1;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .actions-view.active { display: flex; }
+
+    .actions-toolbar {
+      min-height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 0 4px;
+    }
+
+    .actions-heading {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+      color: #FFFFFF;
+    }
+
+    .actions-heading strong {
+      color: var(--focus-cyan);
+      font-size: 20px;
+      letter-spacing: .8px;
+    }
+
+    .actions-heading span,
+    .actions-page-status {
+      color: #91A7C6;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .actions-pagination {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .action-page-btn {
+      min-width: 106px;
+      height: 42px;
+      border: 2px solid #3E577C;
+      border-radius: 12px;
+      background: linear-gradient(180deg, #263A59, #101B2E);
+      color: #FFFFFF;
+      font-size: 12px;
+      font-weight: 900;
+      cursor: pointer;
+      box-shadow: inset 0 1px rgba(255,255,255,.25), 0 5px 12px rgba(0,0,0,.38);
+    }
+
+    .action-page-btn:disabled { opacity: .32; cursor: default; }
+
+    .action-page-btn.focused:not(:disabled),
+    .action-page-btn:hover:not(:disabled) {
+      border-color: var(--focus-cyan);
+      box-shadow: 0 0 20px rgba(0,229,255,.72), inset 0 1px rgba(255,255,255,.3);
+    }
+
+    .actions-grid {
+      min-height: 0;
+      flex: 1;
+      display: grid;
+      grid-template-columns: repeat(11, minmax(0, 1fr));
+      grid-template-rows: repeat(3, minmax(0, 1fr));
+      gap: 9px;
+    }
+
+    .action-choice {
+      min-width: 0;
+      min-height: 0;
+      padding: 6px 4px;
+      border: 2px solid #42536C;
+      border-radius: 14px;
+      background: radial-gradient(110% 90% at 50% -10%, rgba(129,155,194,.3), transparent 58%), linear-gradient(155deg,#344154,#111A29 74%);
+      color: #FFFFFF;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      box-shadow: inset 0 1px rgba(255,255,255,.28), inset 0 -4px 7px rgba(0,0,0,.36), 0 6px 12px rgba(0,0,0,.38);
+      transition: transform 140ms ease, border-color 140ms ease, box-shadow 140ms ease;
+    }
+
+    .action-choice:hover,
+    .action-choice.focused {
+      z-index: 4;
+      transform: scale(1.055) translateY(-2px);
+      border-color: var(--focus-cyan);
+      box-shadow: 0 0 22px rgba(0,229,255,.76), inset 0 1px rgba(255,255,255,.32);
+    }
+
+    .action-icon {
+      font-size: 46px;
+      line-height: 1;
+      filter: drop-shadow(0 5px 7px rgba(0,0,0,.58));
+    }
+
+    .action-label {
+      max-width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-size: 11px;
+      font-weight: 900;
+      line-height: 1;
+      text-transform: uppercase;
+      text-shadow: 0 2px 3px rgba(0,0,0,.9);
+    }
+
     /* RIGHT SIDEBAR: TV REMOTE (Matches Screenshot 1:1) */
     #remote-sidebar {
       width: 320px;
@@ -1396,6 +1517,17 @@
     .dual-memoji img:first-child,.dual-memoji img:last-child { width:108px;height:108px; }
     .tile-word,.wordpower-grid.wp60 .tile-word { font-size:28px;letter-spacing:1.2px;margin-top:4px;text-shadow:0 3px 7px rgba(0,0,0,.95); }
     .wp-tile.focused { transform:scale(1.055) translateY(-5px);box-shadow:0 0 50px rgba(0,229,255,.9),inset 0 0 18px rgba(0,229,255,.34); }
+    .actions-view { gap:20px; }
+    .actions-toolbar { min-height:82px;padding:0 8px;gap:24px; }
+    .actions-heading { gap:22px; }
+    .actions-heading strong { font-size:36px;letter-spacing:1.5px; }
+    .actions-heading span,.actions-page-status { font-size:22px; }
+    .actions-pagination { gap:14px; }
+    .action-page-btn { min-width:205px;height:72px;border-width:3px;border-radius:20px;font-size:22px; }
+    .actions-grid { gap:16px; }
+    .action-choice { padding:12px 7px;border-width:3px;border-radius:22px;gap:8px; }
+    .action-icon { font-size:92px;filter:drop-shadow(0 12px 14px rgba(0,0,0,.62)); }
+    .action-label { font-size:22px;letter-spacing:.6px; }
     #remote-sidebar { width:auto;height:auto;min-height:0;margin:0;padding:30px;gap:22px;overflow:hidden;border-width:2px;border-radius:34px;background:radial-gradient(110% 65% at 50% 0%,rgba(31,70,132,.32),transparent 62%),linear-gradient(180deg,rgba(12,25,47,.99),rgba(4,10,20,.99));box-shadow:inset 0 1px rgba(255,255,255,.12),0 35px 90px rgba(0,0,0,.55); }
     .remote-title { font-size:34px;letter-spacing:1.4px; }
     .ai-active-pill { font-size:20px;padding:9px 18px;border-radius:18px; }
@@ -1570,6 +1702,18 @@
 
     body.compact-device .staged-row { flex-wrap:wrap;gap:7px; }
     body.compact-device .staged-tile { width:calc(50% - 4px);height:112px; }
+    body.compact-device .actions-view { height:auto;min-height:0;gap:8px; }
+    body.compact-device .actions-toolbar { min-height:0;flex-wrap:wrap;padding:4px 0;gap:7px; }
+    body.compact-device .actions-heading { width:100%;justify-content:space-between;gap:7px; }
+    body.compact-device .actions-heading strong { font-size:16px; }
+    body.compact-device .actions-heading span,
+    body.compact-device .actions-page-status { font-size:10px; }
+    body.compact-device .actions-pagination { width:100%;justify-content:space-between; }
+    body.compact-device .action-page-btn { min-width:104px;height:40px;border-width:1.5px;border-radius:11px;font-size:11px; }
+    body.compact-device .actions-grid { flex:none;grid-template-columns:repeat(3,minmax(0,1fr));grid-template-rows:none;grid-auto-rows:108px;gap:7px; }
+    body.compact-device .action-choice { padding:6px 3px;border-width:1.5px;border-radius:13px;gap:4px; }
+    body.compact-device .action-icon { font-size:42px; }
+    body.compact-device .action-label { font-size:10px; }
     body.compact-device #mobile-places-slot,
     body.compact-device #mobile-people-slot { display:block;width:100%; }
     body.compact-device #mobile-places-slot .places-panel,
@@ -1695,6 +1839,23 @@
       </div>
       <div class="staged-row" id="subgrid-row" style="flex-wrap: wrap;"></div>
     </div>
+
+    <!-- ACTIONS uses the entire main TV board and keeps icons readable by
+         showing 33 choices at a time. -->
+    <section class="actions-view" id="actions-view" aria-label="Actions vocabulary" aria-hidden="true">
+      <div class="actions-toolbar">
+        <div class="actions-heading">
+          <strong>ACTIONS</strong>
+          <span id="actions-range">1–33 of 120</span>
+        </div>
+        <div class="actions-pagination">
+          <button class="action-page-btn" id="actions-prev" type="button" onclick="changeActionPage(-1)">◀ PREVIOUS</button>
+          <span class="actions-page-status" id="actions-page-status">PAGE 1 / 4</span>
+          <button class="action-page-btn" id="actions-next" type="button" onclick="changeActionPage(1)">NEXT ▶</button>
+        </div>
+      </div>
+      <div class="actions-grid" id="actions-grid"></div>
+    </section>
 
     <!-- On compact touch devices the vocabulary panels move below the board. -->
     <div id="mobile-people-slot"></div>
@@ -1921,6 +2082,8 @@
     let currentNoahAvatar = "./assets/memojis/memoji_noah_3d_v2.png";
     let placesPanelActive = false;
     let peoplePanelActive = false;
+    let actionsViewActive = false;
+    let actionPage = 0;
 
     function setNoahAvatar(src) {
       currentNoahAvatar = src;
@@ -2173,7 +2336,7 @@
       { word: "HAVE", color: "#A16207", action: "speak" },
       { word: "LIKE", color: "#2E72B8", action: "speak" },
       { word: "WANT", color: "#E08738", action: "speak" },
-      { word: "ACTIONS", color: "#475569", action: "category", id: "cat_cartoons" },
+      { word: "ACTIONS", color: "#475569", action: "category", id: "cat_actions" },
 
       // ROW 3
       { word: "MY/MINE", color: "#E08738", action: "speak" },
@@ -2241,7 +2404,7 @@
       { word: "HAVE", color: "#A16207", action: "speak" },
       { word: "LIKE", color: "#2E72B8", action: "speak" },
       { word: "WANT", color: "#E08738", action: "speak" },
-      { word: "ACTIONS", color: "#475569", action: "category", id: "cat_cartoons" },
+      { word: "ACTIONS", color: "#475569", action: "category", id: "cat_actions" },
       { word: "WHO", color: "#00B0FF", action: "speak" },
       { word: "WHY", color: "#00B0FF", action: "speak" },
 
@@ -2341,6 +2504,53 @@
       ]
     };
 
+    const ACTIONS_PER_PAGE = 33;
+    const actionTiles = [
+      { word: "Eat", icon: "🍽️" }, { word: "Drink", icon: "🥤" }, { word: "Finish", icon: "🏁" },
+      { word: "Get", icon: "🤲" }, { word: "Come", icon: "👈" }, { word: "Go", icon: "➡️" },
+      { word: "Help", icon: "🆘" }, { word: "Open", icon: "🚪" }, { word: "Put", icon: "📦" },
+      { word: "Like", icon: "👍" }, { word: "Play", icon: "🧸" }, { word: "Read", icon: "📖" },
+      { word: "Stop", icon: "🛑" }, { word: "Want", icon: "🙌" }, { word: "Take", icon: "✊" },
+      { word: "Tell", icon: "💬" }, { word: "Turn", icon: "↪️" }, { word: "Watch", icon: "📺" },
+      { word: "Be", icon: "🔤" }, { word: "Are", icon: "🔵" }, { word: "Answer", icon: "🗣️" },
+      { word: "Ask", icon: "❓" }, { word: "Buy", icon: "💳" }, { word: "Call", icon: "📞" },
+      { word: "Clean", icon: "🧽" }, { word: "Cook", icon: "🧑‍🍳" }, { word: "Study", icon: "📚" },
+      { word: "Go home", icon: "🏠" }, { word: "Thank you", icon: "🙏" }, { word: "Give", icon: "🎁" },
+      { word: "Have", icon: "👐" }, { word: "Had", icon: "✅" }, { word: "Dance", icon: "💃" },
+
+      { word: "Draw", icon: "✏️" }, { word: "Drive", icon: "🚗" }, { word: "Hurt", icon: "🩹" },
+      { word: "Hear", icon: "👂" }, { word: "Know", icon: "🧠" }, { word: "Listen", icon: "🎧" },
+      { word: "Look", icon: "👁️" }, { word: "Would", icon: "⏩" }, { word: "Become", icon: "🔄" },
+      { word: "Find", icon: "🔎" }, { word: "Jump", icon: "🏃" }, { word: "Learn", icon: "📗" },
+      { word: "Leave", icon: "🚶" }, { word: "Love", icon: "💗" }, { word: "Make", icon: "🛠️" },
+      { word: "Need", icon: "🙌" }, { word: "Wait", icon: "⏳" }, { word: "Could", icon: "⚙️" },
+      { word: "Line up", icon: "👥" }, { word: "Pull", icon: "⬅️" }, { word: "Push", icon: "📦" },
+      { word: "Remember", icon: "💡" }, { word: "Ride", icon: "🎠" }, { word: "Say", icon: "🗣️" },
+      { word: "See", icon: "👁️" }, { word: "Show", icon: "📷" }, { word: "Do", icon: "⚡" },
+      { word: "Run", icon: "🏃" }, { word: "Shop", icon: "🛒" }, { word: "Sing", icon: "🎤" },
+      { word: "Sit", icon: "🪑" }, { word: "Sleep", icon: "😴" }, { word: "Talk", icon: "💬" },
+
+      { word: "Walk", icon: "🚶" }, { word: "Think", icon: "💭" }, { word: "Stand", icon: "🧍" },
+      { word: "Swim", icon: "🏊" }, { word: "Swing", icon: "🤸" }, { word: "Write", icon: "✒️" },
+      { word: "Wash", icon: "🧼" }, { word: "Wear", icon: "🦺" }, { word: "Work", icon: "🧰" },
+      { word: "Blush", icon: "☺️" }, { word: "Bowl", icon: "🎳" }, { word: "Brush", icon: "🧹" },
+      { word: "Catch", icon: "🧤" }, { word: "Chew", icon: "😬" }, { word: "Clap", icon: "👏" },
+      { word: "Cry", icon: "😭" }, { word: "Dress up", icon: "🥳" }, { word: "Dry", icon: "💨" },
+      { word: "Email", icon: "📧" }, { word: "Fly", icon: "🕊️" }, { word: "Fall", icon: "⬇️" },
+      { word: "Forget", icon: "🤔" }, { word: "Guess", icon: "🎲" }, { word: "Hate", icon: "😠" },
+      { word: "Hope", icon: "🌟" }, { word: "Kick", icon: "⚽" }, { word: "Kiss", icon: "💋" },
+      { word: "Live", icon: "🏠" }, { word: "Lose", icon: "👎" }, { word: "Meet", icon: "🤝" },
+
+      { word: "Move", icon: "📦" }, { word: "Build", icon: "🧱" }, { word: "Carry", icon: "👜" },
+      { word: "Climb", icon: "🧗" }, { word: "Close", icon: "🚪" }, { word: "Cut", icon: "✂️" },
+      { word: "Dig", icon: "⛏️" }, { word: "Drop", icon: "⬇️" }, { word: "Fix", icon: "🔧" },
+      { word: "Hug", icon: "🤗" }, { word: "Lift", icon: "🏋️" }, { word: "Paint", icon: "🎨" },
+      { word: "Point", icon: "👉" }, { word: "Pour", icon: "🥛" }, { word: "Reach", icon: "🙋" },
+      { word: "Roll", icon: "🔄" }, { word: "Shake", icon: "🤝" }, { word: "Smile", icon: "😊" },
+      { word: "Throw", icon: "🥎" }, { word: "Touch", icon: "☝️" }, { word: "Wake", icon: "⏰" },
+      { word: "Bathe", icon: "🛁" }, { word: "Brush teeth", icon: "😁" }, { word: "Change", icon: "👕" }
+    ];
+
     const placeTiles = [
       { word: "Airport", column: 0, row: 0 },
       { word: "House", column: 1, row: 0 },
@@ -2406,6 +2616,7 @@
       { word: "BLUEY", color: "#2E72B8", action: "reward" },
       { word: "COCOMELON", color: "#10B981", action: "reward" },
       { word: "SONIC", icon: "🦔", color: "#2563EB", action: "game" },
+      { word: "ACTIONS", color: "#475569", action: "category", id: "cat_actions" },
       { word: "PEOPLE", color: "#E08738", action: "category", id: "cat_people" }
     ];
 
@@ -2583,6 +2794,10 @@
           openPeoplePanel();
           return;
         }
+        if ((tile.id || "") === "cat_actions") {
+          openActionsView();
+          return;
+        }
         closePlacesPanel(false);
         closePeoplePanel(false);
         openSubGrid(tile.id || "cat_cartoons", tile.word);
@@ -2752,6 +2967,70 @@
       }
     }
 
+    function renderActionPage() {
+      const grid = document.getElementById("actions-grid");
+      const pageCount = Math.ceil(actionTiles.length / ACTIONS_PER_PAGE);
+      actionPage = Math.max(0, Math.min(actionPage, pageCount - 1));
+      const start = actionPage * ACTIONS_PER_PAGE;
+      const pageItems = actionTiles.slice(start, start + ACTIONS_PER_PAGE);
+      const palette = ["#2E72B8", "#10B981", "#E08738", "#8B5CF6", "#EF4444"];
+      grid.innerHTML = "";
+
+      pageItems.forEach((item, index) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "action-choice";
+        button.dataset.word = item.word.toUpperCase();
+        button.style.borderColor = palette[(start + index) % palette.length];
+        button.style.setProperty("--tile-glow", `${palette[(start + index) % palette.length]}55`);
+        button.setAttribute("aria-label", `Add action ${item.word}`);
+        button.innerHTML = `<span class="action-icon" aria-hidden="true">${item.icon}</span><span class="action-label">${item.word}</span>`;
+        button.onclick = () => handleTileClick({ word: item.word, color: palette[(start + index) % palette.length], action: "speak" });
+        grid.appendChild(button);
+      });
+
+      document.getElementById("actions-range").textContent = `${start + 1}–${start + pageItems.length} of ${actionTiles.length}`;
+      document.getElementById("actions-page-status").textContent = `PAGE ${actionPage + 1} / ${pageCount}`;
+      document.getElementById("actions-prev").disabled = actionPage === 0;
+      document.getElementById("actions-next").disabled = actionPage === pageCount - 1;
+    }
+
+    function openActionsView(initialPage = 0) {
+      if (placesPanelActive) closePlacesPanel(false);
+      if (peoplePanelActive) closePeoplePanel(false);
+      document.getElementById("grid-view-container").style.display = "none";
+      document.getElementById("staged-view-container").style.display = "none";
+      document.getElementById("subgrid-view-container").style.display = "none";
+      const view = document.getElementById("actions-view");
+      view.classList.add("active");
+      view.setAttribute("aria-hidden", "false");
+      actionsViewActive = true;
+      actionPage = initialPage;
+      renderActionPage();
+      focusedIndex = 0;
+      updateFocusableElements();
+      if (document.body.classList.contains("compact-device")) {
+        requestAnimationFrame(() => view.scrollIntoView({ behavior: "smooth", block: "start" }));
+      }
+    }
+
+    function closeActionsView() {
+      const view = document.getElementById("actions-view");
+      view.classList.remove("active");
+      view.setAttribute("aria-hidden", "true");
+      actionsViewActive = false;
+    }
+
+    function changeActionPage(direction) {
+      const pageCount = Math.ceil(actionTiles.length / ACTIONS_PER_PAGE);
+      const nextPage = Math.max(0, Math.min(actionPage + direction, pageCount - 1));
+      if (nextPage === actionPage) return;
+      actionPage = nextPage;
+      renderActionPage();
+      focusedIndex = 0;
+      updateFocusableElements();
+    }
+
     function openSubGrid(categoryId, categoryName) {
       document.getElementById("grid-view-container").style.display = "none";
       document.getElementById("staged-view-container").style.display = "none";
@@ -2779,6 +3058,7 @@
     function returnToMainView() {
       if (placesPanelActive) closePlacesPanel(false);
       if (peoplePanelActive) closePeoplePanel(false);
+      if (actionsViewActive) closeActionsView();
       document.getElementById("subgrid-view-container").style.display = "none";
       if (currentBoardMode === 'staged') {
         document.getElementById("staged-view-container").style.display = "flex";
@@ -2795,6 +3075,7 @@
     function switchBoardMode(mode) {
       if (placesPanelActive) closePlacesPanel(false);
       if (peoplePanelActive) closePeoplePanel(false);
+      if (actionsViewActive) closeActionsView();
       currentBoardMode = mode;
       document.getElementById("btn-mode-staged").classList.toggle("active", mode === 'staged');
       document.getElementById("btn-mode-wp60").classList.toggle("active", mode === 'wp60');
@@ -3239,6 +3520,12 @@
         applyFocus();
         return;
       }
+      if (actionsViewActive) {
+        focusableElements = Array.from(document.querySelectorAll("#actions-grid .action-choice, #actions-view .action-page-btn:not(:disabled)"));
+        if (focusedIndex >= focusableElements.length) focusedIndex = 0;
+        applyFocus();
+        return;
+      }
       const activeContainer = currentBoardMode === 'staged' ? '#staged-view-container' : '#tv-stage';
       focusableElements = Array.from(document.querySelectorAll(`${activeContainer} .wp-tile, ${activeContainer} .staged-tile, #btn-confirm-sub`));
       if (focusedIndex >= focusableElements.length) {
@@ -3293,6 +3580,10 @@
           closePeoplePanel();
           return;
         }
+        if (actionsViewActive) {
+          returnToMainView();
+          return;
+        }
         const subgrid = document.getElementById("subgrid-view-container");
         if (subgrid.style.display === "flex") {
           returnToMainView();
@@ -3313,7 +3604,9 @@
       const renderedColumns = activeGrid && activeGrid.offsetParent !== null
         ? getComputedStyle(activeGrid).gridTemplateColumns.split(" ").filter(Boolean).length
         : 0;
-      const cols = (placesPanelActive || peoplePanelActive) ? 4 : (renderedColumns || (currentBoardMode === 'staged' ? 4 : 8));
+      const cols = actionsViewActive
+        ? (document.body.classList.contains("compact-device") ? 3 : 11)
+        : ((placesPanelActive || peoplePanelActive) ? 4 : (renderedColumns || (currentBoardMode === 'staged' ? 4 : 8)));
       if (direction === 'right') {
         focusedIndex = (focusedIndex + 1) % focusableElements.length;
       } else if (direction === 'left') {
@@ -3491,7 +3784,9 @@
 
     // Init
     renderBoard();
-    if (window.location.hash === "#people") openPeoplePanel();
+    const actionsHashMatch = window.location.hash.match(/^#actions(?:-(\d+))?$/);
+    if (actionsHashMatch) openActionsView(Math.max(0, Number(actionsHashMatch[1] || 1) - 1));
+    else if (window.location.hash === "#people") openPeoplePanel();
     else if (window.location.hash === "#places") openPlacesPanel();
     updatePhraseDisplay();
     updateAiSubtitles();
