@@ -915,6 +915,91 @@
       color: #FFFFFF;
     }
 
+    /* LIVE MICROPHONE CAPTIONS + TRANSLATION */
+    .live-caption-panel {
+      flex: 0 0 250px;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+      padding: 13px;
+      border: 1px solid rgba(111, 139, 179, 0.42);
+      border-radius: 15px;
+      background: linear-gradient(180deg, rgba(17, 29, 49, 0.98), rgba(7, 14, 25, 0.99));
+      box-shadow: inset 0 1px rgba(255,255,255,.08), 0 10px 28px rgba(0,0,0,.32);
+      overflow: hidden;
+    }
+
+    .caption-panel-header,
+    .caption-panel-title,
+    .caption-listening-state,
+    .caption-controls,
+    .caption-language-field,
+    .caption-block-label {
+      display: flex;
+      align-items: center;
+    }
+
+    .caption-panel-header { justify-content: space-between; gap: 8px; }
+    .caption-panel-title { gap: 7px; color: #fff; font-size: 12px; font-weight: 900; letter-spacing: .55px; text-transform: uppercase; }
+    .caption-panel-title svg { width: 17px; height: 17px; fill: #00E5FF; }
+    .caption-listening-state { gap: 6px; color: #8FA5C3; font-size: 9px; font-weight: 900; text-transform: uppercase; }
+    .caption-listening-dot { width: 7px; height: 7px; border-radius: 50%; background: #64748B; box-shadow: none; }
+    .live-caption-panel.listening .caption-listening-state { color: #63F7B0; }
+    .live-caption-panel.listening .caption-listening-dot { background: #00E676; box-shadow: 0 0 9px #00E676; animation: pulse-live 1.2s infinite; }
+
+    .caption-controls { gap: 7px; }
+    .caption-language-field { flex: 1; min-width: 0; flex-direction: column; align-items: stretch; gap: 3px; }
+    .caption-language-field label { color: #7E93B0; font-size: 8px; font-weight: 900; text-transform: uppercase; }
+    .caption-language-select {
+      width: 100%;
+      min-width: 0;
+      height: 30px;
+      padding: 0 7px;
+      border: 1px solid rgba(77, 113, 166, .6);
+      border-radius: 8px;
+      background: #101C30;
+      color: #E7F1FF;
+      font: inherit;
+      font-size: 10px;
+      font-weight: 800;
+    }
+    .caption-toggle-btn {
+      align-self: flex-end;
+      height: 30px;
+      padding: 0 10px;
+      border: 1px solid #00E5FF;
+      border-radius: 8px;
+      background: linear-gradient(180deg,#0a6980,#06485c);
+      color: #fff;
+      font-size: 10px;
+      font-weight: 900;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .live-caption-panel.listening .caption-toggle-btn { border-color: #FF5A5F; background: linear-gradient(180deg,#8f2631,#54151d); }
+    .caption-output {
+      flex: 1;
+      min-height: 0;
+      display: grid;
+      grid-template-rows: 1fr 1fr;
+      gap: 7px;
+    }
+    .caption-block {
+      min-height: 0;
+      padding: 9px 10px;
+      border: 1px solid rgba(83, 113, 157, .35);
+      border-radius: 10px;
+      background: rgba(2, 7, 15, .62);
+      overflow: hidden;
+    }
+    .caption-block.translated { border-color: rgba(0,229,255,.35); background: rgba(0,65,82,.14); }
+    .caption-block-label { justify-content: space-between; margin-bottom: 5px; color: #75A9E8; font-size: 8px; font-weight: 900; letter-spacing: .45px; text-transform: uppercase; }
+    .caption-block.translated .caption-block-label { color: #00E5FF; }
+    .caption-text { color: #fff; font-size: 13px; font-weight: 750; line-height: 1.28; }
+    .caption-text.placeholder { color: #7487A2; font-style: italic; font-weight: 600; }
+    .caption-service-note { color: #667B99; font-size: 8px; line-height: 1.25; }
+
     /* In-place vocabulary panels occupy the otherwise unused lower remote
        rail and never replace the main communication board. */
     .places-panel,
@@ -1597,6 +1682,21 @@
     .telemetry-box { padding:18px 20px;border-radius:22px;gap:8px;border-width:2px; }
     .telemetry-title { font-size:19px;margin-bottom:4px; }
     .telemetry-row { font-size:20px; }
+    .live-caption-panel { flex-basis:500px;padding:22px;gap:15px;border-width:2px;border-radius:24px; }
+    .caption-panel-title { gap:12px;font-size:22px; }
+    .caption-panel-title svg { width:30px;height:30px; }
+    .caption-listening-state { gap:9px;font-size:16px; }
+    .caption-listening-dot { width:12px;height:12px; }
+    .caption-controls { gap:12px; }
+    .caption-language-field { gap:6px; }
+    .caption-language-field label { font-size:14px; }
+    .caption-language-select { height:54px;padding:0 13px;border-width:2px;border-radius:14px;font-size:18px; }
+    .caption-toggle-btn { height:54px;padding:0 20px;border-width:2px;border-radius:14px;font-size:18px; }
+    .caption-output { gap:12px; }
+    .caption-block { padding:15px 17px;border-width:2px;border-radius:17px; }
+    .caption-block-label { margin-bottom:8px;font-size:14px; }
+    .caption-text { font-size:23px;line-height:1.26; }
+    .caption-service-note { font-size:13px; }
     .places-panel,.people-panel { flex:1;padding:16px;border-radius:24px;gap:12px;border-width:2px; }
     .places-panel-header,.people-panel-header { font-size:22px; }
     .places-panel-hint,.people-panel-hint { font-size:15px; }
@@ -1752,6 +1852,21 @@
     body.compact-device .mobile-cast-status.show { opacity:1;transform:translate(-50%,0); }
     body.compact-device .mobile-cast-status.connected { color:#75ffba;border-color:#00E676; }
     body.compact-device .mobile-cast-status.error { color:#ffb0aa;border-color:#ff5a5f; }
+    body.compact-device .mobile-cast-status.actionable { pointer-events:auto; }
+    .mobile-cast-action {
+      display:none;
+      margin:8px auto 0;
+      padding:8px 12px;
+      border:1px solid #00E5FF;
+      border-radius:9px;
+      background:linear-gradient(180deg,#087991,#07556a);
+      color:#fff;
+      font:inherit;
+      font-size:11px;
+      font-weight:900;
+      cursor:pointer;
+    }
+    body.compact-device .mobile-cast-status.actionable .mobile-cast-action { display:block; }
 
     body.compact-device #ai-subtitle-bar { width:100%;min-width:0;min-height:54px;padding:7px 8px;border-radius:14px;border-width:1px;gap:7px;overflow:hidden; }
     body.compact-device .subtitle-content-left { min-width:0;gap:7px; }
@@ -1893,7 +2008,10 @@
       <button class="phrase-clear-btn" title="Clear Phrase" onclick="clearPhrase()">✕</button>
       <div id="tv-clock" aria-label="Current time">10:30 AM</div>
     </div>
-    <div class="mobile-cast-status" id="mobile-cast-status" role="status" aria-live="polite"></div>
+    <div class="mobile-cast-status" id="mobile-cast-status" role="status" aria-live="polite">
+      <span id="mobile-cast-status-text"></span>
+      <button class="mobile-cast-action" id="mobile-cast-open-chrome" type="button" onclick="openTalkTvInChrome()">Open Chrome to Cast</button>
+    </div>
 
     <!-- AI SUBTITLE PREDICTION BAR (Closed Captions Row in Screenshot) -->
     <div id="ai-subtitle-bar">
@@ -2011,12 +2129,12 @@
       <div class="sonic-game-help" id="sonic-game-help">Press ▲ or OK to jump · Avoid red obstacles: −15 points · Collect gold rings: +10 points</div>
     </div>
 
-    <!-- FLOATING PICTURE-IN-PICTURE (PiP) LIVE COOKING WINDOW (Matches 4K 75" TV Photo) -->
-    <div id="pip-live-cooking-window" class="pip-window minimized">
+    <!-- BOTTOM-RIGHT LIVE PAW PATROL PICTURE-IN-PICTURE -->
+    <div id="pip-live-cooking-window" class="pip-window">
       <div class="pip-header-bar">
         <div class="pip-badge">
           <span class="pip-live-dot"></span>
-          <span class="pip-badge-text">Live Video</span>
+          <span class="pip-badge-text">Kids Live</span>
         </div>
         <div class="pip-controls">
           <button class="pip-ctrl-btn" id="pip-mute-btn" onclick="togglePipMute()" title="Mute/Unmute Audio">
@@ -2034,11 +2152,11 @@
         <iframe id="pip-video-iframe" class="pip-iframe" src=""
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
           referrerpolicy="strict-origin-when-cross-origin" allowfullscreen frameborder="0"
-          title="Kids Cooking Show Live Stream"></iframe>
+          title="PAW Patrol Official Live Stream"></iframe>
       </div>
       <div class="pip-footer-bar">
         <div class="pip-title-info">
-          <span>🥞 Kids Cooking Show Live</span>
+          <span>🐾 PAW Patrol Live</span>
         </div>
         <div class="pip-yt-badge">
           <svg viewBox="0 0 28 20" class="pip-yt-icon">
@@ -2094,11 +2212,11 @@
       </div>
     </div>
 
-    <!-- PIP LIVE COOKING TOGGLE BUTTON -->
+    <!-- PIP LIVE KIDS TOGGLE BUTTON -->
     <div style="margin-top: 2px;">
       <button class="dpad-btn back-btn" id="btn-toggle-pip" onclick="togglePipWindow()"
         style="border-color: var(--focus-cyan); color: #FFF; background: linear-gradient(180deg, #183354 0%, #0F2036 100%);">
-        <span>📺 PIP COOKING SHOW</span>
+        <span>📺 PAW PATROL LIVE</span>
         <span class="back-led-dot" id="pip-led-indicator"
           style="background:#00E5FF; box-shadow:0 0 8px #00E5FF;"></span>
       </button>
@@ -2120,6 +2238,49 @@
       <div class="telemetry-row" id="ai-confidence-label">Confidence: <strong>96%</strong></div>
       <div class="telemetry-row" id="voice-engine-label">Voice: <strong>Loading English voice…</strong></div>
     </div>
+
+    <!-- MICROPHONE-BASED LIVE CAPTIONS AND TRANSLATION -->
+    <section class="live-caption-panel" id="live-caption-panel" aria-label="Live caption translation">
+      <div class="caption-panel-header">
+        <div class="caption-panel-title">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 14a3 3 0 0 0 3-3V5a3 3 0 1 0-6 0v6a3 3 0 0 0 3 3Zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.92V21H8v2h8v-2h-3v-3.08A7 7 0 0 0 19 11h-2Z"/></svg>
+          <span>Live Caption Translation</span>
+        </div>
+        <div class="caption-listening-state"><span class="caption-listening-dot"></span><span id="caption-status">Mic off</span></div>
+      </div>
+      <div class="caption-controls">
+        <div class="caption-language-field">
+          <label for="caption-source-language">Listen</label>
+          <select class="caption-language-select" id="caption-source-language" onchange="changeCaptionLanguage()">
+            <option value="en-US">English</option>
+            <option value="fr-CA">French</option>
+            <option value="es-US">Spanish</option>
+            <option value="rw-RW">Kinyarwanda</option>
+          </select>
+        </div>
+        <div class="caption-language-field">
+          <label for="caption-target-language">Translate</label>
+          <select class="caption-language-select" id="caption-target-language" onchange="changeCaptionLanguage()">
+            <option value="rw" selected>Kinyarwanda</option>
+            <option value="fr">French</option>
+            <option value="es">Spanish</option>
+            <option value="en">English</option>
+          </select>
+        </div>
+        <button class="caption-toggle-btn" id="caption-toggle-button" type="button" onclick="toggleLiveCaptions()">▶ Start</button>
+      </div>
+      <div class="caption-output">
+        <div class="caption-block">
+          <div class="caption-block-label"><span>Live caption</span><span id="caption-source-tag">EN</span></div>
+          <div class="caption-text placeholder" id="caption-source-text" aria-live="polite">Tap Start and allow the microphone.</div>
+        </div>
+        <div class="caption-block translated">
+          <div class="caption-block-label"><span>Translation</span><span id="caption-target-tag">RW</span></div>
+          <div class="caption-text placeholder" id="caption-translated-text" aria-live="polite">Translation will appear here.</div>
+        </div>
+      </div>
+      <div class="caption-service-note" id="caption-service-note">Uses on-device translation when available; otherwise a free online translation service.</div>
+    </section>
 
     <!-- PEOPLE and PLACES open here so the communication board remains visible. -->
     <section class="people-panel" id="people-panel" aria-label="People vocabulary" aria-hidden="true">
@@ -3854,11 +4015,12 @@
     // ========================================================
     let mobileCastStatusTimer = null;
 
-    function setCastFeedback(message, state = "") {
+    function setCastFeedback(message, state = "", action = "") {
       const feedback = document.getElementById("cast-feedback");
       const button = document.getElementById("cast-tv-button");
       const mobileButton = document.getElementById("mobile-cast-button");
       const mobileStatus = document.getElementById("mobile-cast-status");
+      const mobileStatusText = document.getElementById("mobile-cast-status-text");
       if (feedback) {
         feedback.textContent = message;
         feedback.classList.toggle("connected", state === "connected");
@@ -3870,12 +4032,13 @@
         mobileButton.setAttribute("aria-label", state === "connected" ? "Connected to TV" : "Cast TalkTV to a television");
       }
       if (mobileStatus && document.body.classList.contains("compact-device")) {
-        mobileStatus.textContent = message;
+        if (mobileStatusText) mobileStatusText.textContent = message;
         mobileStatus.classList.toggle("connected", state === "connected");
         mobileStatus.classList.toggle("error", state === "error");
+        mobileStatus.classList.toggle("actionable", action === "open-chrome");
         mobileStatus.classList.add("show");
         window.clearTimeout(mobileCastStatusTimer);
-        mobileCastStatusTimer = window.setTimeout(() => mobileStatus.classList.remove("show"), state === "error" ? 5000 : 3200);
+        mobileCastStatusTimer = window.setTimeout(() => mobileStatus.classList.remove("show"), action ? 15000 : (state === "error" ? 9000 : 3200));
       }
     }
 
@@ -3925,10 +4088,39 @@
       if (connection.state === "connected") connected();
     }
 
+    const isMobileSender = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+    const isAndroidSender = /Android/i.test(navigator.userAgent);
+    const isSamsungInternet = /SamsungBrowser/i.test(navigator.userAgent);
+    const isChromeAndroid = isAndroidSender && /Chrome\//i.test(navigator.userAgent) && !isSamsungInternet && !/EdgA|OPR\//i.test(navigator.userAgent);
+    const MOBILE_CAST_HELP = "Use Chrome on Android, keep the phone and Google TV on the same Wi-Fi, and make sure the TV is awake.";
+
+    function openTalkTvInChrome() {
+      if (!isAndroidSender) return;
+      const targetUrl = new URL(window.location.href);
+      targetUrl.searchParams.delete("tvReceiver");
+      targetUrl.searchParams.set("castReady", "1");
+      targetUrl.hash = "";
+      const intentTarget = `${targetUrl.host}${targetUrl.pathname}${targetUrl.search}`;
+      window.location.href = `intent://${intentTarget}#Intent;scheme=https;package=com.android.chrome;S.browser_fallback_url=${encodeURIComponent(targetUrl.href)};end`;
+    }
+
+    function initializeMobileCastHandoff() {
+      const url = new URL(window.location.href);
+      if (url.searchParams.get("castReady") !== "1" || !isChromeAndroid) return;
+      url.searchParams.delete("castReady");
+      window.history.replaceState({}, "", url);
+      window.setTimeout(() => setCastFeedback("Chrome is ready. Tap the Cast icon again to choose your Google TV."), 500);
+    }
+
     async function startTvCast() {
       if (isTvReceiver) return;
+      if (isSamsungInternet) {
+        setCastFeedback("Samsung Internet cannot discover Google TV for this web app.", "error", "open-chrome");
+        return;
+      }
       if (!("PresentationRequest" in window) || !navigator.presentation) {
-        setCastFeedback("Casting needs Chrome or Edge on HTTPS", "error");
+        const canOpenChrome = isAndroidSender && !isChromeAndroid;
+        setCastFeedback(isMobileSender ? MOBILE_CAST_HELP : "Casting needs Chrome or Edge on HTTPS", "error", canOpenChrome ? "open-chrome" : "");
         return;
       }
 
@@ -3943,7 +4135,11 @@
         attachTvPresentationConnection(connection);
       } catch (error) {
         const cancelled = error && (error.name === "AbortError" || error.name === "NotAllowedError");
-        setCastFeedback(cancelled ? "TV selection cancelled" : "No compatible TV was found", cancelled ? "" : "error");
+        const notFoundMessage = isChromeAndroid
+          ? "No Google TV found. Check that both devices use the same Wi-Fi and that the TV is awake."
+          : (isMobileSender ? MOBILE_CAST_HELP : "No compatible TV was found");
+        const canOpenChrome = isAndroidSender && !isChromeAndroid;
+        setCastFeedback(cancelled ? "TV selection cancelled" : notFoundMessage, cancelled ? "" : "error", !cancelled && canOpenChrome ? "open-chrome" : "");
       }
     }
 
@@ -3981,22 +4177,241 @@
     }
 
     // ========================================================
+    // LIVE MICROPHONE CAPTIONS + TRANSLATION
+    // ========================================================
+    const CaptionSpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    let captionRecognition = null;
+    let captionListening = false;
+    let captionRestartTimer = null;
+    let captionSourceHistory = [];
+    let captionTranslator = null;
+    let captionTranslatorKey = "";
+    let captionTranslationSequence = 0;
+    let captionTranslationAbort = null;
+
+    function captionBaseLanguage(languageTag) {
+      return (languageTag || "en").toLowerCase().split("-")[0];
+    }
+
+    function setCaptionStatus(message, state = "") {
+      const panel = document.getElementById("live-caption-panel");
+      const status = document.getElementById("caption-status");
+      if (status) status.textContent = message;
+      if (panel) panel.classList.toggle("listening", state === "listening");
+    }
+
+    function updateCaptionLanguageTags() {
+      const source = document.getElementById("caption-source-language")?.value || "en-US";
+      const target = document.getElementById("caption-target-language")?.value || "rw";
+      const sourceTag = document.getElementById("caption-source-tag");
+      const targetTag = document.getElementById("caption-target-tag");
+      if (sourceTag) sourceTag.textContent = captionBaseLanguage(source).toUpperCase();
+      if (targetTag) targetTag.textContent = captionBaseLanguage(target).toUpperCase();
+    }
+
+    async function prepareCaptionTranslator() {
+      const source = captionBaseLanguage(document.getElementById("caption-source-language")?.value);
+      const target = captionBaseLanguage(document.getElementById("caption-target-language")?.value);
+      const key = `${source}|${target}`;
+      const note = document.getElementById("caption-service-note");
+      if (source === target) {
+        captionTranslator = null;
+        captionTranslatorKey = key;
+        if (note) note.textContent = "The caption and translation languages match; no translation service is needed.";
+        return null;
+      }
+      if (captionTranslatorKey === key && captionTranslator) return captionTranslator;
+      captionTranslator = null;
+      captionTranslatorKey = key;
+
+      if ("Translator" in self) {
+        try {
+          const availability = await self.Translator.availability({ sourceLanguage: source, targetLanguage: target });
+          if (availability !== "unavailable") {
+            if (note) note.textContent = availability === "available"
+              ? "Translation is running on this device."
+              : "Preparing the browser's private translation language pack…";
+            captionTranslator = await self.Translator.create({
+              sourceLanguage: source,
+              targetLanguage: target,
+              monitor(monitor) {
+                monitor.addEventListener("downloadprogress", event => {
+                  if (note) note.textContent = `Downloading private translation pack: ${Math.round(event.loaded * 100)}%`;
+                });
+              }
+            });
+            if (note) note.textContent = "Translation is running on this device.";
+            return captionTranslator;
+          }
+        } catch (error) {
+          console.warn("On-device caption translation unavailable", error);
+        }
+      }
+
+      if (note) note.textContent = "Using a free online translation fallback for completed captions.";
+      return null;
+    }
+
+    function decodeCaptionTranslation(value) {
+      const decoder = document.createElement("textarea");
+      decoder.innerHTML = value || "";
+      return decoder.value;
+    }
+
+    async function translateCaptionText(text) {
+      const translatedOutput = document.getElementById("caption-translated-text");
+      if (!translatedOutput || !text.trim()) return;
+      const source = captionBaseLanguage(document.getElementById("caption-source-language")?.value);
+      const target = captionBaseLanguage(document.getElementById("caption-target-language")?.value);
+      const sequence = ++captionTranslationSequence;
+      translatedOutput.classList.remove("placeholder");
+      if (source === target) {
+        translatedOutput.textContent = text;
+        return;
+      }
+
+      translatedOutput.textContent = "Translating…";
+      try {
+        const translator = await prepareCaptionTranslator();
+        if (sequence !== captionTranslationSequence) return;
+        if (translator) {
+          translatedOutput.textContent = await translator.translate(text);
+          return;
+        }
+
+        if (captionTranslationAbort) captionTranslationAbort.abort();
+        captionTranslationAbort = new AbortController();
+        const endpoint = new URL("https://api.mymemory.translated.net/get");
+        endpoint.searchParams.set("q", text.slice(-450));
+        endpoint.searchParams.set("langpair", `${source}|${target}`);
+        const response = await fetch(endpoint, { signal: captionTranslationAbort.signal });
+        if (!response.ok) throw new Error(`Translation service returned ${response.status}`);
+        const data = await response.json();
+        if (sequence !== captionTranslationSequence) return;
+        const translatedText = decodeCaptionTranslation(data?.responseData?.translatedText);
+        translatedOutput.textContent = translatedText || "Translation was unavailable.";
+      } catch (error) {
+        if (error.name === "AbortError") return;
+        console.warn("Caption translation failed", error);
+        translatedOutput.textContent = "Translation is temporarily unavailable.";
+      }
+    }
+
+    function stopLiveCaptions() {
+      captionListening = false;
+      window.clearTimeout(captionRestartTimer);
+      if (captionRecognition) {
+        captionRecognition.onend = null;
+        try { captionRecognition.stop(); } catch (_) {}
+      }
+      captionRecognition = null;
+      const button = document.getElementById("caption-toggle-button");
+      if (button) button.textContent = "▶ Start";
+      setCaptionStatus("Mic off");
+    }
+
+    function startCaptionRecognition() {
+      if (!CaptionSpeechRecognition) {
+        setCaptionStatus("Unsupported");
+        const sourceOutput = document.getElementById("caption-source-text");
+        if (sourceOutput) sourceOutput.textContent = "Live microphone captions require Chrome or Edge.";
+        return;
+      }
+
+      const sourceLanguage = document.getElementById("caption-source-language")?.value || "en-US";
+      captionRecognition = new CaptionSpeechRecognition();
+      captionRecognition.lang = sourceLanguage;
+      captionRecognition.continuous = true;
+      captionRecognition.interimResults = true;
+      captionRecognition.maxAlternatives = 1;
+
+      captionRecognition.onstart = () => setCaptionStatus("Listening", "listening");
+      captionRecognition.onresult = event => {
+        let interimText = "";
+        let completedText = "";
+        for (let index = event.resultIndex; index < event.results.length; index += 1) {
+          const transcript = event.results[index][0]?.transcript?.trim();
+          if (!transcript) continue;
+          if (event.results[index].isFinal) completedText += `${transcript} `;
+          else interimText += `${transcript} `;
+        }
+
+        if (completedText.trim()) captionSourceHistory.push(completedText.trim());
+        captionSourceHistory = captionSourceHistory.slice(-3);
+        const stableText = captionSourceHistory.join(" ").trim();
+        const visibleText = [stableText, interimText.trim()].filter(Boolean).join(" ");
+        const sourceOutput = document.getElementById("caption-source-text");
+        if (sourceOutput && visibleText) {
+          sourceOutput.classList.remove("placeholder");
+          sourceOutput.textContent = visibleText;
+        }
+        if (completedText.trim()) translateCaptionText(stableText);
+      };
+      captionRecognition.onerror = event => {
+        if (event.error === "not-allowed" || event.error === "service-not-allowed" || event.error === "audio-capture") {
+          stopLiveCaptions();
+          setCaptionStatus(event.error === "audio-capture" ? "No microphone" : "Mic blocked");
+          const sourceOutput = document.getElementById("caption-source-text");
+          if (sourceOutput) sourceOutput.textContent = event.error === "audio-capture"
+            ? "No microphone was found."
+            : "Allow microphone access in the browser, then press Start.";
+        } else if (event.error !== "no-speech") {
+          setCaptionStatus("Retrying", "listening");
+        }
+      };
+      captionRecognition.onend = () => {
+        if (!captionListening) return;
+        setCaptionStatus("Restarting", "listening");
+        captionRestartTimer = window.setTimeout(() => {
+          if (!captionListening || !captionRecognition) return;
+          try { captionRecognition.start(); } catch (_) {}
+        }, 350);
+      };
+
+      captionListening = true;
+      const button = document.getElementById("caption-toggle-button");
+      if (button) button.textContent = "■ Stop";
+      setCaptionStatus("Starting", "listening");
+      prepareCaptionTranslator();
+      try {
+        captionRecognition.start();
+      } catch (error) {
+        stopLiveCaptions();
+        setCaptionStatus("Start failed");
+      }
+    }
+
+    function toggleLiveCaptions() {
+      if (captionListening) stopLiveCaptions();
+      else startCaptionRecognition();
+    }
+
+    function changeCaptionLanguage() {
+      updateCaptionLanguageTags();
+      captionTranslator = null;
+      captionTranslatorKey = "";
+      const wasListening = captionListening;
+      if (wasListening) stopLiveCaptions();
+      if (captionSourceHistory.length) translateCaptionText(captionSourceHistory.join(" "));
+      if (wasListening) startCaptionRecognition();
+    }
+
+    // ========================================================
     // PICTURE-IN-PICTURE (PiP) CONTROLLER
     // ========================================================
-    let isPipActive = false;
+    let isPipActive = true;
     let isPipExpanded = false;
     let isPipMuted = true;
-    const cookingShowVideoId = "J_e2m6Q8Tl8";
+    const pawPatrolLiveVideoId = "SgRQ6W263fc";
     let currentApprovedShow = null;
 
     function togglePipWindow() {
       const pip = document.getElementById("pip-live-cooking-window");
       const led = document.getElementById("pip-led-indicator");
-      if (!currentApprovedShow) return;
       isPipActive = !isPipActive;
       if (isPipActive) {
         const iframe = document.getElementById("pip-video-iframe");
-        iframe.src = `https://www.youtube-nocookie.com/embed/${currentApprovedShow.defaultId}?autoplay=1&mute=1&playsinline=1&controls=1&enablejsapi=1`;
+        iframe.src = getPawPatrolEmbedUrl();
         pip.classList.remove("minimized");
         if (led) { led.style.background = "#00E5FF"; led.style.boxShadow = "0 0 8px #00E5FF"; }
       } else {
@@ -4004,6 +4419,21 @@
         pip.classList.add("minimized");
         if (led) { led.style.background = "#64748B"; led.style.boxShadow = "none"; }
       }
+    }
+
+    function getPawPatrolEmbedUrl() {
+      const origin = encodeURIComponent(window.location.origin);
+      return `https://www.youtube-nocookie.com/embed/${pawPatrolLiveVideoId}?autoplay=1&mute=1&playsinline=1&controls=1&rel=0&modestbranding=1&enablejsapi=1&origin=${origin}`;
+    }
+
+    function initializePawPatrolPip() {
+      const pip = document.getElementById("pip-live-cooking-window");
+      const iframe = document.getElementById("pip-video-iframe");
+      const led = document.getElementById("pip-led-indicator");
+      if (pip) pip.classList.remove("minimized");
+      if (iframe) iframe.src = getPawPatrolEmbedUrl();
+      if (led) { led.style.background = "#00E5FF"; led.style.boxShadow = "0 0 8px #00E5FF"; }
+      isPipActive = true;
     }
 
     function closePipWindow() {
@@ -4109,6 +4539,9 @@
     const remoteRail = document.getElementById("remote-sidebar");
     const pipWindow = document.getElementById("pip-live-cooking-window");
     if (remoteRail && pipWindow) remoteRail.appendChild(pipWindow);
+    updateCaptionLanguageTags();
+    initializePawPatrolPip();
+    initializeMobileCastHandoff();
     window.addEventListener("resize", applyResponsiveMode);
     window.addEventListener("orientationchange", applyResponsiveMode);
     applyResponsiveMode();
