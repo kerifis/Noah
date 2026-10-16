@@ -2063,6 +2063,7 @@
       </div>
       <div class="telemetry-row" id="ai-intent-label">Intent: <strong>Physical Request</strong></div>
       <div class="telemetry-row" id="ai-confidence-label">Confidence: <strong>96%</strong></div>
+      <div class="telemetry-row" id="voice-engine-label">Voice: <strong>Loading English voice…</strong></div>
     </div>
 
     <!-- PEOPLE and PLACES open here so the communication board remains visible. -->
@@ -2146,6 +2147,7 @@
     const isTvReceiver = new URLSearchParams(window.location.search).get("tvReceiver") === "1";
     let tvPresentationRequest = null;
     let tvPresentationConnection = null;
+    let preferredEnglishVoice = null;
 
     if (isTvReceiver) document.body.classList.add("cast-receiver");
 
@@ -2685,71 +2687,102 @@
     ];
 
     // ========================================================
-    // AI SUBTITLE PREDICTION ENGINE
+    // PRIVACY-FIRST AAC INTENT INTERPRETER
     // ========================================================
+    const AAC_SUBJECTS = {
+      "i": "I", "me": "I", "my/mine": "I", "we": "We", "you": "You",
+      "he": "He", "she": "She", "they": "They"
+    };
+    const AAC_DESTINATIONS = new Set(placeTiles.map(place => place.word.toLowerCase()));
+    const AAC_ACTIONS = new Set([
+      ...actionTiles.map(action => action.word.toLowerCase()),
+      "go", "come", "watch", "play", "eat", "drink", "open", "get", "make",
+      "give", "take", "wait", "stop", "help", "look", "turn"
+    ]);
+
+    function destinationPhrase(destination) {
+      const lower = destination.toLowerCase();
+      if (lower === "church") return "church";
+      if (lower === "doctor") return "the doctor";
+      if (lower === "grocery") return "the grocery store";
+      if (lower === "movie") return "the movies";
+      return `the ${lower}`;
+    }
+
+    function subjectVerb(subject, baseVerb) {
+      if (subject === "He" || subject === "She") {
+        if (baseVerb === "want") return "wants";
+        if (baseVerb === "need") return "needs";
+        if (baseVerb === "like") return "likes";
+      }
+      return baseVerb;
+    }
+
+    function finishSentence(text) {
+      const trimmed = text.trim().replace(/\s+/g, " ");
+      if (!trimmed) return "Please choose words to tell me what you need.";
+      const sentence = trimmed.charAt(0).toUpperCase() + trimmed.slice(1);
+      return /[.!?]$/.test(sentence) ? sentence : `${sentence}.`;
+    }
+
     function predictAiSubtitle(phrase) {
       if (!phrase || phrase.length === 0) {
         return {
-          sentence: "I would like to make a choice on TV please.",
+          sentence: "Please choose words to tell me what you need.",
           intent: "Prompt",
-          confidence: "70%"
+          confidence: "100%"
         };
       }
 
-      const joined = phrase.join(" ").toLowerCase();
+      const words = phrase.map(word => String(word).trim()).filter(Boolean);
+      const lowerWords = words.map(word => word.toLowerCase());
+      const has = word => lowerWords.includes(word);
+      const subjectWord = lowerWords.find(word => AAC_SUBJECTS[word]);
+      const subject = AAC_SUBJECTS[subjectWord] || "I";
+      const destination = words.find(word => AAC_DESTINATIONS.has(word.toLowerCase()));
+      const action = lowerWords.find(word => AAC_ACTIONS.has(word) && !["want", "need", "would", "could", "will", "can", "like"].includes(word));
 
-      if (joined.includes("monkey")) {
-        return { sentence: "I want to watch monkey videos and funny animal clips please!", intent: "Content Request", confidence: "99%" };
-      }
-      if (joined.includes("pancake") || joined.includes("cooking")) {
-        return { sentence: "I would like to watch the pancake cooking show please!", intent: "Content Request", confidence: "98%" };
-      }
-      if (joined.includes("bluey")) {
-        return { sentence: "I want to watch Bluey on TV please!", intent: "Content Request", confidence: "99%" };
-      }
-      if (joined.includes("cocomelon")) {
-        return { sentence: "I want to listen to CoComelon nursery rhymes please!", intent: "Content Request", confidence: "99%" };
-      }
-      if (joined.includes("train") || joined.includes("trains")) {
-        return { sentence: "I want to watch steam trains and locomotives please!", intent: "Content Request", confidence: "98%" };
-      }
-      if (joined.includes("stop") || joined.includes("no/don't")) {
-        return { sentence: "I want to stop now, I am all done watching TV.", intent: "Cessation / Rejection", confidence: "98%" };
-      }
-      if (joined.includes("tired")) {
-        return { sentence: "I feel tired and I want to rest while watching TV.", intent: "Emotional State", confidence: "95%" };
-      }
-      if (joined.includes("happy")) {
-        return { sentence: "I feel so happy watching this with you!", intent: "Social Expression", confidence: "96%" };
-      }
-      if (joined.includes("sad")) {
-        return { sentence: "I feel sad right now and need some comfort.", intent: "Emotional Support", confidence: "95%" };
-      }
-      if (joined.includes("hurt")) {
-        return { sentence: "I feel hurt and I need help please.", intent: "Urgent Need", confidence: "99%" };
-      }
-      if (joined.includes("help")) {
-        return { sentence: "Can you please help me with the TV remote?", intent: "Assistance Request", confidence: "97%" };
-      }
-      if (joined.includes("eat") || joined.includes("drink")) {
-        const item = joined.includes("drink") ? "a drink of water" : "a snack to eat";
-        return { sentence: `I would like ${item} while watching TV please.`, intent: "Physical Request", confidence: "96%" };
-      }
-      if (joined.includes("more") || joined.includes("again")) {
-        return { sentence: "I want to watch that one more time please!", intent: "Repetition Request", confidence: "95%" };
-      }
-      if (joined.includes("like")) {
-        return { sentence: "I really like this show, it is so fun!", intent: "Social Sharing", confidence: "93%" };
-      }
-      if (joined.includes("want")) {
-        return { sentence: "I want to watch my favorite show on TV please.", intent: "Core Request", confidence: "92%" };
+      const show = lowerWords.find(word => ["bluey", "cocomelon", "cooking", "pancake", "trains", "train", "monkey"].includes(word));
+      if (show) {
+        const showName = show === "bluey" ? "Bluey" : show === "cocomelon" ? "CoComelon" : show === "cooking" || show === "pancake" ? "a cooking video" : show === "train" || show === "trains" ? "train videos" : "monkey videos";
+        const lead = has("want") ? `${subject} ${subjectVerb(subject, "want")} to watch` : `${subject} would like to watch`;
+        return { sentence: finishSentence(`${lead} ${showName} please`), intent: "Content Request", confidence: "99%" };
       }
 
-      return {
-        sentence: `I am saying: "${phrase.join(" ")}" on the TV screen.`,
-        intent: "Expressive Statement",
-        confidence: "90%"
-      };
+      if (has("no/don't")) return { sentence: "No, I do not want that.", intent: "Rejection", confidence: "99%" };
+      if (has("stop")) return { sentence: finishSentence(`${subject} ${subjectVerb(subject, "want")} to stop`), intent: "Cessation", confidence: "99%" };
+      if (has("hurt")) return { sentence: "I am hurt. I need help, please.", intent: "Urgent Need", confidence: "99%" };
+      if (has("help")) return { sentence: "I need help, please.", intent: "Assistance Request", confidence: "99%" };
+
+      if (destination) {
+        const destinationText = destinationPhrase(destination);
+        const questionSubject = subject === "I" ? "I" : subject.toLowerCase();
+        if (has("can")) return { sentence: finishSentence(`Can ${questionSubject} go to ${destinationText}`), intent: "Destination Request", confidence: "99%" };
+        if (has("will")) return { sentence: finishSentence(`${subject} will go to ${destinationText}`), intent: "Destination Statement", confidence: "99%" };
+        if (has("need")) return { sentence: finishSentence(`${subject} ${subjectVerb(subject, "need")} to go to ${destinationText}`), intent: "Destination Need", confidence: "99%" };
+        if (has("want")) return { sentence: finishSentence(`${subject} ${subjectVerb(subject, "want")} to go to ${destinationText}`), intent: "Destination Request", confidence: "99%" };
+        if (has("go")) return { sentence: finishSentence(`${subject} go${subject === "He" || subject === "She" ? "es" : ""} to ${destinationText}`), intent: "Destination Statement", confidence: "98%" };
+        return { sentence: finishSentence(destination), intent: "Place", confidence: "95%" };
+      }
+
+      const feeling = lowerWords.find(word => ["happy", "sad", "tired", "sick"].includes(word));
+      if (feeling) return { sentence: finishSentence(`${subject} feel${subject === "He" || subject === "She" ? "s" : ""} ${feeling}`), intent: "Emotional / Physical State", confidence: "99%" };
+
+      if (has("more")) return { sentence: "I want more, please.", intent: "Quantity Request", confidence: "98%" };
+      if (has("again")) return { sentence: "I want that again, please.", intent: "Repetition Request", confidence: "98%" };
+
+      if (has("want") && action) {
+        const complement = action === "drink" ? "a drink" : `to ${action}`;
+        return { sentence: finishSentence(`${subject} ${subjectVerb(subject, "want")} ${complement}`), intent: "Action Request", confidence: "98%" };
+      }
+      if (has("need") && action) return { sentence: finishSentence(`${subject} ${subjectVerb(subject, "need")} to ${action}`), intent: "Action Need", confidence: "98%" };
+      if (has("can") && action) return { sentence: finishSentence(`Can ${subject === "I" ? "I" : subject.toLowerCase()} ${action}`), intent: "Permission Request", confidence: "98%" };
+      if (has("will") && action) return { sentence: finishSentence(`${subject} will ${action}`), intent: "Action Statement", confidence: "98%" };
+      if (has("like")) return { sentence: finishSentence(`${subject} ${subjectVerb(subject, "like")} that`), intent: "Preference", confidence: "96%" };
+      if (has("want")) return { sentence: finishSentence(`${subject} ${subjectVerb(subject, "want")} that`), intent: "Request", confidence: "95%" };
+
+      const spokenWords = lowerWords.filter(word => !["+ more"].includes(word)).join(" ");
+      return { sentence: finishSentence(spokenWords), intent: "Literal AAC Message", confidence: "94%" };
     }
 
     function updateAiSubtitles() {
@@ -2926,11 +2959,44 @@
       broadcastSyncEvent("PHRASE_CLEAR", {});
     }
 
+    function loadPreferredEnglishVoice() {
+      if (!("speechSynthesis" in window)) return null;
+      const voices = window.speechSynthesis.getVoices();
+      const englishVoices = voices.filter(voice => /^en([-_]|$)/i.test(voice.lang));
+      preferredEnglishVoice = englishVoices
+        .map(voice => ({
+          voice,
+          score: (/google/i.test(voice.name) ? 100 : 0)
+            + (/english/i.test(voice.name) ? 30 : 0)
+            + (/^en-CA$/i.test(voice.lang) ? 20 : 0)
+            + (/^en-US$/i.test(voice.lang) ? 15 : 0)
+            + (voice.localService ? 5 : 0)
+        }))
+        .sort((a, b) => b.score - a.score)[0]?.voice || voices[0] || null;
+
+      const label = document.getElementById("voice-engine-label");
+      if (label) {
+        const voiceName = preferredEnglishVoice
+          ? (/google/i.test(preferredEnglishVoice.name) ? preferredEnglishVoice.name : `${preferredEnglishVoice.name} (system fallback)`)
+          : "Speech unavailable";
+        label.innerHTML = `Voice: <strong>${voiceName}</strong>`;
+      }
+      return preferredEnglishVoice;
+    }
+
+    if ("speechSynthesis" in window) {
+      window.speechSynthesis.addEventListener("voiceschanged", loadPreferredEnglishVoice);
+    }
+
     function speak(text, onComplete) {
       if ('speechSynthesis' in window) {
         window.speechSynthesis.cancel();
         const utterance = new SpeechSynthesisUtterance(text);
-        utterance.rate = 0.95;
+        const voice = preferredEnglishVoice || loadPreferredEnglishVoice();
+        if (voice) utterance.voice = voice;
+        utterance.lang = voice?.lang || "en-CA";
+        utterance.rate = 0.92;
+        utterance.pitch = 1.03;
         if (onComplete) utterance.onend = onComplete;
         window.speechSynthesis.speak(utterance);
       } else if (onComplete) {
@@ -3978,6 +4044,7 @@
     updatePhraseDisplay();
     updateAiSubtitles();
     updateStats();
+    loadPreferredEnglishVoice();
     initializeTvReceiver();
   </script>
 </body>
