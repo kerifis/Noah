@@ -665,6 +665,51 @@
       letter-spacing: 0.6px;
     }
 
+    .cast-tv-btn {
+      appearance: none;
+      border: 0;
+      padding: 5px 7px;
+      margin: -5px -7px;
+      border-radius: 10px;
+      background: transparent;
+      color: #CFDCED;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font: inherit;
+      cursor: pointer;
+      transition: color 150ms ease, background 150ms ease, box-shadow 150ms ease;
+    }
+
+    .cast-tv-btn:hover,
+    .cast-tv-btn:focus-visible {
+      color: #FFFFFF;
+      background: rgba(0,229,255,.1);
+      box-shadow: 0 0 16px rgba(0,229,255,.28);
+      outline: 2px solid var(--focus-cyan);
+      outline-offset: 2px;
+    }
+
+    .cast-tv-btn.connected { color: #00E676; }
+
+    .cast-tv-icon {
+      width: 20px;
+      height: 20px;
+      flex: 0 0 auto;
+      fill: currentColor;
+    }
+
+    .cast-feedback {
+      margin-top: -5px;
+      color: #7E93B0;
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: .25px;
+    }
+
+    .cast-feedback.connected { color: #00E676; }
+    .cast-feedback.error { color: #FF8A80; }
+
     .ai-active-pill {
       font-size: 10.5px;
       background: rgba(0, 230, 118, 0.12);
@@ -1530,6 +1575,9 @@
     .action-label { font-size:22px;letter-spacing:.6px; }
     #remote-sidebar { width:auto;height:auto;min-height:0;margin:0;padding:30px;gap:22px;overflow:hidden;border-width:2px;border-radius:34px;background:radial-gradient(110% 65% at 50% 0%,rgba(31,70,132,.32),transparent 62%),linear-gradient(180deg,rgba(12,25,47,.99),rgba(4,10,20,.99));box-shadow:inset 0 1px rgba(255,255,255,.12),0 35px 90px rgba(0,0,0,.55); }
     .remote-title { font-size:34px;letter-spacing:1.4px; }
+    .cast-tv-btn { gap:16px;padding:9px 12px;margin:-9px -12px;border-radius:18px; }
+    .cast-tv-icon { width:40px;height:40px; }
+    .cast-feedback { margin-top:-10px;font-size:17px; }
     .ai-active-pill { font-size:20px;padding:9px 18px;border-radius:18px; }
     .ai-active-dot,.back-led-dot { width:13px;height:13px; }
     .mode-toggle-group { padding:7px;border-radius:22px;gap:6px;border-width:2px; }
@@ -1569,6 +1617,11 @@
     .reward-footer-bar { font-size:22px;min-height:46px; }
 
     #mobile-places-slot,#mobile-people-slot { display:none; }
+
+    /* The receiving television mirrors the complete TalkTV interface. Its
+       cast control is informational because the sender owns the session. */
+    body.cast-receiver .cast-tv-btn { pointer-events:none; }
+    body.cast-receiver .cast-feedback { display:none; }
 
     /* Phones and touch tablets use a native scrolling layout instead of a
        scaled-down 4K television canvas. */
@@ -1948,9 +2001,15 @@
   <!-- RIGHT SIDEBAR: TV REMOTE (Matches Screenshot 1:1) -->
   <div id="remote-sidebar">
     <div class="remote-header">
-      <h2 class="remote-title">TV REMOTE</h2>
+      <h2 class="remote-title">
+        <button class="cast-tv-btn" id="cast-tv-button" type="button" onclick="startTvCast()" aria-label="Cast TalkTV to a television" title="Choose a TV on the same network">
+          <svg class="cast-tv-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M1 18v3h3a3 3 0 0 0-3-3Zm0-4v2a5 5 0 0 1 5 5h2a7 7 0 0 0-7-7Zm0-4v2a9 9 0 0 1 9 9h2c0-6.08-4.92-11-11-11Zm18-7H5a2 2 0 0 0-2 2v3h2V5h14v14h-5v2h5a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2Z"/></svg>
+          <span>REMOTE TV</span>
+        </button>
+      </h2>
       <span class="ai-active-pill"><span class="ai-active-dot"></span>AI ACTIVE</span>
     </div>
+    <div class="cast-feedback" id="cast-feedback" role="status" aria-live="polite">Select a TV on the same Wi-Fi network</div>
 
     <!-- BOARD MODE SWITCHER (WordPower 80 by default, plus WP 60 screenshot mode & Staged) -->
     <div class="mode-toggle-group">
@@ -2084,6 +2143,11 @@
     let peoplePanelActive = false;
     let actionsViewActive = false;
     let actionPage = 0;
+    const isTvReceiver = new URLSearchParams(window.location.search).get("tvReceiver") === "1";
+    let tvPresentationRequest = null;
+    let tvPresentationConnection = null;
+
+    if (isTvReceiver) document.body.classList.add("cast-receiver");
 
     function setNoahAvatar(src) {
       currentNoahAvatar = src;
@@ -2852,6 +2916,7 @@
           container.appendChild(chip);
         });
       }
+      sendCastState();
     }
 
     function clearPhrase() {
@@ -2904,6 +2969,7 @@
       if (document.body.classList.contains("compact-device")) {
         requestAnimationFrame(() => panel.scrollIntoView({ behavior: "smooth", block: "start" }));
       }
+      sendCastState();
     }
 
     function closePlacesPanel(restorePlacesFocus = true) {
@@ -2918,6 +2984,7 @@
         focusedIndex = placesIndex >= 0 ? placesIndex : 0;
         applyFocus();
       }
+      sendCastState();
     }
 
     function renderPeoplePanel() {
@@ -2951,6 +3018,7 @@
       if (document.body.classList.contains("compact-device")) {
         requestAnimationFrame(() => panel.scrollIntoView({ behavior: "smooth", block: "start" }));
       }
+      sendCastState();
     }
 
     function closePeoplePanel(restorePeopleFocus = true) {
@@ -2965,6 +3033,7 @@
         focusedIndex = peopleIndex >= 0 ? peopleIndex : 0;
         applyFocus();
       }
+      sendCastState();
     }
 
     function renderActionPage() {
@@ -3012,6 +3081,7 @@
       if (document.body.classList.contains("compact-device")) {
         requestAnimationFrame(() => view.scrollIntoView({ behavior: "smooth", block: "start" }));
       }
+      sendCastState();
     }
 
     function closeActionsView() {
@@ -3029,6 +3099,7 @@
       renderActionPage();
       focusedIndex = 0;
       updateFocusableElements();
+      sendCastState();
     }
 
     function openSubGrid(categoryId, categoryName) {
@@ -3070,6 +3141,7 @@
       updateFocusableElements();
       focusedIndex = 0;
       applyFocus();
+      sendCastState();
     }
 
     function switchBoardMode(mode) {
@@ -3092,6 +3164,7 @@
 
       renderBoard();
       focusedIndex = 0;
+      sendCastState();
       applyFocus();
     }
 
@@ -3649,6 +3722,120 @@
     };
 
     // ========================================================
+    // SAME-NETWORK TV PRESENTATION / CASTING
+    // ========================================================
+    function setCastFeedback(message, state = "") {
+      const feedback = document.getElementById("cast-feedback");
+      const button = document.getElementById("cast-tv-button");
+      if (!feedback || !button) return;
+      feedback.textContent = message;
+      feedback.classList.toggle("connected", state === "connected");
+      feedback.classList.toggle("error", state === "error");
+      button.classList.toggle("connected", state === "connected");
+    }
+
+    function getCastViewState() {
+      const subgrid = document.getElementById("subgrid-view-container");
+      if (actionsViewActive) return "actions";
+      if (peoplePanelActive) return "people";
+      if (placesPanelActive) return "places";
+      if (subgrid && subgrid.style.display === "flex") return "subgrid";
+      return "main";
+    }
+
+    function getTalkTvCastState() {
+      return {
+        type: "TALKTV_STATE",
+        activePhrase: [...activePhrase],
+        boardMode: currentBoardMode,
+        view: getCastViewState(),
+        actionPage
+      };
+    }
+
+    function sendCastState() {
+      if (!tvPresentationConnection || tvPresentationConnection.state !== "connected") return;
+      try {
+        tvPresentationConnection.send(JSON.stringify(getTalkTvCastState()));
+      } catch (error) {
+        console.warn("TalkTV cast state could not be sent", error);
+      }
+    }
+
+    function attachTvPresentationConnection(connection) {
+      tvPresentationConnection = connection;
+      const connected = () => {
+        setCastFeedback("Connected to selected TV", "connected");
+        sendCastState();
+      };
+      connection.onconnect = connected;
+      connection.onclose = () => {
+        tvPresentationConnection = null;
+        setCastFeedback("TV disconnected — tap to reconnect");
+      };
+      connection.onterminate = () => {
+        tvPresentationConnection = null;
+        setCastFeedback("Casting ended — tap to choose a TV");
+      };
+      if (connection.state === "connected") connected();
+    }
+
+    async function startTvCast() {
+      if (isTvReceiver) return;
+      if (!("PresentationRequest" in window) || !navigator.presentation) {
+        setCastFeedback("Casting needs Chrome or Edge on HTTPS", "error");
+        return;
+      }
+
+      const receiverUrl = new URL(window.location.href);
+      receiverUrl.searchParams.set("tvReceiver", "1");
+      receiverUrl.hash = "";
+      try {
+        setCastFeedback("Choose an available TV…");
+        tvPresentationRequest = new PresentationRequest([receiverUrl.href]);
+        navigator.presentation.defaultRequest = tvPresentationRequest;
+        const connection = await tvPresentationRequest.start();
+        attachTvPresentationConnection(connection);
+      } catch (error) {
+        const cancelled = error && (error.name === "AbortError" || error.name === "NotAllowedError");
+        setCastFeedback(cancelled ? "TV selection cancelled" : "No compatible TV was found", cancelled ? "" : "error");
+      }
+    }
+
+    function applyTalkTvCastState(rawMessage) {
+      let state = rawMessage;
+      try {
+        if (typeof rawMessage === "string") state = JSON.parse(rawMessage);
+      } catch (_) {
+        return;
+      }
+      if (!state || state.type !== "TALKTV_STATE") return;
+
+      if (state.boardMode && state.boardMode !== currentBoardMode) switchBoardMode(state.boardMode);
+      if (Array.isArray(state.activePhrase)) {
+        activePhrase = [...state.activePhrase];
+        updatePhraseDisplay();
+        updateAiSubtitles();
+      }
+      if (state.view === "actions") openActionsView(Number(state.actionPage) || 0);
+      else if (state.view === "people") openPeoplePanel();
+      else if (state.view === "places") openPlacesPanel();
+      else if (state.view === "main") returnToMainView();
+    }
+
+    function attachTvReceiverConnection(connection) {
+      connection.onmessage = event => applyTalkTvCastState(event.data);
+    }
+
+    function initializeTvReceiver() {
+      if (!isTvReceiver || !navigator.presentation || !navigator.presentation.receiver) return;
+      navigator.presentation.receiver.connectionList.then(list => {
+        list.connections.forEach(attachTvReceiverConnection);
+        list.onconnectionavailable = event => attachTvReceiverConnection(event.connection);
+      }).catch(error => console.warn("TalkTV receiver connection unavailable", error));
+    }
+
+    // ========================================================
     // PICTURE-IN-PICTURE (PiP) CONTROLLER
     // ========================================================
     let isPipActive = false;
@@ -3791,6 +3978,7 @@
     updatePhraseDisplay();
     updateAiSubtitles();
     updateStats();
+    initializeTvReceiver();
   </script>
 </body>
 
