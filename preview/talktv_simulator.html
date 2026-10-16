@@ -746,6 +746,110 @@
       color: #FFFFFF;
     }
 
+    /* In-place Places vocabulary panel. It occupies the otherwise unused
+       lower remote rail and never replaces the main communication board. */
+    .places-panel {
+      display: none;
+      min-height: 0;
+      flex-direction: column;
+      gap: 8px;
+      padding: 10px;
+      border: 1.5px solid rgba(71, 85, 105, 0.75);
+      border-radius: 15px;
+      background: linear-gradient(180deg, rgba(20, 31, 50, 0.96), rgba(8, 15, 27, 0.99));
+      box-shadow: inset 0 1px rgba(255, 255, 255, 0.1), 0 10px 24px rgba(0, 0, 0, 0.35);
+    }
+
+    .places-panel.active {
+      display: flex;
+      animation: places-panel-in 180ms ease-out;
+    }
+
+    @keyframes places-panel-in {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .places-panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: #FFFFFF;
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: 0.7px;
+      text-transform: uppercase;
+    }
+
+    .places-panel-hint {
+      color: #7E93B0;
+      font-size: 9px;
+      font-weight: 800;
+    }
+
+    .places-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      grid-template-rows: repeat(5, minmax(0, 1fr));
+      gap: 6px;
+      min-height: 0;
+      flex: 1;
+    }
+
+    .place-choice {
+      min-width: 0;
+      min-height: 0;
+      padding: 4px 3px;
+      border: 1.5px solid #52627A;
+      border-radius: 11px;
+      background: radial-gradient(120% 90% at 50% -15%, rgba(148, 163, 184, 0.32), transparent 58%), linear-gradient(155deg, #344154, #151E2D 72%);
+      color: #FFFFFF;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 1px;
+      box-shadow: inset 0 1px rgba(255,255,255,.28), inset 0 -3px 5px rgba(0,0,0,.35), 0 4px 8px rgba(0,0,0,.35);
+      transition: transform 140ms ease, border-color 140ms ease, box-shadow 140ms ease;
+    }
+
+    .place-choice:hover,
+    .place-choice.focused {
+      z-index: 3;
+      transform: scale(1.07) translateY(-1px);
+      border-color: var(--focus-cyan);
+      box-shadow: 0 0 16px rgba(0, 229, 255, 0.7), inset 0 1px rgba(255,255,255,.32);
+    }
+
+    .place-icon {
+      width: 100%;
+      aspect-ratio: 1.5;
+      display: block;
+      flex: 0 0 auto;
+      background-image: url('./assets/icons/talktv-places-atlas.png');
+      background-repeat: no-repeat;
+      background-size: 450% 550%;
+      background-position: var(--place-x) var(--place-y);
+      filter: drop-shadow(0 4px 5px rgba(0,0,0,.58));
+    }
+
+    .place-label {
+      max-width: 100%;
+      overflow: hidden;
+      min-height: 2.05em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      white-space: normal;
+      font-size: 8px;
+      font-weight: 900;
+      line-height: 1.05;
+      text-transform: uppercase;
+      text-shadow: 0 2px 3px rgba(0,0,0,.9);
+    }
+
     /* Metric Badges */
     .stat-badge {
       background: #101827;
@@ -1289,6 +1393,12 @@
     .telemetry-box { padding:18px 20px;border-radius:22px;gap:8px;border-width:2px; }
     .telemetry-title { font-size:19px;margin-bottom:4px; }
     .telemetry-row { font-size:20px; }
+    .places-panel { flex:1;padding:16px;border-radius:24px;gap:12px;border-width:2px; }
+    .places-panel-header { font-size:22px; }
+    .places-panel-hint { font-size:15px; }
+    .places-grid { gap:12px; }
+    .place-choice { padding:8px 6px;border-radius:18px;border-width:2px;gap:3px; }
+    .place-label { font-size:17px;letter-spacing:.2px; }
     .memoji-picker-box,.stat-badge { display:none; }
     .pip-window { position:static;width:100%;height:430px;margin-top:auto;flex:0 0 auto;border-width:3px;border-radius:26px;z-index:auto; }
     .pip-window.expanded { position:absolute;left:650px;top:360px;right:auto;bottom:auto;width:2540px;height:1429px;z-index:150; }
@@ -1531,6 +1641,15 @@
       <div class="telemetry-row" id="ai-confidence-label">Confidence: <strong>96%</strong></div>
     </div>
 
+    <!-- PLACES opens here so the communication board always remains visible. -->
+    <section class="places-panel" id="places-panel" aria-label="Places vocabulary" aria-hidden="true">
+      <div class="places-panel-header">
+        <span>Places</span>
+        <span class="places-panel-hint">OK TO ADD · BACK TO CLOSE</span>
+      </div>
+      <div class="places-grid" id="places-grid"></div>
+    </section>
+
     <!-- 3D APPLE MEMOJI AVATAR CUSTOMIZER -->
     <div class="memoji-picker-box">
       <div class="memoji-picker-title">
@@ -1588,6 +1707,7 @@
     let rewardedCount = 1;
     let currentBoardMode = 'wp60'; // 4K default: compact 8 × 6 board
     let currentNoahAvatar = "./assets/memojis/memoji_noah_3d_v2.png";
+    let placesPanelActive = false;
 
     function setNoahAvatar(src) {
       currentNoahAvatar = src;
@@ -2008,6 +2128,32 @@
       ]
     };
 
+    const placeTiles = [
+      { word: "Airport", column: 0, row: 0 },
+      { word: "House", column: 1, row: 0 },
+      { word: "Bowling alley", column: 2, row: 0 },
+      { word: "Bathroom", column: 3, row: 0 },
+      { word: "Church", column: 0, row: 1 },
+      { word: "Bedroom", column: 1, row: 1 },
+      { word: "Doctor", column: 2, row: 1 },
+      { word: "Closet", column: 3, row: 1 },
+      { word: "Grocery", column: 0, row: 2 },
+      { word: "Dining room", column: 1, row: 2 },
+      { word: "Mall", column: 2, row: 2 },
+      { word: "Kitchen", column: 3, row: 2 },
+      { word: "Movie", column: 0, row: 3 },
+      { word: "Living room", column: 1, row: 3 },
+      { word: "Restaurant", column: 2, row: 3 },
+      { word: "Laundry", column: 3, row: 3 },
+      { word: "Store", column: 0, row: 4 },
+      { word: "Door", column: 1, row: 4 },
+      { word: "Library", column: 2, row: 4 },
+      { word: "Window", column: 3, row: 4 }
+    ];
+
+    const placeAtlasX = ["1.786%", "33.929%", "66.071%", "98.214%"];
+    const placeAtlasY = ["1.111%", "25.556%", "50%", "74.444%", "98.889%"];
+
     // Staged View Tiles
     const stagedCore = [
       { word: "I", color: "#E08738", action: "speak" },
@@ -2193,6 +2339,11 @@
 
       if (tile.action === "category") {
         speak(tile.word);
+        if ((tile.id || "") === "cat_places") {
+          openPlacesPanel();
+          return;
+        }
+        closePlacesPanel(false);
         openSubGrid(tile.id || "cat_cartoons", tile.word);
         return;
       }
@@ -2266,6 +2417,49 @@
       }
     }
 
+    function renderPlacesPanel() {
+      const grid = document.getElementById("places-grid");
+      if (grid.childElementCount) return;
+
+      placeTiles.forEach(place => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "place-choice";
+        button.dataset.word = place.word;
+        button.setAttribute("aria-label", `Add ${place.word}`);
+        button.innerHTML = `
+          <span class="place-icon" aria-hidden="true" style="--place-x:${placeAtlasX[place.column]};--place-y:${placeAtlasY[place.row]}"></span>
+          <span class="place-label">${place.word}</span>
+        `;
+        button.onclick = () => handleTileClick({ word: place.word, color: "#64748B", action: "speak" });
+        grid.appendChild(button);
+      });
+    }
+
+    function openPlacesPanel() {
+      renderPlacesPanel();
+      const panel = document.getElementById("places-panel");
+      panel.classList.add("active");
+      panel.setAttribute("aria-hidden", "false");
+      placesPanelActive = true;
+      focusedIndex = 0;
+      updateFocusableElements();
+    }
+
+    function closePlacesPanel(restorePlacesFocus = true) {
+      const panel = document.getElementById("places-panel");
+      panel.classList.remove("active");
+      panel.setAttribute("aria-hidden", "true");
+      placesPanelActive = false;
+      updateFocusableElements();
+
+      if (restorePlacesFocus) {
+        const placesIndex = focusableElements.findIndex(el => el.dataset.word === "PLACES");
+        focusedIndex = placesIndex >= 0 ? placesIndex : 0;
+        applyFocus();
+      }
+    }
+
     function openSubGrid(categoryId, categoryName) {
       document.getElementById("grid-view-container").style.display = "none";
       document.getElementById("staged-view-container").style.display = "none";
@@ -2291,6 +2485,7 @@
     }
 
     function returnToMainView() {
+      if (placesPanelActive) closePlacesPanel(false);
       document.getElementById("subgrid-view-container").style.display = "none";
       if (currentBoardMode === 'staged') {
         document.getElementById("staged-view-container").style.display = "flex";
@@ -2305,6 +2500,7 @@
     }
 
     function switchBoardMode(mode) {
+      if (placesPanelActive) closePlacesPanel(false);
       currentBoardMode = mode;
       document.getElementById("btn-mode-staged").classList.toggle("active", mode === 'staged');
       document.getElementById("btn-mode-wp60").classList.toggle("active", mode === 'wp60');
@@ -2737,6 +2933,12 @@
     // REMOTE D-PAD NAVIGATION & FOCUS
     // ========================================================
     function updateFocusableElements() {
+      if (placesPanelActive) {
+        focusableElements = Array.from(document.querySelectorAll("#places-grid .place-choice"));
+        if (focusedIndex >= focusableElements.length) focusedIndex = 0;
+        applyFocus();
+        return;
+      }
       const activeContainer = currentBoardMode === 'staged' ? '#staged-view-container' : '#tv-stage';
       focusableElements = Array.from(document.querySelectorAll(`${activeContainer} .wp-tile, ${activeContainer} .staged-tile, #btn-confirm-sub`));
       if (focusedIndex >= focusableElements.length) {
@@ -2783,6 +2985,10 @@
       }
 
       if (direction === 'back') {
+        if (placesPanelActive) {
+          closePlacesPanel();
+          return;
+        }
         const subgrid = document.getElementById("subgrid-view-container");
         if (subgrid.style.display === "flex") {
           returnToMainView();
@@ -2799,7 +3005,7 @@
         return;
       }
 
-      const cols = currentBoardMode === 'wp80' ? 10 : (currentBoardMode === 'wp60' ? 8 : 4);
+      const cols = placesPanelActive ? 4 : (currentBoardMode === 'wp80' ? 10 : (currentBoardMode === 'wp60' ? 8 : 4));
       if (direction === 'right') {
         focusedIndex = (focusedIndex + 1) % focusableElements.length;
       } else if (direction === 'left') {
@@ -2936,6 +3142,7 @@
 
     // Init
     renderBoard();
+    if (window.location.hash === "#places") openPlacesPanel();
     updatePhraseDisplay();
     updateAiSubtitles();
     updateStats();
