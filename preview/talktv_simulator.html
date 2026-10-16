@@ -510,8 +510,8 @@
       font-size: 15px;
     }
 
-    /* Full-board Actions vocabulary. Thirty-three large choices are shown at
-       once so the labels stay readable from across a room. */
+    /* Full-board Actions vocabulary. Sixty choices are shown in a 12 × 5 TV
+       grid, with a second page for the remaining actions. */
     .actions-view {
       display: none;
       min-height: 0;
@@ -582,8 +582,8 @@
       min-height: 0;
       flex: 1;
       display: grid;
-      grid-template-columns: repeat(11, minmax(0, 1fr));
-      grid-template-rows: repeat(3, minmax(0, 1fr));
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      grid-template-rows: repeat(5, minmax(0, 1fr));
       gap: 9px;
     }
 
@@ -1841,16 +1841,16 @@
     </div>
 
     <!-- ACTIONS uses the entire main TV board and keeps icons readable by
-         showing 33 choices at a time. -->
+         showing 60 choices at a time. -->
     <section class="actions-view" id="actions-view" aria-label="Actions vocabulary" aria-hidden="true">
       <div class="actions-toolbar">
         <div class="actions-heading">
           <strong>ACTIONS</strong>
-          <span id="actions-range">1–33 of 120</span>
+          <span id="actions-range">1–60 of 120</span>
         </div>
         <div class="actions-pagination">
           <button class="action-page-btn" id="actions-prev" type="button" onclick="changeActionPage(-1)">◀ PREVIOUS</button>
-          <span class="actions-page-status" id="actions-page-status">PAGE 1 / 4</span>
+          <span class="actions-page-status" id="actions-page-status">PAGE 1 / 2</span>
           <button class="action-page-btn" id="actions-next" type="button" onclick="changeActionPage(1)">NEXT ▶</button>
         </div>
       </div>
@@ -2504,7 +2504,7 @@
       ]
     };
 
-    const ACTIONS_PER_PAGE = 33;
+    const ACTIONS_PER_PAGE = 60;
     const actionTiles = [
       { word: "Eat", icon: "🍽️" }, { word: "Drink", icon: "🥤" }, { word: "Finish", icon: "🏁" },
       { word: "Get", icon: "🤲" }, { word: "Come", icon: "👈" }, { word: "Go", icon: "➡️" },
@@ -3605,7 +3605,7 @@
         ? getComputedStyle(activeGrid).gridTemplateColumns.split(" ").filter(Boolean).length
         : 0;
       const cols = actionsViewActive
-        ? (document.body.classList.contains("compact-device") ? 3 : 11)
+        ? (document.body.classList.contains("compact-device") ? 3 : 12)
         : ((placesPanelActive || peoplePanelActive) ? 4 : (renderedColumns || (currentBoardMode === 'staged' ? 4 : 8)));
       if (direction === 'right') {
         focusedIndex = (focusedIndex + 1) % focusableElements.length;
