@@ -699,6 +699,9 @@
       fill: currentColor;
     }
 
+    .mobile-cast-btn,
+    .mobile-cast-status { display: none; }
+
     .cast-feedback {
       margin-top: -5px;
       color: #7E93B0;
@@ -1620,7 +1623,8 @@
 
     /* The receiving television mirrors the complete TalkTV interface. Its
        cast control is informational because the sender owns the session. */
-    body.cast-receiver .cast-tv-btn { pointer-events:none; }
+    body.cast-receiver .cast-tv-btn,
+    body.cast-receiver .mobile-cast-btn { pointer-events:none; }
     body.cast-receiver .cast-feedback { display:none; }
 
     /* Phones and touch tablets use a native scrolling layout instead of a
@@ -1679,7 +1683,7 @@
       height:auto;
       min-height:50px;
       display:grid;
-      grid-template-columns:auto 1fr auto;
+      grid-template-columns:auto 1fr auto auto auto;
       grid-template-rows:auto auto;
       gap:6px 8px;
     }
@@ -1700,8 +1704,54 @@
     }
     body.compact-device #phrase-container::-webkit-scrollbar { display:none; }
     body.compact-device .phrase-chip { padding:7px 12px;border-width:1.5px;border-radius:13px;font-size:12px; }
-    body.compact-device .phrase-clear-btn { grid-column:2;grid-row:1;justify-self:end;width:36px;height:36px;font-size:15px;border-width:1px; }
-    body.compact-device #tv-clock { grid-column:3;grid-row:1;min-width:68px;padding:7px 8px;border-width:1px;border-radius:12px;font-size:11px; }
+    body.compact-device .mobile-cast-btn {
+      grid-column:3;
+      grid-row:1;
+      align-self:center;
+      display:grid;
+      place-items:center;
+      width:40px;
+      height:40px;
+      padding:0;
+      color:#00E5FF;
+      background:linear-gradient(180deg,#18345a 0%,#0b1c35 100%);
+      border:1px solid rgba(0,229,255,.7);
+      border-radius:12px;
+      box-shadow:inset 0 1px rgba(255,255,255,.22),0 0 13px rgba(0,229,255,.2);
+      cursor:pointer;
+      touch-action:manipulation;
+    }
+    body.compact-device .mobile-cast-btn:active { transform:scale(.94); }
+    body.compact-device .mobile-cast-btn:focus-visible { outline:2px solid #fff;outline-offset:2px; }
+    body.compact-device .mobile-cast-btn.connected { color:#00E676;border-color:#00E676;box-shadow:0 0 16px rgba(0,230,118,.42); }
+    body.compact-device .mobile-cast-btn .cast-tv-icon { width:23px;height:23px; }
+    body.compact-device .phrase-clear-btn { grid-column:4;grid-row:1;justify-self:end;width:36px;height:36px;font-size:15px;border-width:1px; }
+    body.compact-device #tv-clock { grid-column:5;grid-row:1;min-width:68px;padding:7px 8px;border-width:1px;border-radius:12px;font-size:11px; }
+    body.compact-device .mobile-cast-status {
+      position:fixed;
+      z-index:500;
+      left:50%;
+      bottom:calc(18px + env(safe-area-inset-bottom));
+      display:block;
+      max-width:calc(100vw - 32px);
+      padding:10px 14px;
+      border:1px solid rgba(0,229,255,.55);
+      border-radius:13px;
+      background:rgba(6,17,34,.96);
+      color:#dceaff;
+      box-shadow:0 12px 32px rgba(0,0,0,.5),0 0 18px rgba(0,229,255,.16);
+      font-size:12px;
+      font-weight:800;
+      line-height:1.25;
+      text-align:center;
+      opacity:0;
+      transform:translate(-50%,12px);
+      pointer-events:none;
+      transition:opacity 160ms ease,transform 160ms ease;
+    }
+    body.compact-device .mobile-cast-status.show { opacity:1;transform:translate(-50%,0); }
+    body.compact-device .mobile-cast-status.connected { color:#75ffba;border-color:#00E676; }
+    body.compact-device .mobile-cast-status.error { color:#ffb0aa;border-color:#ff5a5f; }
 
     body.compact-device #ai-subtitle-bar { width:100%;min-width:0;min-height:54px;padding:7px 8px;border-radius:14px;border-width:1px;gap:7px;overflow:hidden; }
     body.compact-device .subtitle-content-left { min-width:0;gap:7px; }
@@ -1784,8 +1834,9 @@
 
     @media (max-width:599px) {
       body.compact-device #tv-clock { display:none; }
-      body.compact-device #header-bar { grid-template-columns:auto 1fr; }
-      body.compact-device .phrase-clear-btn { grid-column:2; }
+      body.compact-device #header-bar { grid-template-columns:auto 1fr auto auto; }
+      body.compact-device .mobile-cast-btn { grid-column:3; }
+      body.compact-device .phrase-clear-btn { grid-column:4; }
       body.compact-device .btn-confirm-subtitle { max-width:78px; }
       body.compact-device .btn-confirm-subtitle::after { content:"Speak"; }
     }
@@ -1836,9 +1887,13 @@
         <!-- Rendered by JS: [ I ] [ DRINK ] [ MORE ] [ AGAIN ] -->
       </div>
 
+      <button class="mobile-cast-btn" id="mobile-cast-button" type="button" onclick="startTvCast()" aria-label="Cast TalkTV to a television" title="Cast to TV">
+        <svg class="cast-tv-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M1 18v3h3a3 3 0 0 0-3-3Zm0-4v2a5 5 0 0 1 5 5h2a7 7 0 0 0-7-7Zm0-4v2a9 9 0 0 1 9 9h2c0-6.08-4.92-11-11-11Zm18-7H5a2 2 0 0 0-2 2v3h2V5h14v14h-5v2h5a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2Z"/></svg>
+      </button>
       <button class="phrase-clear-btn" title="Clear Phrase" onclick="clearPhrase()">✕</button>
       <div id="tv-clock" aria-label="Current time">10:30 AM</div>
     </div>
+    <div class="mobile-cast-status" id="mobile-cast-status" role="status" aria-live="polite"></div>
 
     <!-- AI SUBTITLE PREDICTION BAR (Closed Captions Row in Screenshot) -->
     <div id="ai-subtitle-bar">
@@ -2934,7 +2989,14 @@
       const container = document.getElementById("phrase-container");
       container.innerHTML = "";
       if (activePhrase.length === 0) {
-        container.innerHTML = '<span style="color:#6C819F; font-size:14px; font-weight:600; padding-left:8px;">Select words using TV Remote...</span>';
+        const emptyPrompt = document.body.classList.contains("compact-device")
+          ? "Tap words below to build your sentence…"
+          : "Select words using TV Remote…";
+        const prompt = document.createElement("span");
+        prompt.className = "empty-phrase-prompt";
+        prompt.style.cssText = "color:#6C819F;font-size:14px;font-weight:600;padding-left:8px;";
+        prompt.textContent = emptyPrompt;
+        container.appendChild(prompt);
       } else {
         activePhrase.forEach((word, idx) => {
           const chip = document.createElement("div");
@@ -3790,14 +3852,31 @@
     // ========================================================
     // SAME-NETWORK TV PRESENTATION / CASTING
     // ========================================================
+    let mobileCastStatusTimer = null;
+
     function setCastFeedback(message, state = "") {
       const feedback = document.getElementById("cast-feedback");
       const button = document.getElementById("cast-tv-button");
-      if (!feedback || !button) return;
-      feedback.textContent = message;
-      feedback.classList.toggle("connected", state === "connected");
-      feedback.classList.toggle("error", state === "error");
-      button.classList.toggle("connected", state === "connected");
+      const mobileButton = document.getElementById("mobile-cast-button");
+      const mobileStatus = document.getElementById("mobile-cast-status");
+      if (feedback) {
+        feedback.textContent = message;
+        feedback.classList.toggle("connected", state === "connected");
+        feedback.classList.toggle("error", state === "error");
+      }
+      if (button) button.classList.toggle("connected", state === "connected");
+      if (mobileButton) {
+        mobileButton.classList.toggle("connected", state === "connected");
+        mobileButton.setAttribute("aria-label", state === "connected" ? "Connected to TV" : "Cast TalkTV to a television");
+      }
+      if (mobileStatus && document.body.classList.contains("compact-device")) {
+        mobileStatus.textContent = message;
+        mobileStatus.classList.toggle("connected", state === "connected");
+        mobileStatus.classList.toggle("error", state === "error");
+        mobileStatus.classList.add("show");
+        window.clearTimeout(mobileCastStatusTimer);
+        mobileCastStatusTimer = window.setTimeout(() => mobileStatus.classList.remove("show"), state === "error" ? 5000 : 3200);
+      }
     }
 
     function getCastViewState() {
@@ -4012,6 +4091,7 @@
         }
       }
 
+      if (activePhrase.length === 0) updatePhraseDisplay();
       fit4kCanvas();
     }
 
