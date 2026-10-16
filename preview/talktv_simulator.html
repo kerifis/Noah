@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>TalkTV — Android TV AAC Simulator (WordPower 80 3D Visual UI)</title>
   <style>
     :root {
@@ -1414,6 +1414,178 @@
     .reward-banner { font-size:32px;padding:16px 26px;border-radius:20px; }
     .reward-pill-btn,.reward-yt-btn,.reward-close-btn { font-size:22px;padding:11px 20px; }
     .reward-footer-bar { font-size:22px;min-height:46px; }
+
+    #mobile-places-slot { display:none; }
+
+    /* Phones and touch tablets use a native scrolling layout instead of a
+       scaled-down 4K television canvas. */
+    body.compact-device {
+      display:block;
+      width:100%;
+      height:auto;
+      min-height:100vh;
+      min-height:100svh;
+      overflow-x:hidden;
+      overflow-y:auto;
+      overscroll-behavior-y:contain;
+      padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+      background:#030711;
+      user-select:auto;
+      -webkit-text-size-adjust:100%;
+      text-size-adjust:100%;
+    }
+
+    body.compact-device #tv-canvas {
+      position:relative;
+      left:auto;
+      top:auto;
+      width:100%;
+      height:auto;
+      min-height:100vh;
+      min-height:100svh;
+      padding:8px;
+      display:block;
+      overflow:visible;
+      transform:none !important;
+      background:radial-gradient(120% 70% at 45% 0%,rgba(35,75,139,.32),transparent 58%),#030711;
+    }
+
+    body.compact-device #remote-sidebar { display:none !important; }
+
+    body.compact-device #tv-stage {
+      width:100%;
+      max-width:100%;
+      min-width:0;
+      height:auto;
+      min-height:calc(100vh - 16px);
+      min-height:calc(100svh - 16px);
+      padding:10px;
+      gap:8px;
+      overflow:visible;
+      border-width:1px;
+      border-radius:18px;
+    }
+
+    body.compact-device #header-bar {
+      width:100%;
+      min-width:0;
+      overflow:hidden;
+      height:auto;
+      min-height:50px;
+      display:grid;
+      grid-template-columns:auto 1fr auto;
+      grid-template-rows:auto auto;
+      gap:6px 8px;
+    }
+
+    body.compact-device .brand { grid-column:1;grid-row:1;gap:8px; }
+    body.compact-device .brand-icon { width:42px;height:42px;border-radius:12px;font-size:21px; }
+    body.compact-device .brand-title { font-size:22px;letter-spacing:-.4px; }
+    body.compact-device .brand-sub { font-size:8px;letter-spacing:.9px;margin-top:1px; }
+    body.compact-device #phrase-container {
+      grid-column:1 / -1;
+      grid-row:2;
+      width:100%;
+      min-width:0;
+      padding:2px;
+      gap:6px;
+      overflow-x:auto;
+      scrollbar-width:none;
+    }
+    body.compact-device #phrase-container::-webkit-scrollbar { display:none; }
+    body.compact-device .phrase-chip { padding:7px 12px;border-width:1.5px;border-radius:13px;font-size:12px; }
+    body.compact-device .phrase-clear-btn { grid-column:2;grid-row:1;justify-self:end;width:36px;height:36px;font-size:15px;border-width:1px; }
+    body.compact-device #tv-clock { grid-column:3;grid-row:1;min-width:68px;padding:7px 8px;border-width:1px;border-radius:12px;font-size:11px; }
+
+    body.compact-device #ai-subtitle-bar { width:100%;min-width:0;min-height:54px;padding:7px 8px;border-radius:14px;border-width:1px;gap:7px;overflow:hidden; }
+    body.compact-device .subtitle-content-left { min-width:0;gap:7px; }
+    body.compact-device .cc-badge { padding:5px 7px;border-width:1px;border-radius:12px;font-size:8px;letter-spacing:.4px; }
+    body.compact-device .predicted-sentence { white-space:normal;font-size:11px;line-height:1.18;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical; }
+    body.compact-device .btn-confirm-subtitle { flex:0 0 auto;max-width:90px;padding:8px 9px;border-width:1px;border-radius:11px;font-size:10px !important;line-height:1.1;gap:4px;white-space:nowrap;text-align:center;justify-content:center; }
+    body.compact-device .btn-confirm-subtitle span:first-child { font-size:12px !important; }
+    body.compact-device .btn-confirm-subtitle span:last-child { display:none; }
+    body.compact-device .btn-confirm-subtitle::after { content:"Speak";font-size:10px !important;font-weight:900; }
+
+    body.compact-device .view-container { flex:none;height:auto;min-height:0;overflow:visible; }
+    body.compact-device .wordpower-grid,
+    body.compact-device .wordpower-grid.wp60,
+    body.compact-device .wordpower-grid.wp80 {
+      height:auto;
+      width:100%;
+      max-width:100%;
+      min-height:0;
+      grid-template-columns:repeat(4,minmax(0,1fr));
+      grid-template-rows:none;
+      grid-auto-rows:96px;
+      gap:6px;
+      padding:0;
+    }
+
+    body.compact-device .wp-tile,
+    body.compact-device .wordpower-grid.wp60 .wp-tile {
+      width:100%;
+      height:96px;
+      min-height:96px;
+      padding:5px 3px 6px;
+      border-width:2px;
+      border-radius:13px;
+      box-shadow:inset 0 1px rgba(255,255,255,.2),inset 0 -4px 7px rgba(0,0,0,.3),0 5px 10px rgba(0,0,0,.42);
+      touch-action:manipulation;
+    }
+    body.compact-device .tile-icon-wrapper,
+    body.compact-device .wordpower-grid.wp60 .tile-icon-wrapper { height:auto;min-height:0;flex:1; }
+    body.compact-device .tile-3d-img,
+    body.compact-device .wordpower-grid.wp60 .tile-3d-img { width:54px;height:54px;border-radius:10px;filter:drop-shadow(0 5px 6px rgba(0,0,0,.55)); }
+    body.compact-device .tile-3d-svg,
+    body.compact-device .wordpower-grid.wp60 .tile-3d-svg { width:52px;height:52px; }
+    body.compact-device .tile-atlas-icon,
+    body.compact-device .wordpower-grid.wp60 .tile-atlas-icon { width:58px;height:58px;filter:drop-shadow(0 5px 7px rgba(0,0,0,.58)); }
+    body.compact-device .dual-memoji { width:62px;height:50px; }
+    body.compact-device .dual-memoji img:first-child,
+    body.compact-device .dual-memoji img:last-child { width:38px;height:38px; }
+    body.compact-device .tile-word,
+    body.compact-device .wordpower-grid.wp60 .tile-word { font-size:10px;letter-spacing:.25px;margin-top:1px; }
+    body.compact-device .wp-tile.focused { transform:scale(1.025);box-shadow:0 0 13px rgba(0,229,255,.85),inset 0 0 5px rgba(0,229,255,.28); }
+
+    body.compact-device .staged-row { flex-wrap:wrap;gap:7px; }
+    body.compact-device .staged-tile { width:calc(50% - 4px);height:112px; }
+    body.compact-device #mobile-places-slot { display:block;width:100%; }
+    body.compact-device #mobile-places-slot .places-panel { width:100%;height:auto;min-height:0;margin-top:8px;padding:9px;gap:7px;flex:none; }
+    body.compact-device #mobile-places-slot .places-panel-header { font-size:13px; }
+    body.compact-device #mobile-places-slot .places-panel-hint { font-size:8px; }
+    body.compact-device #mobile-places-slot .places-grid { grid-template-rows:repeat(5,94px);gap:6px;flex:none; }
+    body.compact-device #mobile-places-slot .place-choice { min-height:94px;padding:5px 3px;border-radius:12px;border-width:1.5px; }
+    body.compact-device #mobile-places-slot .place-label { font-size:9px; }
+
+    @media (max-width:599px) {
+      body.compact-device #tv-clock { display:none; }
+      body.compact-device #header-bar { grid-template-columns:auto 1fr; }
+      body.compact-device .phrase-clear-btn { grid-column:2; }
+      body.compact-device .btn-confirm-subtitle { max-width:78px; }
+      body.compact-device .btn-confirm-subtitle::after { content:"Speak"; }
+    }
+
+    @media (min-width:700px) and (orientation:portrait) {
+      body.compact-device .wordpower-grid,
+      body.compact-device .wordpower-grid.wp60,
+      body.compact-device .wordpower-grid.wp80 { grid-template-columns:repeat(6,minmax(0,1fr));grid-auto-rows:122px;gap:9px; }
+      body.compact-device .wp-tile,
+      body.compact-device .wordpower-grid.wp60 .wp-tile { height:122px;min-height:122px; }
+      body.compact-device .tile-atlas-icon,
+      body.compact-device .wordpower-grid.wp60 .tile-atlas-icon,
+      body.compact-device .tile-3d-img,
+      body.compact-device .wordpower-grid.wp60 .tile-3d-img { width:76px;height:76px; }
+      body.compact-device .tile-word,
+      body.compact-device .wordpower-grid.wp60 .tile-word { font-size:13px; }
+    }
+
+    @media (min-width:900px) and (orientation:landscape) {
+      body.compact-device .wordpower-grid,
+      body.compact-device .wordpower-grid.wp60,
+      body.compact-device .wordpower-grid.wp80 { grid-template-columns:repeat(8,minmax(0,1fr));grid-auto-rows:128px;gap:10px; }
+      body.compact-device .wp-tile,
+      body.compact-device .wordpower-grid.wp60 .wp-tile { height:128px;min-height:128px; }
+    }
   </style>
 </head>
 
@@ -1495,6 +1667,9 @@
       </div>
       <div class="staged-row" id="subgrid-row" style="flex-wrap: wrap;"></div>
     </div>
+
+    <!-- On compact touch devices the Places panel is moved here, below the board. -->
+    <div id="mobile-places-slot"></div>
 
     <!-- REWARD VIDEO PLAYER OVERLAY (Kids Cooking, Monkeys, Bluey, Trains) -->
     <div id="reward-player-overlay">
@@ -2444,6 +2619,9 @@
       placesPanelActive = true;
       focusedIndex = 0;
       updateFocusableElements();
+      if (document.body.classList.contains("compact-device")) {
+        requestAnimationFrame(() => panel.scrollIntoView({ behavior: "smooth", block: "start" }));
+      }
     }
 
     function closePlacesPanel(restorePlacesFocus = true) {
@@ -3005,7 +3183,11 @@
         return;
       }
 
-      const cols = placesPanelActive ? 4 : (currentBoardMode === 'wp80' ? 10 : (currentBoardMode === 'wp60' ? 8 : 4));
+      const activeGrid = document.getElementById("main-aac-grid");
+      const renderedColumns = activeGrid && activeGrid.offsetParent !== null
+        ? getComputedStyle(activeGrid).gridTemplateColumns.split(" ").filter(Boolean).length
+        : 0;
+      const cols = placesPanelActive ? 4 : (renderedColumns || (currentBoardMode === 'staged' ? 4 : 8));
       if (direction === 'right') {
         focusedIndex = (focusedIndex + 1) % focusableElements.length;
       } else if (direction === 'left') {
@@ -3117,8 +3299,39 @@
     function fit4kCanvas() {
       const canvas = document.getElementById("tv-canvas");
       if (!canvas) return;
+      if (document.body.classList.contains("compact-device")) {
+        canvas.style.removeProperty("--canvas-scale");
+        return;
+      }
       const scale = Math.min(window.innerWidth / 3840, window.innerHeight / 2160);
       canvas.style.setProperty("--canvas-scale", scale.toFixed(5));
+    }
+
+    function shouldUseCompactLayout() {
+      const ua = navigator.userAgent || "";
+      const mobileUa = /Android|iPhone|iPad|iPod|Mobile|Tablet/i.test(ua);
+      const ipadDesktopUa = navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1;
+      const hasTouch = navigator.maxTouchPoints > 0 || window.matchMedia("(pointer: coarse)").matches;
+      return window.innerWidth <= 1024 || (hasTouch && (mobileUa || ipadDesktopUa));
+    }
+
+    function applyResponsiveMode() {
+      const compact = shouldUseCompactLayout();
+      document.body.classList.toggle("compact-device", compact);
+
+      const placesPanel = document.getElementById("places-panel");
+      const mobileSlot = document.getElementById("mobile-places-slot");
+      const desktopAnchor = document.querySelector("#remote-sidebar .memoji-picker-box");
+      const remoteSidebar = document.getElementById("remote-sidebar");
+      if (placesPanel) {
+        if (compact && mobileSlot && placesPanel.parentElement !== mobileSlot) {
+          mobileSlot.appendChild(placesPanel);
+        } else if (!compact && remoteSidebar && placesPanel.parentElement !== remoteSidebar) {
+          remoteSidebar.insertBefore(placesPanel, desktopAnchor || null);
+        }
+      }
+
+      fit4kCanvas();
     }
 
     function updateTvClock() {
@@ -3135,8 +3348,9 @@
     const remoteRail = document.getElementById("remote-sidebar");
     const pipWindow = document.getElementById("pip-live-cooking-window");
     if (remoteRail && pipWindow) remoteRail.appendChild(pipWindow);
-    window.addEventListener("resize", fit4kCanvas);
-    fit4kCanvas();
+    window.addEventListener("resize", applyResponsiveMode);
+    window.addEventListener("orientationchange", applyResponsiveMode);
+    applyResponsiveMode();
     updateTvClock();
     setInterval(updateTvClock, 30000);
 
