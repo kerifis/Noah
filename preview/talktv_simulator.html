@@ -746,9 +746,10 @@
       color: #FFFFFF;
     }
 
-    /* In-place Places vocabulary panel. It occupies the otherwise unused
-       lower remote rail and never replaces the main communication board. */
-    .places-panel {
+    /* In-place vocabulary panels occupy the otherwise unused lower remote
+       rail and never replace the main communication board. */
+    .places-panel,
+    .people-panel {
       display: none;
       min-height: 0;
       flex-direction: column;
@@ -760,7 +761,8 @@
       box-shadow: inset 0 1px rgba(255, 255, 255, 0.1), 0 10px 24px rgba(0, 0, 0, 0.35);
     }
 
-    .places-panel.active {
+    .places-panel.active,
+    .people-panel.active {
       display: flex;
       animation: places-panel-in 180ms ease-out;
     }
@@ -770,7 +772,8 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
-    .places-panel-header {
+    .places-panel-header,
+    .people-panel-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -781,13 +784,15 @@
       text-transform: uppercase;
     }
 
-    .places-panel-hint {
+    .places-panel-hint,
+    .people-panel-hint {
       color: #7E93B0;
       font-size: 9px;
       font-weight: 800;
     }
 
-    .places-grid {
+    .places-grid,
+    .people-grid {
       display: grid;
       grid-template-columns: repeat(4, minmax(0, 1fr));
       grid-template-rows: repeat(5, minmax(0, 1fr));
@@ -796,7 +801,8 @@
       flex: 1;
     }
 
-    .place-choice {
+    .place-choice,
+    .people-choice {
       min-width: 0;
       min-height: 0;
       padding: 4px 3px;
@@ -815,7 +821,9 @@
     }
 
     .place-choice:hover,
-    .place-choice.focused {
+    .place-choice.focused,
+    .people-choice:hover,
+    .people-choice.focused {
       z-index: 3;
       transform: scale(1.07) translateY(-1px);
       border-color: var(--focus-cyan);
@@ -834,7 +842,20 @@
       filter: drop-shadow(0 4px 5px rgba(0,0,0,.58));
     }
 
-    .place-label {
+    .people-icon {
+      width: 100%;
+      aspect-ratio: 1.5;
+      display: block;
+      flex: 0 0 auto;
+      background-image: url('./assets/icons/talktv-people-atlas.png');
+      background-repeat: no-repeat;
+      background-size: 450% 550%;
+      background-position: var(--people-x) var(--people-y);
+      filter: drop-shadow(0 4px 5px rgba(0,0,0,.58));
+    }
+
+    .place-label,
+    .people-label {
       max-width: 100%;
       overflow: hidden;
       min-height: 2.05em;
@@ -1393,12 +1414,12 @@
     .telemetry-box { padding:18px 20px;border-radius:22px;gap:8px;border-width:2px; }
     .telemetry-title { font-size:19px;margin-bottom:4px; }
     .telemetry-row { font-size:20px; }
-    .places-panel { flex:1;padding:16px;border-radius:24px;gap:12px;border-width:2px; }
-    .places-panel-header { font-size:22px; }
-    .places-panel-hint { font-size:15px; }
-    .places-grid { gap:12px; }
-    .place-choice { padding:8px 6px;border-radius:18px;border-width:2px;gap:3px; }
-    .place-label { font-size:17px;letter-spacing:.2px; }
+    .places-panel,.people-panel { flex:1;padding:16px;border-radius:24px;gap:12px;border-width:2px; }
+    .places-panel-header,.people-panel-header { font-size:22px; }
+    .places-panel-hint,.people-panel-hint { font-size:15px; }
+    .places-grid,.people-grid { gap:12px; }
+    .place-choice,.people-choice { padding:8px 6px;border-radius:18px;border-width:2px;gap:3px; }
+    .place-label,.people-label { font-size:17px;letter-spacing:.2px; }
     .memoji-picker-box,.stat-badge { display:none; }
     .pip-window { position:static;width:100%;height:430px;margin-top:auto;flex:0 0 auto;border-width:3px;border-radius:26px;z-index:auto; }
     .pip-window.expanded { position:absolute;left:650px;top:360px;right:auto;bottom:auto;width:2540px;height:1429px;z-index:150; }
@@ -1415,7 +1436,7 @@
     .reward-pill-btn,.reward-yt-btn,.reward-close-btn { font-size:22px;padding:11px 20px; }
     .reward-footer-bar { font-size:22px;min-height:46px; }
 
-    #mobile-places-slot { display:none; }
+    #mobile-places-slot,#mobile-people-slot { display:none; }
 
     /* Phones and touch tablets use a native scrolling layout instead of a
        scaled-down 4K television canvas. */
@@ -1549,13 +1570,20 @@
 
     body.compact-device .staged-row { flex-wrap:wrap;gap:7px; }
     body.compact-device .staged-tile { width:calc(50% - 4px);height:112px; }
-    body.compact-device #mobile-places-slot { display:block;width:100%; }
-    body.compact-device #mobile-places-slot .places-panel { width:100%;height:auto;min-height:0;margin-top:8px;padding:9px;gap:7px;flex:none; }
-    body.compact-device #mobile-places-slot .places-panel-header { font-size:13px; }
-    body.compact-device #mobile-places-slot .places-panel-hint { font-size:8px; }
-    body.compact-device #mobile-places-slot .places-grid { grid-template-rows:repeat(5,94px);gap:6px;flex:none; }
-    body.compact-device #mobile-places-slot .place-choice { min-height:94px;padding:5px 3px;border-radius:12px;border-width:1.5px; }
-    body.compact-device #mobile-places-slot .place-label { font-size:9px; }
+    body.compact-device #mobile-places-slot,
+    body.compact-device #mobile-people-slot { display:block;width:100%; }
+    body.compact-device #mobile-places-slot .places-panel,
+    body.compact-device #mobile-people-slot .people-panel { width:100%;height:auto;min-height:0;margin-top:8px;padding:9px;gap:7px;flex:none; }
+    body.compact-device #mobile-places-slot .places-panel-header,
+    body.compact-device #mobile-people-slot .people-panel-header { font-size:13px; }
+    body.compact-device #mobile-places-slot .places-panel-hint,
+    body.compact-device #mobile-people-slot .people-panel-hint { font-size:8px; }
+    body.compact-device #mobile-places-slot .places-grid,
+    body.compact-device #mobile-people-slot .people-grid { grid-template-rows:repeat(5,94px);gap:6px;flex:none; }
+    body.compact-device #mobile-places-slot .place-choice,
+    body.compact-device #mobile-people-slot .people-choice { min-height:94px;padding:5px 3px;border-radius:12px;border-width:1.5px; }
+    body.compact-device #mobile-places-slot .place-label,
+    body.compact-device #mobile-people-slot .people-label { font-size:9px; }
 
     @media (max-width:599px) {
       body.compact-device #tv-clock { display:none; }
@@ -1668,7 +1696,8 @@
       <div class="staged-row" id="subgrid-row" style="flex-wrap: wrap;"></div>
     </div>
 
-    <!-- On compact touch devices the Places panel is moved here, below the board. -->
+    <!-- On compact touch devices the vocabulary panels move below the board. -->
+    <div id="mobile-people-slot"></div>
     <div id="mobile-places-slot"></div>
 
     <!-- REWARD VIDEO PLAYER OVERLAY (Kids Cooking, Monkeys, Bluey, Trains) -->
@@ -1816,7 +1845,15 @@
       <div class="telemetry-row" id="ai-confidence-label">Confidence: <strong>96%</strong></div>
     </div>
 
-    <!-- PLACES opens here so the communication board always remains visible. -->
+    <!-- PEOPLE and PLACES open here so the communication board remains visible. -->
+    <section class="people-panel" id="people-panel" aria-label="People vocabulary" aria-hidden="true">
+      <div class="people-panel-header">
+        <span>People</span>
+        <span class="people-panel-hint">OK TO ADD · BACK TO CLOSE</span>
+      </div>
+      <div class="people-grid" id="people-grid"></div>
+    </section>
+
     <section class="places-panel" id="places-panel" aria-label="Places vocabulary" aria-hidden="true">
       <div class="places-panel-header">
         <span>Places</span>
@@ -1883,6 +1920,7 @@
     let currentBoardMode = 'wp60'; // 4K default: compact 8 × 6 board
     let currentNoahAvatar = "./assets/memojis/memoji_noah_3d_v2.png";
     let placesPanelActive = false;
+    let peoplePanelActive = false;
 
     function setNoahAvatar(src) {
       currentNoahAvatar = src;
@@ -2326,6 +2364,29 @@
       { word: "Window", column: 3, row: 4 }
     ];
 
+    const peopleTiles = [
+      { word: "People", column: 0, row: 0 },
+      { word: "They", column: 1, row: 0 },
+      { word: "Friend", column: 2, row: 0 },
+      { word: "Mine", column: 3, row: 0 },
+      { word: "Family", column: 0, row: 1 },
+      { word: "We", column: 1, row: 1 },
+      { word: "Mom", column: 2, row: 1 },
+      { word: "Woman", column: 3, row: 1 },
+      { word: "Man", column: 0, row: 2 },
+      { word: "She", column: 1, row: 2 },
+      { word: "Dad", column: 2, row: 2 },
+      { word: "He", column: 3, row: 2 },
+      { word: "Grandma", column: 0, row: 3 },
+      { word: "Teacher", column: 1, row: 3 },
+      { word: "Grandpa", column: 2, row: 3 },
+      { word: "Teacher", column: 3, row: 3 },
+      { word: "Sister", column: 0, row: 4 },
+      { word: "Girl/student", column: 1, row: 4 },
+      { word: "Brother", column: 2, row: 4 },
+      { word: "Boy/student", column: 3, row: 4 }
+    ];
+
     const placeAtlasX = ["1.786%", "33.929%", "66.071%", "98.214%"];
     const placeAtlasY = ["1.111%", "25.556%", "50%", "74.444%", "98.889%"];
 
@@ -2518,7 +2579,12 @@
           openPlacesPanel();
           return;
         }
+        if ((tile.id || "") === "cat_people") {
+          openPeoplePanel();
+          return;
+        }
         closePlacesPanel(false);
+        closePeoplePanel(false);
         openSubGrid(tile.id || "cat_cartoons", tile.word);
         return;
       }
@@ -2612,6 +2678,7 @@
     }
 
     function openPlacesPanel() {
+      if (peoplePanelActive) closePeoplePanel(false);
       renderPlacesPanel();
       const panel = document.getElementById("places-panel");
       panel.classList.add("active");
@@ -2634,6 +2701,53 @@
       if (restorePlacesFocus) {
         const placesIndex = focusableElements.findIndex(el => el.dataset.word === "PLACES");
         focusedIndex = placesIndex >= 0 ? placesIndex : 0;
+        applyFocus();
+      }
+    }
+
+    function renderPeoplePanel() {
+      const grid = document.getElementById("people-grid");
+      if (grid.childElementCount) return;
+
+      peopleTiles.forEach(person => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "people-choice";
+        button.dataset.word = person.word.toUpperCase();
+        button.setAttribute("aria-label", `Add ${person.word}`);
+        button.innerHTML = `
+          <span class="people-icon" aria-hidden="true" style="--people-x:${placeAtlasX[person.column]};--people-y:${placeAtlasY[person.row]}"></span>
+          <span class="people-label">${person.word}</span>
+        `;
+        button.onclick = () => handleTileClick({ word: person.word, color: "#8B5CF6", action: "speak" });
+        grid.appendChild(button);
+      });
+    }
+
+    function openPeoplePanel() {
+      if (placesPanelActive) closePlacesPanel(false);
+      renderPeoplePanel();
+      const panel = document.getElementById("people-panel");
+      panel.classList.add("active");
+      panel.setAttribute("aria-hidden", "false");
+      peoplePanelActive = true;
+      focusedIndex = 0;
+      updateFocusableElements();
+      if (document.body.classList.contains("compact-device")) {
+        requestAnimationFrame(() => panel.scrollIntoView({ behavior: "smooth", block: "start" }));
+      }
+    }
+
+    function closePeoplePanel(restorePeopleFocus = true) {
+      const panel = document.getElementById("people-panel");
+      panel.classList.remove("active");
+      panel.setAttribute("aria-hidden", "true");
+      peoplePanelActive = false;
+      updateFocusableElements();
+
+      if (restorePeopleFocus) {
+        const peopleIndex = focusableElements.findIndex(el => el.dataset.word === "PEOPLE");
+        focusedIndex = peopleIndex >= 0 ? peopleIndex : 0;
         applyFocus();
       }
     }
@@ -2664,6 +2778,7 @@
 
     function returnToMainView() {
       if (placesPanelActive) closePlacesPanel(false);
+      if (peoplePanelActive) closePeoplePanel(false);
       document.getElementById("subgrid-view-container").style.display = "none";
       if (currentBoardMode === 'staged') {
         document.getElementById("staged-view-container").style.display = "flex";
@@ -2679,6 +2794,7 @@
 
     function switchBoardMode(mode) {
       if (placesPanelActive) closePlacesPanel(false);
+      if (peoplePanelActive) closePeoplePanel(false);
       currentBoardMode = mode;
       document.getElementById("btn-mode-staged").classList.toggle("active", mode === 'staged');
       document.getElementById("btn-mode-wp60").classList.toggle("active", mode === 'wp60');
@@ -3117,6 +3233,12 @@
         applyFocus();
         return;
       }
+      if (peoplePanelActive) {
+        focusableElements = Array.from(document.querySelectorAll("#people-grid .people-choice"));
+        if (focusedIndex >= focusableElements.length) focusedIndex = 0;
+        applyFocus();
+        return;
+      }
       const activeContainer = currentBoardMode === 'staged' ? '#staged-view-container' : '#tv-stage';
       focusableElements = Array.from(document.querySelectorAll(`${activeContainer} .wp-tile, ${activeContainer} .staged-tile, #btn-confirm-sub`));
       if (focusedIndex >= focusableElements.length) {
@@ -3167,6 +3289,10 @@
           closePlacesPanel();
           return;
         }
+        if (peoplePanelActive) {
+          closePeoplePanel();
+          return;
+        }
         const subgrid = document.getElementById("subgrid-view-container");
         if (subgrid.style.display === "flex") {
           returnToMainView();
@@ -3187,7 +3313,7 @@
       const renderedColumns = activeGrid && activeGrid.offsetParent !== null
         ? getComputedStyle(activeGrid).gridTemplateColumns.split(" ").filter(Boolean).length
         : 0;
-      const cols = placesPanelActive ? 4 : (renderedColumns || (currentBoardMode === 'staged' ? 4 : 8));
+      const cols = (placesPanelActive || peoplePanelActive) ? 4 : (renderedColumns || (currentBoardMode === 'staged' ? 4 : 8));
       if (direction === 'right') {
         focusedIndex = (focusedIndex + 1) % focusableElements.length;
       } else if (direction === 'left') {
@@ -3320,14 +3446,23 @@
       document.body.classList.toggle("compact-device", compact);
 
       const placesPanel = document.getElementById("places-panel");
-      const mobileSlot = document.getElementById("mobile-places-slot");
+      const peoplePanel = document.getElementById("people-panel");
+      const mobilePlacesSlot = document.getElementById("mobile-places-slot");
+      const mobilePeopleSlot = document.getElementById("mobile-people-slot");
       const desktopAnchor = document.querySelector("#remote-sidebar .memoji-picker-box");
       const remoteSidebar = document.getElementById("remote-sidebar");
       if (placesPanel) {
-        if (compact && mobileSlot && placesPanel.parentElement !== mobileSlot) {
-          mobileSlot.appendChild(placesPanel);
+        if (compact && mobilePlacesSlot && placesPanel.parentElement !== mobilePlacesSlot) {
+          mobilePlacesSlot.appendChild(placesPanel);
         } else if (!compact && remoteSidebar && placesPanel.parentElement !== remoteSidebar) {
           remoteSidebar.insertBefore(placesPanel, desktopAnchor || null);
+        }
+      }
+      if (peoplePanel) {
+        if (compact && mobilePeopleSlot && peoplePanel.parentElement !== mobilePeopleSlot) {
+          mobilePeopleSlot.appendChild(peoplePanel);
+        } else if (!compact && remoteSidebar && peoplePanel.parentElement !== remoteSidebar) {
+          remoteSidebar.insertBefore(peoplePanel, placesPanel || desktopAnchor || null);
         }
       }
 
@@ -3356,7 +3491,8 @@
 
     // Init
     renderBoard();
-    if (window.location.hash === "#places") openPlacesPanel();
+    if (window.location.hash === "#people") openPeoplePanel();
+    else if (window.location.hash === "#places") openPlacesPanel();
     updatePhraseDisplay();
     updateAiSubtitles();
     updateStats();
