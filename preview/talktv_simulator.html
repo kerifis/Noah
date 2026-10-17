@@ -5,6 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>TalkTV — Android TV AAC Simulator (WordPower 80 3D Visual UI)</title>
+  <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js" defer></script>
   <style>
     :root {
       --tv-bg: #070B13;
@@ -1868,6 +1869,406 @@
     }
     body.compact-device .mobile-cast-status.actionable .mobile-cast-action { display:block; }
 
+    /* ========================================================
+       TALKTV CAST & CONNECT HUB MODAL
+       ======================================================== */
+    .cast-modal-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 99999;
+      background: rgba(4, 7, 15, 0.88);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 220ms ease;
+    }
+    .cast-modal-backdrop.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .cast-modal-sheet {
+      width: 100%;
+      max-width: 530px;
+      max-height: 92vh;
+      display: flex;
+      flex-direction: column;
+      background: linear-gradient(180deg, #101c33 0%, #081122 100%);
+      border: 1.5px solid rgba(0, 229, 255, 0.45);
+      border-radius: 24px;
+      box-shadow: 0 24px 64px rgba(0, 0, 0, 0.8), 0 0 32px rgba(0, 229, 255, 0.18);
+      overflow: hidden;
+      transform: translateY(22px) scale(0.97);
+      transition: transform 240ms cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .cast-modal-backdrop.active .cast-modal-sheet {
+      transform: translateY(0) scale(1);
+    }
+    .cast-modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 22px 14px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(14, 25, 46, 0.65);
+    }
+    .cast-modal-title-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .cast-modal-icon-badge {
+      width: 44px;
+      height: 44px;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(135deg, rgba(0, 229, 255, 0.25), rgba(0, 230, 118, 0.12));
+      border: 1.5px solid rgba(0, 229, 255, 0.6);
+      border-radius: 12px;
+      color: #00E5FF;
+      box-shadow: 0 0 16px rgba(0, 229, 255, 0.25);
+    }
+    .cast-modal-title {
+      font-size: 16px;
+      font-weight: 900;
+      color: #FFFFFF;
+      letter-spacing: 0.3px;
+    }
+    .cast-modal-subtitle {
+      font-size: 11px;
+      color: #88A0C2;
+      margin-top: 2px;
+      font-weight: 600;
+    }
+    .cast-modal-close-btn {
+      width: 34px;
+      height: 34px;
+      display: grid;
+      place-items: center;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 50%;
+      color: #A0B2CC;
+      font-size: 15px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .cast-modal-close-btn:hover {
+      background: rgba(255, 90, 95, 0.2);
+      border-color: #ff5a5f;
+      color: #ff9ca0;
+    }
+
+    /* Active connection status bar */
+    .cast-active-banner {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 20px;
+      background: linear-gradient(90deg, rgba(0, 230, 118, 0.2), rgba(0, 229, 255, 0.12));
+      border-bottom: 1px solid rgba(0, 230, 118, 0.4);
+    }
+    .cast-beacon-pulse {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #00E676;
+      box-shadow: 0 0 12px #00E676;
+      animation: cast-pulse 1.6s infinite;
+      flex-shrink: 0;
+    }
+    @keyframes cast-pulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.4); opacity: 0.5; }
+    }
+    .cast-active-text { flex: 1; }
+    .cast-active-status {
+      font-size: 11px;
+      font-weight: 900;
+      color: #00E676;
+      letter-spacing: 0.5px;
+    }
+    .cast-active-target {
+      font-size: 10.5px;
+      color: #A8E8C7;
+      margin-top: 1px;
+      font-weight: 600;
+    }
+    .cast-disconnect-btn {
+      padding: 6px 13px;
+      background: rgba(229, 57, 53, 0.22);
+      border: 1px solid rgba(229, 57, 53, 0.6);
+      border-radius: 8px;
+      color: #FFA4A2;
+      font-size: 11px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .cast-disconnect-btn:hover {
+      background: rgba(229, 57, 53, 0.35);
+      color: #fff;
+    }
+
+    /* Tabs */
+    .cast-modal-tabs {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      padding: 10px 18px 0;
+      gap: 8px;
+      background: rgba(8, 16, 30, 0.5);
+    }
+    .cast-tab-btn {
+      padding: 10px 6px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      color: #88A0C2;
+      font-size: 11px;
+      font-weight: 800;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.16s ease;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .cast-tab-btn.active {
+      color: #00E5FF;
+      background: linear-gradient(180deg, rgba(0, 229, 255, 0.18), rgba(0, 229, 255, 0.05));
+      border-color: rgba(0, 229, 255, 0.6);
+      box-shadow: 0 0 12px rgba(0, 229, 255, 0.2);
+    }
+
+    /* Tab Panes */
+    .cast-modal-body {
+      padding: 16px 20px 22px;
+      overflow-y: auto;
+      max-height: calc(92vh - 170px);
+    }
+    .cast-tab-pane {
+      display: none;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .cast-tab-pane.active {
+      display: flex;
+      animation: cast-pane-in 180ms ease-out;
+    }
+    @keyframes cast-pane-in {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .cast-feature-box {
+      background: rgba(18, 30, 52, 0.65);
+      border: 1px solid rgba(0, 229, 255, 0.22);
+      border-radius: 16px;
+      padding: 14px 16px;
+    }
+    .cast-tip-badge {
+      display: inline-block;
+      padding: 3px 8px;
+      background: rgba(0, 230, 118, 0.18);
+      border: 1px solid rgba(0, 230, 118, 0.5);
+      border-radius: 6px;
+      color: #00E676;
+      font-size: 9px;
+      font-weight: 900;
+      letter-spacing: 0.6px;
+      margin-bottom: 10px;
+    }
+    .cast-tab-intro {
+      font-size: 12px;
+      color: #B5CCE8;
+      line-height: 1.45;
+      margin-bottom: 12px;
+    }
+
+    /* Steps list for screen mirror */
+    .cast-step-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .cast-step-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      background: rgba(8, 16, 32, 0.65);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      padding: 10px 12px;
+    }
+    .cast-step-num {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #00E5FF, #0077B6);
+      color: #040813;
+      font-size: 12px;
+      font-weight: 900;
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .cast-step-desc {
+      font-size: 11.5px;
+      color: #D6E4F8;
+      line-height: 1.4;
+    }
+    .cast-highlight {
+      display: inline-block;
+      padding: 1px 6px;
+      background: rgba(0, 229, 255, 0.18);
+      border: 1px solid rgba(0, 229, 255, 0.5);
+      border-radius: 5px;
+      color: #00E5FF;
+      font-weight: 800;
+    }
+
+    /* Code Inputs */
+    .cast-code-inputs {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin: 14px 0;
+    }
+    .cast-digit-input {
+      width: 52px;
+      height: 60px;
+      background: rgba(6, 12, 24, 0.9);
+      border: 2px solid rgba(0, 229, 255, 0.4);
+      border-radius: 14px;
+      color: #00E5FF;
+      font-size: 26px;
+      font-weight: 900;
+      text-align: center;
+      outline: none;
+      transition: all 0.15s ease;
+      box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.5);
+    }
+    .cast-digit-input:focus {
+      border-color: #00E5FF;
+      box-shadow: 0 0 18px rgba(0, 229, 255, 0.45);
+      background: rgba(10, 20, 38, 0.95);
+    }
+
+    .cast-connect-code-btn,
+    .cast-start-browser-btn {
+      width: 100%;
+      padding: 13px;
+      background: linear-gradient(180deg, #00E5FF 0%, #0099B8 100%);
+      border: none;
+      border-radius: 13px;
+      color: #040915;
+      font-size: 13px;
+      font-weight: 900;
+      letter-spacing: 0.4px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 8px 24px rgba(0, 229, 255, 0.35);
+      transition: all 0.15s ease;
+    }
+    .cast-connect-code-btn:active,
+    .cast-start-browser-btn:active {
+      transform: scale(0.98);
+    }
+
+    .cast-host-option {
+      margin-top: 14px;
+      padding-top: 12px;
+      border-top: 1px dashed rgba(255, 255, 255, 0.12);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    .cast-host-btn {
+      padding: 7px 12px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(0, 229, 255, 0.35);
+      border-radius: 9px;
+      color: #00E5FF;
+      font-size: 11px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .cast-feedback-msg {
+      margin-top: 12px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      font-size: 11px;
+      line-height: 1.4;
+      display: none;
+    }
+    .cast-feedback-msg.show { display: block; }
+    .cast-feedback-msg.info {
+      background: rgba(0, 229, 255, 0.12);
+      border: 1px solid rgba(0, 229, 255, 0.4);
+      color: #B2F0FF;
+    }
+    .cast-feedback-msg.error {
+      background: rgba(229, 57, 53, 0.14);
+      border: 1px solid rgba(229, 57, 53, 0.5);
+      color: #FFB3B1;
+    }
+    .cast-feedback-msg.success {
+      background: rgba(0, 230, 118, 0.14);
+      border: 1px solid rgba(0, 230, 118, 0.5);
+      color: #98FFC7;
+    }
+
+    /* TV Code Pill in Header */
+    .tv-code-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 11px;
+      background: rgba(0, 229, 255, 0.12);
+      border: 1px solid rgba(0, 229, 255, 0.45);
+      border-radius: 12px;
+      color: #00E5FF;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      box-shadow: 0 0 12px rgba(0, 229, 255, 0.15);
+      transition: all 0.2s ease;
+      touch-action: manipulation;
+    }
+    .tv-code-pill:hover {
+      background: rgba(0, 229, 255, 0.22);
+      box-shadow: 0 0 18px rgba(0, 229, 255, 0.35);
+      transform: translateY(-1px);
+    }
+    .tv-code-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #00E676;
+      box-shadow: 0 0 8px #00E676;
+      animation: tv-pulse 2s infinite;
+    }
+    @keyframes tv-pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.35; transform: scale(0.85); }
+    }
+    body.compact-device .tv-code-pill {
+      display: none;
+    }
+    body.compact-device.cast-receiver .tv-code-pill {
+      display: inline-flex;
+    }
+
     body.compact-device #ai-subtitle-bar { width:100%;min-width:0;min-height:54px;padding:7px 8px;border-radius:14px;border-width:1px;gap:7px;overflow:hidden; }
     body.compact-device .subtitle-content-left { min-width:0;gap:7px; }
     body.compact-device .cc-badge { padding:5px 7px;border-width:1px;border-radius:12px;font-size:8px;letter-spacing:.4px; }
@@ -2002,9 +2403,14 @@
         <!-- Rendered by JS: [ I ] [ DRINK ] [ MORE ] [ AGAIN ] -->
       </div>
 
-      <button class="mobile-cast-btn" id="mobile-cast-button" type="button" onclick="startTvCast()" aria-label="Cast TalkTV to a television" title="Cast to TV">
+      <button class="mobile-cast-btn" id="mobile-cast-button" type="button" onclick="openCastModal()" aria-label="Cast TalkTV to a television" title="Cast to TV">
         <svg class="cast-tv-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M1 18v3h3a3 3 0 0 0-3-3Zm0-4v2a5 5 0 0 1 5 5h2a7 7 0 0 0-7-7Zm0-4v2a9 9 0 0 1 9 9h2c0-6.08-4.92-11-11-11Zm18-7H5a2 2 0 0 0-2 2v3h2V5h14v14h-5v2h5a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2Z"/></svg>
       </button>
+      <div class="tv-code-pill" id="tv-code-pill" onclick="openCastModal('pair')" title="TalkTV Room Code for Phone Connect">
+        <span class="tv-code-dot"></span>
+        <span class="tv-code-label">TV CODE:</span>
+        <strong class="tv-code-val" id="tv-code-display">----</strong>
+      </div>
       <button class="phrase-clear-btn" title="Clear Phrase" onclick="clearPhrase()">✕</button>
       <div id="tv-clock" aria-label="Current time">10:30 AM</div>
     </div>
@@ -2175,7 +2581,7 @@
   <div id="remote-sidebar">
     <div class="remote-header">
       <h2 class="remote-title">
-        <button class="cast-tv-btn" id="cast-tv-button" type="button" onclick="startTvCast()" aria-label="Cast TalkTV to a television" title="Choose a TV on the same network">
+        <button class="cast-tv-btn" id="cast-tv-button" type="button" onclick="openCastModal()" aria-label="Cast TalkTV to a television" title="Choose a TV on the same network">
           <svg class="cast-tv-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M1 18v3h3a3 3 0 0 0-3-3Zm0-4v2a5 5 0 0 1 5 5h2a7 7 0 0 0-7-7Zm0-4v2a9 9 0 0 1 9 9h2c0-6.08-4.92-11-11-11Zm18-7H5a2 2 0 0 0-2 2v3h2V5h14v14h-5v2h5a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2Z"/></svg>
           <span>REMOTE TV</span>
         </button>
@@ -4011,9 +4417,21 @@
     };
 
     // ========================================================
-    // SAME-NETWORK TV PRESENTATION / CASTING
+    // SAME-NETWORK TV PRESENTATION, WEBRTC & PHONE CASTING
     // ========================================================
     let mobileCastStatusTimer = null;
+    let tvPeer = null;
+    let senderPeer = null;
+    let activePeerConn = null;
+    let castBroadcastChannel = typeof BroadcastChannel !== "undefined" ? new BroadcastChannel("talktv_cast") : null;
+    let tvRoomCode = (new URLSearchParams(window.location.search).get("room") || localStorage.getItem("talktv_tv_room_code") || Math.floor(1000 + Math.random() * 9000)).toString();
+    localStorage.setItem("talktv_tv_room_code", tvRoomCode);
+
+    if (castBroadcastChannel) {
+      castBroadcastChannel.onmessage = event => {
+        applyTalkTvCastState(event.data);
+      };
+    }
 
     function setCastFeedback(message, state = "", action = "") {
       const feedback = document.getElementById("cast-feedback");
@@ -4040,6 +4458,12 @@
         window.clearTimeout(mobileCastStatusTimer);
         mobileCastStatusTimer = window.setTimeout(() => mobileStatus.classList.remove("show"), action ? 15000 : (state === "error" ? 9000 : 3200));
       }
+      updateCastModalUi();
+    }
+
+    function updateTvBadge(code, isLive = true) {
+      const badge = document.getElementById("tv-code-display");
+      if (badge) badge.textContent = code;
     }
 
     function getCastViewState() {
@@ -4061,12 +4485,22 @@
       };
     }
 
-    function sendCastState() {
-      if (!tvPresentationConnection || tvPresentationConnection.state !== "connected") return;
-      try {
-        tvPresentationConnection.send(JSON.stringify(getTalkTvCastState()));
-      } catch (error) {
-        console.warn("TalkTV cast state could not be sent", error);
+    function sendCastState(customAction = null) {
+      const stateObj = getTalkTvCastState();
+      if (customAction) stateObj.action = customAction;
+      const stateJson = JSON.stringify(stateObj);
+
+      // 1. WebRTC Peer Connection (Phone to TV)
+      if (activePeerConn && activePeerConn.open) {
+        try { activePeerConn.send(stateJson); } catch (e) { console.warn("Peer send error", e); }
+      }
+      // 2. Presentation API (Desktop Chrome to Chromecast)
+      if (tvPresentationConnection && tvPresentationConnection.state === "connected") {
+        try { tvPresentationConnection.send(stateJson); } catch (e) { console.warn("Presentation send error", e); }
+      }
+      // 3. BroadcastChannel (Same-device multi-tab / testing)
+      if (castBroadcastChannel) {
+        try { castBroadcastChannel.postMessage(stateJson); } catch (e) { console.warn("BroadcastChannel send error", e); }
       }
     }
 
@@ -4075,24 +4509,27 @@
       const connected = () => {
         setCastFeedback("Connected to selected TV", "connected");
         sendCastState();
+        updateCastModalUi();
       };
       connection.onconnect = connected;
       connection.onclose = () => {
         tvPresentationConnection = null;
         setCastFeedback("TV disconnected — tap to reconnect");
+        updateCastModalUi();
       };
       connection.onterminate = () => {
         tvPresentationConnection = null;
         setCastFeedback("Casting ended — tap to choose a TV");
+        updateCastModalUi();
       };
       if (connection.state === "connected") connected();
     }
 
-    const isMobileSender = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-    const isAndroidSender = /Android/i.test(navigator.userAgent);
+    const isMobileDevice = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) || ('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || (window.innerWidth <= 900);
+    const isAndroidSender = /Android/i.test(navigator.userAgent) || (/Linux/i.test(navigator.userAgent) && navigator.maxTouchPoints > 0);
     const isSamsungInternet = /SamsungBrowser/i.test(navigator.userAgent);
     const isChromeAndroid = isAndroidSender && /Chrome\//i.test(navigator.userAgent) && !isSamsungInternet && !/EdgA|OPR\//i.test(navigator.userAgent);
-    const MOBILE_CAST_HELP = "Use Chrome on Android, keep the phone and Google TV on the same Wi-Fi, and make sure the TV is awake.";
+    const MOBILE_CAST_HELP = "Swipe down your phone Quick Settings and tap Smart View (Samsung) or Cast (Pixel) to mirror TalkTV to your TV in full 4K.";
 
     function openTalkTvInChrome() {
       if (!isAndroidSender) return;
@@ -4112,15 +4549,164 @@
       window.setTimeout(() => setCastFeedback("Chrome is ready. Tap the Cast icon again to choose your Google TV."), 500);
     }
 
-    async function startTvCast() {
-      if (isTvReceiver) return;
-      if (isSamsungInternet) {
-        setCastFeedback("Samsung Internet cannot discover Google TV for this web app.", "error", "open-chrome");
+    // ========================================================
+    // CAST MODAL & MULTI-DEVICE CONTROLS
+    // ========================================================
+    function openCastModal(preferredTab = null) {
+      const backdrop = document.getElementById("cast-modal-backdrop");
+      if (!backdrop) return;
+      backdrop.classList.add("active");
+      updateCastModalUi();
+
+      if (preferredTab) {
+        switchCastTab(preferredTab);
+      } else {
+        // Default to mirror for mobile devices, or browser cast for desktop
+        if (isMobileDevice) switchCastTab("mirror");
+        else switchCastTab("browser");
+      }
+
+      // Pre-fill last connected code if available
+      const lastCode = localStorage.getItem("talktv_last_paired_code");
+      if (lastCode && lastCode.length === 4) {
+        for (let i = 0; i < 4; i++) {
+          const el = document.getElementById(`cast-digit-${i + 1}`);
+          if (el && !el.value) el.value = lastCode[i];
+        }
+      }
+    }
+
+    function closeCastModal(event) {
+      if (event && event.target && event.target.id !== "cast-modal-backdrop") return;
+      const backdrop = document.getElementById("cast-modal-backdrop");
+      if (backdrop) backdrop.classList.remove("active");
+    }
+
+    function switchCastTab(tabKey) {
+      const tabs = ["mirror", "pair", "browser"];
+      tabs.forEach(t => {
+        const btn = document.getElementById(`tab-btn-${t}`);
+        const pane = document.getElementById(`tab-pane-${t}`);
+        if (btn) btn.classList.toggle("active", t === tabKey);
+        if (pane) pane.classList.toggle("active", t === tabKey);
+      });
+    }
+
+    function updateCastModalUi() {
+      const banner = document.getElementById("cast-active-banner");
+      const targetEl = document.getElementById("cast-active-target");
+      const isConnected = (activePeerConn && activePeerConn.open) || (tvPresentationConnection && tvPresentationConnection.state === "connected");
+      if (banner) banner.style.display = isConnected ? "flex" : "none";
+      if (targetEl) {
+        if (activePeerConn && activePeerConn.open) {
+          targetEl.textContent = `Live WebRTC Sync Active (Room ${activePeerConn.peer.replace('noahtv-', '')})`;
+        } else if (tvPresentationConnection && tvPresentationConnection.state === "connected") {
+          targetEl.textContent = "Google Cast / Presentation Display Active";
+        }
+      }
+    }
+
+    function disconnectTvCast() {
+      if (activePeerConn) {
+        try { activePeerConn.close(); } catch (_) {}
+        activePeerConn = null;
+      }
+      if (tvPresentationConnection) {
+        try { tvPresentationConnection.terminate(); } catch (_) {}
+        tvPresentationConnection = null;
+      }
+      setCastFeedback("Casting disconnected", "");
+      updateCastModalUi();
+    }
+
+    function enableTvReceiverMode() {
+      document.body.classList.add("cast-receiver");
+      const url = new URL(window.location.href);
+      url.searchParams.set("tvReceiver", "1");
+      window.history.replaceState({}, "", url);
+      initTvReceiverPeer();
+      const statusEl = document.getElementById("cast-pair-status");
+      if (statusEl) {
+        statusEl.className = "cast-feedback-msg show success";
+        statusEl.textContent = `This screen is now TV Receiver ${tvRoomCode}! Enter ${tvRoomCode} on your phone to connect.`;
+      }
+    }
+
+    function setCastModalStatus(message, state = "info") {
+      const statusEl = document.getElementById("cast-pair-status");
+      if (!statusEl) return;
+      statusEl.className = `cast-feedback-msg show ${state}`;
+      statusEl.textContent = message;
+    }
+
+    function connectWithRoomCode(customCode = null) {
+      let code = customCode;
+      if (!code) {
+        code = [1, 2, 3, 4].map(i => document.getElementById(`cast-digit-${i}`)?.value || "").join("").trim();
+      }
+      if (code.length !== 4) {
+        setCastModalStatus("Please enter all 4 digits shown on your TV", "error");
         return;
       }
+
+      setCastModalStatus(`Connecting to TV ${code}…`, "info");
+      if (typeof Peer === "undefined") {
+        setCastModalStatus("Connecting service is loading, please wait 3 seconds and retry.", "info");
+        return;
+      }
+
+      try {
+        if (!senderPeer || senderPeer.destroyed) {
+          senderPeer = new Peer(null, { debug: 0 });
+        }
+
+        const initiateConnection = () => {
+          const conn = senderPeer.connect(`noahtv-${code}`, { reliable: true });
+          const timeout = setTimeout(() => {
+            if (!activePeerConn || !activePeerConn.open) {
+              setCastModalStatus(`Could not reach TV ${code}. Ensure TalkTV is open on your TV or computer.`, "error");
+            }
+          }, 9000);
+
+          conn.on("open", () => {
+            clearTimeout(timeout);
+            activePeerConn = conn;
+            localStorage.setItem("talktv_last_paired_code", code);
+            setCastModalStatus(`Connected to TV ${code}!`, "success");
+            setCastFeedback(`Connected to TV ${code}`, "connected");
+            updateCastModalUi();
+            sendCastState();
+            setTimeout(() => closeCastModal(), 1200);
+          });
+
+          conn.on("data", data => applyTalkTvCastState(data));
+
+          conn.on("close", () => {
+            activePeerConn = null;
+            setCastFeedback("TV disconnected — tap to reconnect");
+            updateCastModalUi();
+          });
+
+          conn.on("error", err => {
+            clearTimeout(timeout);
+            setCastModalStatus(`Connection error: ${err.message || err}`, "error");
+          });
+        };
+
+        if (senderPeer.open) initiateConnection();
+        else senderPeer.on("open", initiateConnection);
+      } catch (e) {
+        setCastModalStatus(`Connection failed: ${e.message}`, "error");
+      }
+    }
+
+    async function startNativeBrowserCast() {
+      const statusEl = document.getElementById("cast-browser-feedback");
       if (!("PresentationRequest" in window) || !navigator.presentation) {
-        const canOpenChrome = isAndroidSender && !isChromeAndroid;
-        setCastFeedback(isMobileSender ? MOBILE_CAST_HELP : "Casting needs Chrome or Edge on HTTPS", "error", canOpenChrome ? "open-chrome" : "");
+        if (statusEl) {
+          statusEl.className = "cast-feedback-msg show error";
+          statusEl.innerHTML = "Browser Presentation Cast requires Chrome or Edge on desktop.<br>On your phone, please use <strong>Tab 1 (Phone Screen Mirror)</strong> above.";
+        }
         return;
       }
 
@@ -4128,18 +4714,113 @@
       receiverUrl.searchParams.set("tvReceiver", "1");
       receiverUrl.hash = "";
       try {
-        setCastFeedback("Choose an available TV…");
+        if (statusEl) {
+          statusEl.className = "cast-feedback-msg show info";
+          statusEl.textContent = "Choose your Google TV or Chromecast in the Chrome dialog…";
+        }
         tvPresentationRequest = new PresentationRequest([receiverUrl.href]);
         navigator.presentation.defaultRequest = tvPresentationRequest;
         const connection = await tvPresentationRequest.start();
         attachTvPresentationConnection(connection);
+        if (statusEl) {
+          statusEl.className = "cast-feedback-msg show success";
+          statusEl.textContent = "Connected to television!";
+        }
+        setTimeout(() => closeCastModal(), 1200);
       } catch (error) {
         const cancelled = error && (error.name === "AbortError" || error.name === "NotAllowedError");
-        const notFoundMessage = isChromeAndroid
-          ? "No Google TV found. Check that both devices use the same Wi-Fi and that the TV is awake."
-          : (isMobileSender ? MOBILE_CAST_HELP : "No compatible TV was found");
-        const canOpenChrome = isAndroidSender && !isChromeAndroid;
-        setCastFeedback(cancelled ? "TV selection cancelled" : notFoundMessage, cancelled ? "" : "error", !cancelled && canOpenChrome ? "open-chrome" : "");
+        if (statusEl) {
+          statusEl.className = cancelled ? "cast-feedback-msg show info" : "cast-feedback-msg show error";
+          if (cancelled) {
+            statusEl.textContent = "TV selection cancelled.";
+          } else {
+            if (isMobileDevice) {
+              statusEl.innerHTML = "<strong>Mobile Limitation:</strong> Android &amp; iOS web browsers do not permit casting web tabs directly to Google TV.<br><br>👉 <strong>Solution:</strong> Use <strong>Tab 1 (Phone Screen Mirror)</strong> to mirror via Samsung Smart View / Android Cast in 10 seconds!";
+            } else {
+              statusEl.textContent = "No compatible TV found. Ensure both computer and Google TV are on the exact same Wi-Fi and awake.";
+            }
+          }
+        }
+      }
+    }
+
+    function startTvCast() {
+      openCastModal();
+    }
+
+    function initCastDigitInputs() {
+      for (let i = 1; i <= 4; i++) {
+        const input = document.getElementById(`cast-digit-${i}`);
+        if (!input) continue;
+        input.addEventListener("input", e => {
+          const val = e.target.value.replace(/[^0-9]/g, "");
+          e.target.value = val ? val[val.length - 1] : "";
+          if (val && i < 4) {
+            const next = document.getElementById(`cast-digit-${i + 1}`);
+            if (next) next.focus();
+          }
+          if (i === 4 && val) {
+            const all = [1, 2, 3, 4].map(idx => document.getElementById(`cast-digit-${idx}`)?.value || "").join("");
+            if (all.length === 4) connectWithRoomCode(all);
+          }
+        });
+        input.addEventListener("keydown", e => {
+          if (e.key === "Backspace" && !input.value && i > 1) {
+            const prev = document.getElementById(`cast-digit-${i - 1}`);
+            if (prev) { prev.focus(); prev.value = ""; }
+          }
+        });
+        input.addEventListener("paste", e => {
+          e.preventDefault();
+          const pasted = (e.clipboardData || window.clipboardData).getData("text").replace(/[^0-9]/g, "").slice(0, 4);
+          for (let p = 0; p < pasted.length; p++) {
+            const el = document.getElementById(`cast-digit-${p + 1}`);
+            if (el) el.value = pasted[p];
+          }
+          if (pasted.length === 4) connectWithRoomCode(pasted);
+        });
+      }
+      window.addEventListener("keydown", e => {
+        if (e.key === "Escape") closeCastModal();
+      });
+    }
+
+    function initTvReceiverPeer() {
+      updateTvBadge(tvRoomCode);
+      if (typeof Peer === "undefined") {
+        setTimeout(initTvReceiverPeer, 1000);
+        return;
+      }
+      try {
+        if (tvPeer) return;
+        tvPeer = new Peer(`noahtv-${tvRoomCode}`, { debug: 0 });
+        tvPeer.on("open", id => {
+          updateTvBadge(tvRoomCode, true);
+        });
+        tvPeer.on("connection", conn => {
+          activePeerConn = conn;
+          setCastFeedback(`Phone Connected (${tvRoomCode})`, "connected");
+          conn.on("open", () => {
+            conn.send(JSON.stringify(getTalkTvCastState()));
+          });
+          conn.on("data", data => {
+            applyTalkTvCastState(data);
+          });
+          conn.on("close", () => {
+            activePeerConn = null;
+            setCastFeedback("Phone disconnected", "");
+          });
+        });
+        tvPeer.on("error", err => {
+          if (err.type === "unavailable-id") {
+            tvRoomCode = Math.floor(1000 + Math.random() * 9000).toString();
+            localStorage.setItem("talktv_tv_room_code", tvRoomCode);
+            tvPeer = null;
+            initTvReceiverPeer();
+          }
+        });
+      } catch (e) {
+        console.warn("TV Peer initialization deferred", e);
       }
     }
 
@@ -4162,6 +4843,18 @@
       else if (state.view === "people") openPeoplePanel();
       else if (state.view === "places") openPlacesPanel();
       else if (state.view === "main") returnToMainView();
+
+      if (state.action === "speak") {
+        const pred = predictAiSubtitle(activePhrase);
+        speak(pred.sentence, () => {
+          const show = ["Pancake", "Bluey", "CoComelon", "Cooking"].find(s => pred.sentence.toLowerCase().includes(s.toLowerCase()));
+          if (show) triggerReward(show);
+        });
+      } else if (state.action === "clear") {
+        activePhrase = [];
+        updatePhraseDisplay();
+        updateAiSubtitles();
+      }
     }
 
     function attachTvReceiverConnection(connection) {
@@ -4169,6 +4862,7 @@
     }
 
     function initializeTvReceiver() {
+      initTvReceiverPeer();
       if (!isTvReceiver || !navigator.presentation || !navigator.presentation.receiver) return;
       navigator.presentation.receiver.connectionList.then(list => {
         list.connections.forEach(attachTvReceiverConnection);
@@ -4559,7 +5253,131 @@
     updateStats();
     loadPreferredEnglishVoice();
     initializeTvReceiver();
+    initCastDigitInputs();
   </script>
+
+  <!-- ========================================================
+       TALKTV CAST & CONNECT HUB MODAL
+       ======================================================== -->
+  <div id="cast-modal-backdrop" class="cast-modal-backdrop" onclick="closeCastModal(event)" role="dialog" aria-modal="true" aria-label="Cast TalkTV to a television">
+    <div class="cast-modal-sheet" onclick="event.stopPropagation()">
+      <!-- Modal Header -->
+      <div class="cast-modal-header">
+        <div class="cast-modal-title-row">
+          <div class="cast-modal-icon-badge">
+            <svg class="cast-tv-icon" viewBox="0 0 24 24" style="width:24px;height:24px;"><path fill="currentColor" d="M1 18v3h3a3 3 0 0 0-3-3Zm0-4v2a5 5 0 0 1 5 5h2a7 7 0 0 0-7-7Zm0-4v2a9 9 0 0 1 9 9h2c0-6.08-4.92-11-11-11Zm18-7H5a2 2 0 0 0-2 2v3h2V5h14v14h-5v2h5a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2Z"/></svg>
+          </div>
+          <div>
+            <div class="cast-modal-title">Cast TalkTV to Your TV</div>
+            <div class="cast-modal-subtitle">Connect phone, tablet, or PC to Google TV &amp; Chromecast</div>
+          </div>
+        </div>
+        <button class="cast-modal-close-btn" onclick="closeCastModal()" aria-label="Close modal">✕</button>
+      </div>
+
+      <!-- Live Connection Banner (Shown when connected) -->
+      <div id="cast-active-banner" class="cast-active-banner" style="display:none;">
+        <div class="cast-beacon-pulse"></div>
+        <div class="cast-active-text">
+          <div class="cast-active-status">CONNECTED TO TELEVISION</div>
+          <div id="cast-active-target" class="cast-active-target">Live 2-Way Sync Active</div>
+        </div>
+        <button class="cast-disconnect-btn" onclick="disconnectTvCast()">Disconnect</button>
+      </div>
+
+      <!-- Navigation Tabs -->
+      <div class="cast-modal-tabs">
+        <button class="cast-tab-btn active" id="tab-btn-mirror" onclick="switchCastTab('mirror')" type="button">
+          📱 Phone Mirror
+        </button>
+        <button class="cast-tab-btn" id="tab-btn-pair" onclick="switchCastTab('pair')" type="button">
+          📺 TV Room Code
+        </button>
+        <button class="cast-tab-btn" id="tab-btn-browser" onclick="switchCastTab('browser')" type="button">
+          💻 Computer Cast
+        </button>
+      </div>
+
+      <!-- Tab Content Body -->
+      <div class="cast-modal-body">
+        <!-- Tab 1: Phone Screen Mirroring -->
+        <div class="cast-tab-pane active" id="tab-pane-mirror">
+          <div class="cast-feature-box">
+            <div class="cast-tip-badge">RECOMMENDED FOR PHONES</div>
+            <p class="cast-tab-intro">
+              Mobile browsers cannot cast individual web tabs directly to Chromecast. Use Android's native screen mirror to fill your TV in crystal-clear 4K:
+            </p>
+            <div class="cast-step-list">
+              <div class="cast-step-item">
+                <div class="cast-step-num">1</div>
+                <div class="cast-step-desc">
+                  <strong>Swipe down twice</strong> from the very top of your phone screen to open Android Quick Settings.
+                </div>
+              </div>
+              <div class="cast-step-item">
+                <div class="cast-step-num">2</div>
+                <div class="cast-step-desc">
+                  Tap <span class="cast-highlight">Smart View</span> (Samsung Galaxy) or <span class="cast-highlight">Cast / Screen Cast</span> (Google Pixel / Motorola).
+                </div>
+              </div>
+              <div class="cast-step-item">
+                <div class="cast-step-num">3</div>
+                <div class="cast-step-desc">
+                  Select your <strong>Google TV</strong> or <strong>Chromecast</strong> from the device list.
+                </div>
+              </div>
+              <div class="cast-step-item">
+                <div class="cast-step-num">4</div>
+                <div class="cast-step-desc">
+                  Turn your phone <strong>horizontal (landscape)</strong> — TalkTV will fill your TV screen with high-contrast AAC tiles!
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 2: TV Room Code (WebRTC Live 2-Way Sync) -->
+        <div class="cast-tab-pane" id="tab-pane-pair">
+          <div class="cast-feature-box">
+            <p class="cast-tab-intro">
+              Open TalkTV on your TV or computer browser (<code>noah-talktv.vercel.app</code>) and enter the 4-digit code shown on that screen:
+            </p>
+            <div class="cast-code-inputs">
+              <input type="text" class="cast-digit-input" id="cast-digit-1" maxlength="1" pattern="[0-9]" inputmode="numeric" placeholder="·" aria-label="First digit">
+              <input type="text" class="cast-digit-input" id="cast-digit-2" maxlength="1" pattern="[0-9]" inputmode="numeric" placeholder="·" aria-label="Second digit">
+              <input type="text" class="cast-digit-input" id="cast-digit-3" maxlength="1" pattern="[0-9]" inputmode="numeric" placeholder="·" aria-label="Third digit">
+              <input type="text" class="cast-digit-input" id="cast-digit-4" maxlength="1" pattern="[0-9]" inputmode="numeric" placeholder="·" aria-label="Fourth digit">
+            </div>
+            <button class="cast-connect-code-btn" id="cast-connect-code-btn" onclick="connectWithRoomCode()" type="button">
+              Connect to TV
+            </button>
+            <div id="cast-pair-status" class="cast-feedback-msg" role="status"></div>
+
+            <div class="cast-host-option">
+              <span style="color:#7E93B0; font-size:11px; font-weight:700;">Is this screen the TV?</span>
+              <button class="cast-host-btn" onclick="enableTvReceiverMode()" type="button">
+                📺 Show My TV Code
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 3: Computer Browser Cast (Chrome / Edge on Desktop) -->
+        <div class="cast-tab-pane" id="tab-pane-browser">
+          <div class="cast-feature-box">
+            <p class="cast-tab-intro">
+              If you are using Google Chrome or Microsoft Edge on a laptop or desktop computer, launch the native browser Cast dialog:
+            </p>
+            <button class="cast-start-browser-btn" onclick="startNativeBrowserCast()" type="button">
+              <svg class="cast-tv-icon" viewBox="0 0 24 24" style="width:18px;height:18px;margin-right:8px;"><path fill="currentColor" d="M1 18v3h3a3 3 0 0 0-3-3Zm0-4v2a5 5 0 0 1 5 5h2a7 7 0 0 0-7-7Zm0-4v2a9 9 0 0 1 9 9h2c0-6.08-4.92-11-11-11Zm18-7H5a2 2 0 0 0-2 2v3h2V5h14v14h-5v2h5a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2Z"/></svg>
+              Open Chrome Cast Picker
+            </button>
+            <div id="cast-browser-feedback" class="cast-feedback-msg" role="status"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </body>
 
 </html>
